@@ -65,7 +65,7 @@
     tfoot td:first-child { text-align: left; }
     .filtros { display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; margin-bottom: 1rem; }
     .filtros .filtros-izq { display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; }
-    .filtros .filtros-der { margin-left: auto; display: flex; align-items: center; }
+    .filtros .filtros-der { margin-left: auto; display: flex; align-items: center; gap: 0.75rem; }
     .filtros label { display: flex; align-items: center; gap: 0.5rem; }
     .btn-actualizar-base { display: inline-flex; align-items: center; gap: 0.45rem; padding: 0.5rem 1rem; border: 1px solid #0d7d3d; background: #0d7d3d; color: #fff; border-radius: 6px; cursor: pointer; font-size: 0.9rem; font-family: inherit; }
     .btn-actualizar-base:hover { background: #0a5c2e; border-color: #0a5c2e; }
@@ -97,6 +97,13 @@
     .panel-seguridad .btn-guardar-rol { padding: 0.35rem 0.6rem; font-size: 0.85rem; background: #0d7d3d; color: #fff; border: none; border-radius: 6px; cursor: pointer; }
     .panel-seguridad .btn-guardar-rol:hover { background: #0a5c2e; }
     .panel-seguridad .seguridad-loading { color: #666; }
+    .col-proyeccion { background: #e8f4f0; }
+    .disclaimer-proyeccion { font-size: 0.75rem; color: #555; font-weight: normal; padding: 0.35rem 0.75rem !important; border-top: none !important; background: #fafafa !important; text-align: left; }
+    .btn-config-proyeccion { display: inline-flex; align-items: center; gap: 0.45rem; padding: 0.5rem 1rem; border: 1px solid #555; background: #fff; color: #333; border-radius: 6px; cursor: pointer; font-size: 0.9rem; font-family: inherit; }
+    .btn-config-proyeccion:hover { background: #f0f0f0; border-color: #333; }
+    .config-proyeccion .form-group { margin-bottom: 0.75rem; }
+    .config-proyeccion label { display: block; margin-bottom: 0.25rem; font-size: 0.9rem; }
+    .config-proyeccion select { padding: 0.4rem 0.6rem; border-radius: 6px; border: 1px solid #ccc; }
     .filtros select { padding: 0.4rem 0.6rem; border-radius: 6px; border: 1px solid #ccc; }
     .toggle-moneda { display: inline-flex; border-radius: 8px; border: 1px solid #ccc; overflow: hidden; background: #eee; }
     .toggle-moneda button { padding: 0.5rem 1rem; border: none; background: transparent; cursor: pointer; font-size: 1rem; }
@@ -184,7 +191,7 @@
         <span class="menu-label">Seguridad</span>
       </a>
     </nav>
-    <div class="sidebar-version" id="sidebar-version" aria-label="Versión">v1.2</div>
+    <div class="sidebar-version" id="sidebar-version" aria-label="Versión">v1.3</div>
   </aside>
 
   <main class="main-content">
@@ -256,6 +263,10 @@
           </label>
         </div>
         <div class="filtros-der">
+          <button type="button" id="btn-config-proyeccion" class="btn-config-proyeccion" aria-label="Configurar proyección" style="display:none;">
+            <span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z"/></svg></span>
+            Proyección
+          </button>
           <button type="button" id="btn-actualizar-base" class="btn-actualizar-base" aria-label="Actualizar base de datos">
             <span class="btn-upload-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></span>
             Actualizar base
@@ -355,6 +366,51 @@
         <div class="form-actions">
           <button type="button" id="upload-btn-confirm" class="btn-actualizar-base" disabled>Continuar y actualizar</button>
           <button type="button" id="upload-btn-cancel" style="padding:0.5rem 1rem; border:1px solid #999; background:#fff; border-radius:6px; cursor:pointer; font-size:0.9rem;">Cancelar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="modal-config-proyeccion-backdrop" class="modal-backdrop oculto">
+    <div class="modal config-proyeccion" id="modal-config-proyeccion" style="max-width:480px;">
+      <div class="modal-header">
+        <h2>Configuración de proyección</h2>
+        <button type="button" class="modal-close" id="modal-config-proyeccion-close" aria-label="Cerrar"><span class="icon-close"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg></span></button>
+      </div>
+      <div class="modal-body">
+        <p style="margin:0 0 1rem 0; font-size:0.9rem; color:#555;">Parámetros para los meses proyectados en la tabla Flujo por mes. El primer mes proyectado es siempre el mes en curso (ej. 03-2026). Valor típico a partir de la historia reciente.</p>
+        <div class="form-group">
+          <label for="config-proyeccion-cantidad">Meses a proyectar</label>
+          <select id="config-proyeccion-cantidad">
+            <option value="1">1</option><option value="2">2</option><option value="3" selected>3</option>
+            <option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="12">12</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="config-proyeccion-metodo">Método</label>
+          <select id="config-proyeccion-metodo">
+            <option value="promedio_ponderado">Promedio ponderado</option>
+            <option value="promedio">Promedio</option>
+            <option value="mediana">Mediana</option>
+            <option value="promedio_recortado">Promedio recortado (suaviza picos)</option>
+          </select>
+        </div>
+        <div class="form-group" id="config-recorte-wrap" style="display:none;">
+          <label for="config-proyeccion-recorte">Recorte % (cada lado)</label>
+          <select id="config-proyeccion-recorte">
+            <option value="0">0 %</option><option value="5">5 %</option><option value="10">10 %</option>
+            <option value="15">15 %</option><option value="20" selected>20 %</option><option value="25">25 %</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="config-proyeccion-meses">Meses de historia</label>
+          <select id="config-proyeccion-meses">
+            <option value="3">3</option><option value="6" selected>6</option><option value="12">12</option><option value="24">24</option>
+          </select>
+        </div>
+        <div class="form-actions">
+          <button type="button" id="config-proyeccion-guardar" class="btn-actualizar-base">Guardar</button>
+          <button type="button" id="config-proyeccion-cancelar" style="padding:0.5rem 1rem; border:1px solid #999; background:#fff; border-radius:6px; cursor:pointer; font-size:0.9rem;">Cancelar</button>
         </div>
       </div>
     </div>
@@ -515,6 +571,79 @@
         return excluirSaldoInicial(r) || excluirProyectado(r);
       }
 
+      var PROYECCION_METODO_KEY = 'everfit_proyeccion_metodo';
+      var PROYECCION_MESES_KEY = 'everfit_proyeccion_meses';
+      var PROYECCION_CANTIDAD_KEY = 'everfit_proyeccion_cantidad';
+      var PROYECCION_RECORTE_KEY = 'everfit_proyeccion_recorte';
+
+      function promedioPonderado(arr) {
+        var nums = (arr || []).filter(function(x) { return typeof x === 'number' && !isNaN(x); });
+        if (nums.length === 0) return 0;
+        var sumaPond = 0, totalPeso = 0;
+        nums.forEach(function(x, i) {
+          var peso = i + 1;
+          sumaPond += x * peso;
+          totalPeso += peso;
+        });
+        return totalPeso > 0 ? sumaPond / totalPeso : 0;
+      }
+      function mediana(arr) {
+        if (!arr || arr.length === 0) return 0;
+        var sorted = arr.slice().filter(function(x) { return typeof x === 'number' && !isNaN(x); }).sort(function(a, b) { return a - b; });
+        if (sorted.length === 0) return 0;
+        var mid = Math.floor(sorted.length / 2);
+        return sorted.length % 2 !== 0 ? sorted[mid] : (sorted[mid - 1] + sorted[mid]) / 2;
+      }
+      function promedio(arr) {
+        if (!arr || arr.length === 0) return 0;
+        var nums = arr.filter(function(x) { return typeof x === 'number' && !isNaN(x); });
+        return nums.length === 0 ? 0 : nums.reduce(function(s, x) { return s + x; }, 0) / nums.length;
+      }
+      function promedioRecortado(arr, pct) {
+        var nums = (arr || []).filter(function(x) { return typeof x === 'number' && !isNaN(x); });
+        if (nums.length === 0) return 0;
+        var sorted = nums.slice().sort(function(a, b) { return a - b; });
+        var drop = Math.max(0, Math.floor(sorted.length * (pct || 0.15)));
+        var recortado = sorted.slice(drop, sorted.length - drop);
+        return recortado.length === 0 ? mediana(sorted) : recortado.reduce(function(s, x) { return s + x; }, 0) / recortado.length;
+      }
+      function siguienteMesKey(key) {
+        var parts = key.split('-').map(Number);
+        var anio = parts[0], mes = parts[1];
+        if (mes >= 12) return (anio + 1) + '-01';
+        return anio + '-' + String(mes + 1).padStart(2, '0');
+      }
+      /** Clave del mes en curso (anio-mes, ej. 2026-03). La proyección arranca desde este mes. */
+      function keyMesEnCurso() {
+        var now = new Date();
+        var anio = now.getFullYear();
+        var mes = now.getMonth() + 1;
+        return anio + '-' + String(mes).padStart(2, '0');
+      }
+      function proyeccionDesdeSerie(valores, N, agg, cant) {
+        var c = (cant != null && cant >= 1 && cant <= 12) ? cant : 3;
+        var n = valores.length;
+        if (n === 0 || N <= 0) return Array(c).fill(0);
+        var res = [];
+        for (var i = 0; i < c; i++) {
+          var numReal = Math.max(0, Math.min(N - i, n));
+          var arr = numReal > 0 ? valores.slice(-numReal).concat(res) : res;
+          res.push(arr.length > 0 ? agg(arr) : (i > 0 ? res[i - 1] : 0));
+        }
+        return res;
+      }
+      function getConfigProyeccion() {
+        var metodo = localStorage.getItem(PROYECCION_METODO_KEY) || 'promedio_ponderado';
+        var meses = parseInt(localStorage.getItem(PROYECCION_MESES_KEY) || '6', 10) || 6;
+        var cantidad = parseInt(localStorage.getItem(PROYECCION_CANTIDAD_KEY) || '3', 10) || 3;
+        var recorte = parseInt(localStorage.getItem(PROYECCION_RECORTE_KEY) || '20', 10) || 20;
+        var metodoValido = ['promedio_ponderado', 'promedio', 'mediana', 'promedio_recortado'].indexOf(metodo) !== -1 ? metodo : 'promedio_ponderado';
+        var mesesValido = [3, 6, 12, 24].indexOf(meses) !== -1 ? meses : 6;
+        var cantidadValido = Math.max(1, Math.min(12, cantidad));
+        var recorteValido = Math.max(0, Math.min(25, recorte));
+        return { metodo: metodoValido, meses: mesesValido, mesesAProyectar: cantidadValido, recortePct: recorteValido };
+      }
+
       function traerTodasLasFilas() {
         var PAGE = 1000;
         var todas = [];
@@ -578,20 +707,8 @@
         var iconoIng = '<span class="card-icon ingresos"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="M19 12l-7 7-7-7"/></svg></span>';
         var iconoEgr = '<span class="card-icon egresos"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5"/><path d="M5 12l7-7 7 7"/></svg></span>';
         var iconoGp = '<span class="card-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></svg></span>';
-        document.getElementById('resumen').innerHTML = [
-          '<div class="card"><div class="card-titulo">' + iconoIng + 'Total ingresos</div><div class="valor ingresos">' + simbolo + formatearNumero(totalIngresos, moneda) + '</div></div>',
-          '<div class="card"><div class="card-titulo">' + iconoEgr + 'Total egresos</div><div class="valor egresos">' + simbolo + formatearNumero(totalEgresos, moneda) + '</div></div>',
-          '<div class="card"><div class="card-titulo">' + iconoGp + 'G/P Total</div><div class="valor balance ' + (balanceTotal >= 0 ? 'positivo' : 'negativo') + '">' + simbolo + formatearNumero(balanceTotal, moneda) + '</div></div>'
-        ].join('');
-        document.getElementById('resumen').style.display = 'flex';
 
         var periodosLabels = ordenados.map(function(key) { return formatoPeriodoFromKey(key); });
-        var theadHtml = '<tr><th class="col-item">Item</th>' + periodosLabels.map(function(p) { return '<th>' + esc(p) + '</th>'; }).join('') + '<th>Total</th></tr>';
-        document.getElementById('thead-flujo').innerHTML = theadHtml;
-
-        var iconoIngreso = '<span class="item-con-icono"><span class="item-icon icono-ingresos" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="M19 12l-7 7-7-7"/></svg></span>Ingresos</span>';
-        var iconoEgreso = '<span class="item-con-icono"><span class="item-icon icono-egresos" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5"/><path d="M5 12l7-7 7 7"/></svg></span>Egresos</span>';
-        var iconoGP = '<span class="item-con-icono"><span class="item-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></svg></span>G/P</span>';
         var celdasIng = ordenados.map(function(k) { return '<td class="ingresos">' + simbolo + formatearNumero(porMes[k].ingresos, moneda) + '</td>'; });
         var celdasEgr = ordenados.map(function(k) { return '<td class="egresos">' + simbolo + formatearNumero(porMes[k].egresos, moneda) + '</td>'; });
         var celdasGp = ordenados.map(function(k) {
@@ -599,12 +716,57 @@
           var gp = d.ingresos - d.egresos;
           return '<td class="balance ' + (gp >= 0 ? 'positivo' : 'negativo') + '">' + simbolo + formatearNumero(gp, moneda) + '</td>';
         });
-        var tbodyHtml = '<tr class="fila-clickable" role="button" tabindex="0"><td class="col-item">' + iconoIngreso + '</td>' + celdasIng.join('') + '<td class="ingresos">' + simbolo + formatearNumero(totalIngresos, moneda) + '</td></tr>';
-        tbodyHtml += '<tr class="fila-clickable" role="button" tabindex="0"><td class="col-item">' + iconoEgreso + '</td>' + celdasEgr.join('') + '<td class="egresos">' + simbolo + formatearNumero(totalEgresos, moneda) + '</td></tr>';
-        tbodyHtml += '<tr class="fila-clickable" role="button" tabindex="0"><td class="col-item">' + iconoGP + '</td>' + celdasGp.join('') + '<td class="balance ' + (balanceTotal >= 0 ? 'positivo' : 'negativo') + '">' + simbolo + formatearNumero(balanceTotal, moneda) + '</td></tr>';
+        var celdasTotalRow = ordenados.map(function(k) { var d = porMes[k]; var gp = d.ingresos - d.egresos; return '<td class="balance ' + (gp >= 0 ? 'positivo' : 'negativo') + '">' + simbolo + formatearNumero(gp, moneda) + '</td>'; });
+        var proyLabels = [];
+        var filasProyDisclaimer = '';
+        var totalIngresosProy = 0, totalEgresosProy = 0;
+        if (userPermissions.indexOf('ver_proyeccion') !== -1 && ordenados.length > 0) {
+          var configProy = getConfigProyeccion();
+          var N = Math.min(configProy.meses, ordenados.length);
+          if (N > 0 && configProy.mesesAProyectar > 0) {
+            var agg = configProy.metodo === 'promedio_ponderado' ? promedioPonderado : (configProy.metodo === 'promedio' ? promedio : (configProy.metodo === 'mediana' ? mediana : function(a) { return promedioRecortado(a, (configProy.recortePct || 20) / 100); }));
+            var valoresIng = ordenados.slice(-N).map(function(k) { return porMes[k].ingresos || 0; });
+            var valoresEgr = ordenados.slice(-N).map(function(k) { return porMes[k].egresos || 0; });
+            var proyIng = proyeccionDesdeSerie(valoresIng, N, agg, configProy.mesesAProyectar);
+            var proyEgr = proyeccionDesdeSerie(valoresEgr, N, agg, configProy.mesesAProyectar);
+            var keyProy = keyMesEnCurso();
+            for (var j = 0; j < configProy.mesesAProyectar; j++) {
+              totalIngresosProy += proyIng[j];
+              totalEgresosProy += proyEgr[j];
+              proyLabels.push('Proy. ' + formatoPeriodoFromKey(keyProy));
+              celdasIng.push('<td class="ingresos col-proyeccion">' + simbolo + formatearNumero(proyIng[j], moneda) + '</td>');
+              celdasEgr.push('<td class="egresos col-proyeccion">' + simbolo + formatearNumero(proyEgr[j], moneda) + '</td>');
+              var gpProy = proyIng[j] - proyEgr[j];
+              celdasGp.push('<td class="balance col-proyeccion ' + (gpProy >= 0 ? 'positivo' : 'negativo') + '">' + simbolo + formatearNumero(gpProy, moneda) + '</td>');
+              celdasTotalRow.push('<td class="balance col-proyeccion ' + (gpProy >= 0 ? 'positivo' : 'negativo') + '">' + simbolo + formatearNumero(gpProy, moneda) + '</td>');
+              keyProy = siguienteMesKey(keyProy);
+            }
+            var metodoLabel = configProy.metodo === 'promedio_ponderado' ? 'Promedio ponderado' : (configProy.metodo === 'promedio' ? 'Promedio' : (configProy.metodo === 'promedio_recortado' ? 'Promedio recortado' : 'Mediana'));
+            filasProyDisclaimer = '<tr class="disclaimer-proyeccion"><td colspan="' + (1 + ordenados.length + configProy.mesesAProyectar + 1) + '">Proyección: ' + metodoLabel + ' de los últimos ' + configProy.meses + ' meses. Desde mes en curso. Proy. 2 usa proy. 1 y un real menos; proy. 3 usa proy. 1 y 2 y dos reales menos; etc. (ventana móvil).</td></tr>';
+          }
+        }
+        periodosLabels = periodosLabels.concat(proyLabels);
+        var totalIngresosConProy = totalIngresos + totalIngresosProy;
+        var totalEgresosConProy = totalEgresos + totalEgresosProy;
+        var balanceTotalConProy = totalIngresosConProy - totalEgresosConProy;
+        document.getElementById('resumen').innerHTML = [
+          '<div class="card"><div class="card-titulo">' + iconoIng + 'Total ingresos</div><div class="valor ingresos">' + simbolo + formatearNumero(totalIngresos, moneda) + '</div></div>',
+          '<div class="card"><div class="card-titulo">' + iconoEgr + 'Total egresos</div><div class="valor egresos">' + simbolo + formatearNumero(totalEgresos, moneda) + '</div></div>',
+          '<div class="card"><div class="card-titulo">' + iconoGp + 'G/P Total</div><div class="valor balance ' + (balanceTotal >= 0 ? 'positivo' : 'negativo') + '">' + simbolo + formatearNumero(balanceTotal, moneda) + '</div></div>'
+        ].join('');
+        document.getElementById('resumen').style.display = 'flex';
+        var theadHtml = '<tr><th class="col-item">Item</th>' + periodosLabels.map(function(p, i) { return '<th' + (i >= ordenados.length ? ' class="col-proyeccion"' : '') + '>' + esc(p) + '</th>'; }).join('') + '<th>Total</th></tr>';
+        document.getElementById('thead-flujo').innerHTML = theadHtml;
+
+        var iconoIngreso = '<span class="item-con-icono"><span class="item-icon icono-ingresos" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="M19 12l-7 7-7-7"/></svg></span>Ingresos</span>';
+        var iconoEgreso = '<span class="item-con-icono"><span class="item-icon icono-egresos" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5"/><path d="M5 12l7-7 7 7"/></svg></span>Egresos</span>';
+        var iconoGP = '<span class="item-con-icono"><span class="item-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></svg></span>G/P</span>';
+        var tbodyHtml = '<tr class="fila-clickable" role="button" tabindex="0"><td class="col-item">' + iconoIngreso + '</td>' + celdasIng.join('') + '<td class="ingresos">' + simbolo + formatearNumero(totalIngresosConProy, moneda) + '</td></tr>';
+        tbodyHtml += '<tr class="fila-clickable" role="button" tabindex="0"><td class="col-item">' + iconoEgreso + '</td>' + celdasEgr.join('') + '<td class="egresos">' + simbolo + formatearNumero(totalEgresosConProy, moneda) + '</td></tr>';
+        tbodyHtml += '<tr class="fila-clickable" role="button" tabindex="0"><td class="col-item">' + iconoGP + '</td>' + celdasGp.join('') + '<td class="balance ' + (balanceTotalConProy >= 0 ? 'positivo' : 'negativo') + '">' + simbolo + formatearNumero(balanceTotalConProy, moneda) + '</td></tr>';
         document.getElementById('tbody-flujo').innerHTML = tbodyHtml;
 
-        var tfootHtml = '<tr><td class="col-item">Total</td>' + ordenados.map(function(k) { var d = porMes[k]; var gp = d.ingresos - d.egresos; return '<td class="balance ' + (gp >= 0 ? 'positivo' : 'negativo') + '">' + simbolo + formatearNumero(gp, moneda) + '</td>'; }).join('') + '<td class="balance ' + (balanceTotal >= 0 ? 'positivo' : 'negativo') + '">' + simbolo + formatearNumero(balanceTotal, moneda) + '</td></tr>';
+        var tfootHtml = '<tr><td class="col-item">Total</td>' + celdasTotalRow.join('') + '<td class="balance ' + (balanceTotalConProy >= 0 ? 'positivo' : 'negativo') + '">' + simbolo + formatearNumero(balanceTotalConProy, moneda) + '</td></tr>' + filasProyDisclaimer;
         document.getElementById('tfoot-flujo').innerHTML = tfootHtml;
 
         document.getElementById('panel-flujo').style.display = 'block';
@@ -1171,6 +1333,8 @@
           var btnUpload = document.getElementById('btn-actualizar-base');
           var wrapUpload = btnUpload && btnUpload.closest('.filtros-der');
           if (wrapUpload) wrapUpload.style.display = userPermissions.indexOf('upload_base') !== -1 ? '' : 'none';
+          var btnProy = document.getElementById('btn-config-proyeccion');
+          if (btnProy) btnProy.style.display = userPermissions.indexOf('ver_proyeccion') !== -1 ? '' : 'none';
           var menuSeg = document.getElementById('menu-seguridad');
           if (menuSeg) menuSeg.style.display = userPermissions.indexOf('assign_roles') !== -1 ? '' : 'none';
           document.getElementById('btn-cerrar-sesion').addEventListener('click', function() {
@@ -1244,6 +1408,40 @@
           });
         });
       }
+
+      (function setupModalConfigProyeccion() {
+        var backdrop = document.getElementById('modal-config-proyeccion-backdrop');
+        var btnOpen = document.getElementById('btn-config-proyeccion');
+        var btnClose = document.getElementById('modal-config-proyeccion-close');
+        var btnCancel = document.getElementById('config-proyeccion-cancelar');
+        var btnGuardar = document.getElementById('config-proyeccion-guardar');
+        var selMetodo = document.getElementById('config-proyeccion-metodo');
+        var selRecorteWrap = document.getElementById('config-recorte-wrap');
+        if (!backdrop || !btnOpen) return;
+        btnOpen.addEventListener('click', function() {
+          var c = getConfigProyeccion();
+          if (selMetodo) selMetodo.value = c.metodo;
+          if (document.getElementById('config-proyeccion-meses')) document.getElementById('config-proyeccion-meses').value = String(c.meses);
+          if (document.getElementById('config-proyeccion-cantidad')) document.getElementById('config-proyeccion-cantidad').value = String(c.mesesAProyectar);
+          if (document.getElementById('config-proyeccion-recorte')) document.getElementById('config-proyeccion-recorte').value = String(c.recortePct);
+          if (selRecorteWrap) selRecorteWrap.style.display = c.metodo === 'promedio_recortado' ? 'block' : 'none';
+          backdrop.classList.remove('oculto');
+        });
+        btnClose.addEventListener('click', function() { backdrop.classList.add('oculto'); });
+        if (btnCancel) btnCancel.addEventListener('click', function() { backdrop.classList.add('oculto'); });
+        backdrop.addEventListener('click', function(e) { if (e.target === backdrop) backdrop.classList.add('oculto'); });
+        selMetodo.addEventListener('change', function() {
+          if (selRecorteWrap) selRecorteWrap.style.display = selMetodo.value === 'promedio_recortado' ? 'block' : 'none';
+        });
+        btnGuardar.addEventListener('click', function() {
+          localStorage.setItem(PROYECCION_METODO_KEY, selMetodo.value);
+          localStorage.setItem(PROYECCION_MESES_KEY, document.getElementById('config-proyeccion-meses').value);
+          localStorage.setItem(PROYECCION_CANTIDAD_KEY, document.getElementById('config-proyeccion-cantidad').value);
+          localStorage.setItem(PROYECCION_RECORTE_KEY, document.getElementById('config-proyeccion-recorte').value);
+          backdrop.classList.add('oculto');
+          renderizar();
+        });
+      })();
 
       function setupSeguridad() {}
 

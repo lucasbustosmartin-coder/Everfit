@@ -24,6 +24,7 @@ const datosLog = [
   ['__HOY__', '__AHORA__', 'Bitácora Everfit', 'Regla bitácora (Log, Resumen, Ref Git y Vercel, Versiones, Tecnología) y script crear-bitacora-excel.js sin solapa Presupuesto.', 'Setup'],
   ['__HOY__', '__AHORA__', 'Despliegue v1.1', 'Dashboard con login, Seguridad (roles), Actualizar base, flujo por mes, gráfico G/P. Push a main y vercel --prod.', 'Despliegue'],
   ['__HOY__', '__AHORA__', 'Despliegue v1.2', 'Config desde env en Vercel, outputDirectory, favicon EF, script vercel-setup-env, docs. Push a main.', 'Despliegue'],
+  ['__HOY__', '__AHORA__', 'Despliegue v1.3', 'Proyección en Flujo por mes (config, ventana móvil), total tabla con proyectados, tarjetas solo reales, encabezado con fondo en columnas proyectadas.', 'Despliegue'],
 ];
 
 const datosLogParaExcel = aplicarHoyAhora(datosLog);
@@ -38,6 +39,7 @@ const funcionalidades = [
   ['Tipos de cambio (ARS/USD)', 'Consumo por API desde proyecto Sistema-Contable-Nuevo (tabla tipos_cambio_global). Opcional: sync local con scripts/sync_tipo_de_cambio_desde_origen.py.'],
   ['Estructura del repo', 'Carpetas sql/, scripts/, docs/, Base/. Reglas en .cursor/rules (estructura-proyecto, reglas-everfit, bitácora, preguntas-solo-respuesta).'],
   ['Dashboard Everfit', 'Una página (dashboard.html): flujo por mes, resumen, gráfico G/P, filtros moneda/sucursal. Login por email; módulo Seguridad (Admin asigna roles). Actualizar base: truncar y cargar Excel desde el navegador.'],
+  ['Proyección Flujo por mes', 'Meses proyectados en tabla (permiso ver_proyeccion). Config: método (promedio/mediana/promedio recortado), meses de historia, meses a proyectar, recorte %. Ventana móvil. Total columna incluye proyectados; tarjetas siempre reales. Encabezado y celdas proyectadas con fondo distintivo.'],
 ];
 
 const wsResumen = XLSX.utils.aoa_to_sheet(funcionalidades);
@@ -61,7 +63,8 @@ const versiones = [
   ['Versión', 'Fecha', 'Descripción'],
   ['1.0', '06/03/2026', 'Setup: estructura repo, reglas, script bitácora, volcado Excel a Supabase, tipos de cambio por API.'],
   ['1.1', '06/03/2026', 'Dashboard completo: login por email, módulo Seguridad (roles Admin/Encargado/Visor), Actualizar base (upload Excel), flujo por mes, gráfico G/P, filtros. Despliegue Vercel.'],
-  ['1.2', '__HOY__', 'Config build para Vercel (config.js desde env), outputDirectory, favicon EF (logo reducido), script vercel-setup-env, docs URL y dominio.'],
+  ['1.2', '06/03/2026', 'Config build para Vercel (config.js desde env), outputDirectory, favicon EF (logo reducido), script vercel-setup-env, docs URL y dominio.'],
+  ['1.3', '__HOY__', 'Proyección en Flujo por mes: config (método, meses historia, meses a proyectar, recorte %), ventana móvil. Total tabla con proyectados; tarjetas solo reales. Fondo distintivo en encabezado y celdas proyectadas.'],
 ];
 const versionesParaExcel = aplicarHoyAhora(versiones);
 const wsVersiones = XLSX.utils.aoa_to_sheet(versionesParaExcel);
