@@ -3,9 +3,13 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "bitacora": "node scripts/crear-bitacora-excel.js"
+    "bitacora": "node scripts/crear-bitacora-excel.js",
+    "dev": "vite --open /dashboard.html"
   },
   "dependencies": {
     "xlsx": "^0.18.5"
+  },
+  "devDependencies": {
+    "vite": "^5.4.0"
   }
 }

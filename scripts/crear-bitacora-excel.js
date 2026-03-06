@@ -22,6 +22,7 @@ function aplicarHoyAhora(rows) {
 const datosLog = [
   ['Fecha', 'Hora', 'titulo_tarea', 'desc_tarea', 'etapa'],
   ['__HOY__', '__AHORA__', 'Bitácora Everfit', 'Regla bitácora (Log, Resumen, Ref Git y Vercel, Versiones, Tecnología) y script crear-bitacora-excel.js sin solapa Presupuesto.', 'Setup'],
+  ['__HOY__', '__AHORA__', 'Despliegue v1.1', 'Dashboard con login, Seguridad (roles), Actualizar base, flujo por mes, gráfico G/P. Push a main y vercel --prod.', 'Despliegue'],
 ];
 
 const datosLogParaExcel = aplicarHoyAhora(datosLog);
@@ -35,6 +36,7 @@ const funcionalidades = [
   ['Volcado Excel → Supabase', 'Script scripts/volcar_excel_a_supabase.py lee el Excel e inserta en base_everfit. Requiere .env con SUPABASE_URL y SUPABASE_SERVICE_ROLE_KEY.'],
   ['Tipos de cambio (ARS/USD)', 'Consumo por API desde proyecto Sistema-Contable-Nuevo (tabla tipos_cambio_global). Opcional: sync local con scripts/sync_tipo_de_cambio_desde_origen.py.'],
   ['Estructura del repo', 'Carpetas sql/, scripts/, docs/, Base/. Reglas en .cursor/rules (estructura-proyecto, reglas-everfit, bitácora, preguntas-solo-respuesta).'],
+  ['Dashboard Everfit', 'Una página (dashboard.html): flujo por mes, resumen, gráfico G/P, filtros moneda/sucursal. Login por email; módulo Seguridad (Admin asigna roles). Actualizar base: truncar y cargar Excel desde el navegador.'],
 ];
 
 const wsResumen = XLSX.utils.aoa_to_sheet(funcionalidades);
@@ -56,7 +58,8 @@ wsRef['!cols'] = [{ wch: 28 }, { wch: 70 }];
 // --- Hoja Versiones
 const versiones = [
   ['Versión', 'Fecha', 'Descripción'],
-  ['1.0', '__HOY__', 'Setup: estructura repo, reglas, script bitácora, volcado Excel a Supabase, tipos de cambio por API.'],
+  ['1.0', '06/03/2026', 'Setup: estructura repo, reglas, script bitácora, volcado Excel a Supabase, tipos de cambio por API.'],
+  ['1.1', '__HOY__', 'Dashboard completo: login por email, módulo Seguridad (roles Admin/Encargado/Visor), Actualizar base (upload Excel), flujo por mes, gráfico G/P, filtros. Despliegue Vercel.'],
 ];
 const versionesParaExcel = aplicarHoyAhora(versiones);
 const wsVersiones = XLSX.utils.aoa_to_sheet(versionesParaExcel);
