@@ -4,14 +4,15 @@ La app usa **login por email y contraseña** (Supabase Auth). Los permisos se co
 
 ## Roles y permisos
 
-| Rol        | Ver dashboard | Actualizar base (upload) | Asignar perfiles |
-|-----------|----------------|---------------------------|-------------------|
-| **Admin** | Sí             | Sí                        | Sí                |
-| **Encargado** | Sí         | Sí                        | No                |
-| **Visor** | Sí             | No                        | No                |
+| Rol        | Ver dashboard | Actualizar base (upload) | Asignar perfiles | Proyección |
+|-----------|----------------|---------------------------|-------------------|------------|
+| **Admin** | Sí             | Sí                        | Sí                | Sí (ver y configurar) |
+| **Encargado** | Sí         | Sí                        | No                | Sí (ver y configurar) |
+| **Visor** | Sí             | No                        | No                | No                    |
 
 - **Actualizar base:** truncar la tabla `base_everfit` y cargar un Excel (botón "Actualizar base" en el dashboard).
 - **Asignar perfiles:** acceder al módulo Seguridad y cambiar el rol de cualquier usuario.
+- **Ver proyección:** ver en la tabla Flujo por mes los meses proyectados (método, meses de historia, meses a proyectar, recorte) y el botón "Proyección" para configurarlos. Solo Admin y Encargado; Visor no ve la proyección ni el botón.
 
 ## Cómo activar el módulo
 
@@ -26,6 +27,8 @@ La app usa **login por email y contraseña** (Supabase Auth). Los permisos se co
 1. **SQL Editor** en Supabase.
 2. Abrí `sql/supabase_seguridad.sql` y copiá todo el contenido.
 3. Ejecutá el script (Run).
+
+Para habilitar también la **proyección** (solo Admin y Encargado), ejecutá además **`sql/supabase_proyeccion_permiso_y_config.sql`**. Eso agrega el permiso `ver_proyeccion` y la tabla `config_dashboard` para guardar método, meses de historia y meses a proyectar.
 
 Eso crea:
 
@@ -64,14 +67,17 @@ En el SQL actual, un usuario **puede** asignarse a sí mismo el rol `visor` una 
 
 - **Login:** en el dashboard se muestra pantalla de inicio de sesión (email + contraseña). Tras iniciar sesión se cargan los datos.
 - **Actualizar base:** el botón solo se muestra si tu rol tiene permiso `upload_base` (Admin y Encargado).
-- **Seguridad:** en el menú lateral hay un ítem "Seguridad" (solo visible para Admin). Ahí se listan los usuarios con su email y rol, y podés cambiar el rol (Admin / Encargado / Visor).
+- **Seguridad:** en el menú lateral hay un ítem "Seguridad" (solo visible para Admin). Ahí podés: **Permisos por rol:** cada rol (Admin, Encargado, Visor) se muestra con su icono y debajo cada permiso con un botón on/off editable (Actualizar base, Asignar perfiles, Proyección). Los cambios se guardan al instante. **Usuarios:** lista de usuarios con email, rol asignado y botón Guardar.
+
+Para que los permisos por rol sean editables desde el dashboard, ejecutá además **`sql/supabase_seguridad_permisos_editable.sql`** en el SQL Editor (después de `supabase_seguridad.sql` y, si usás proyección, de `supabase_proyeccion_permiso_y_config.sql`).
 
 ## Resumen rápido
 
 1. Habilitar Email en **Authentication** → **Providers**.
 2. Ejecutar `sql/supabase_seguridad.sql` en el SQL Editor.
-3. Registrarte en la app y luego en SQL asignarte rol admin con el `INSERT` de arriba.
-4. A partir de ahí, asignar perfiles desde el dashboard (módulo Seguridad).
+3. (Opcional) Ejecutar `sql/supabase_seguridad_permisos_editable.sql` para poder editar permisos por rol desde Seguridad.
+4. Registrarte en la app y luego en SQL asignarte rol admin con el `INSERT` de arriba.
+5. A partir de ahí, asignar perfiles y (si aplica) configurar permisos por rol desde el dashboard (módulo Seguridad).
 
 ## Notas
 

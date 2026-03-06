@@ -97,6 +97,19 @@
     .panel-seguridad .btn-guardar-rol { padding: 0.35rem 0.6rem; font-size: 0.85rem; background: #0d7d3d; color: #fff; border: none; border-radius: 6px; cursor: pointer; }
     .panel-seguridad .btn-guardar-rol:hover { background: #0a5c2e; }
     .panel-seguridad .seguridad-loading { color: #666; }
+    .panel-seguridad .seguridad-permisos-loading { color: #666; font-size: 0.9rem; margin-bottom: 0.5rem; }
+    .panel-seguridad .seguridad-rol-cards { display: flex; flex-direction: column; gap: 1.25rem; margin-bottom: 1.5rem; }
+    .panel-seguridad .seguridad-rol-card { border: 1px solid #e0e0e0; border-radius: 8px; overflow: hidden; background: #fafafa; }
+    .panel-seguridad .seguridad-rol-header { display: flex; align-items: center; gap: 0.6rem; padding: 0.65rem 1rem; background: #1a1a1a; color: #fff; font-weight: 600; font-size: 1rem; }
+    .panel-seguridad .seguridad-rol-header .rol-icon { width: 22px; height: 22px; flex-shrink: 0; }
+    .panel-seguridad .seguridad-rol-opciones { padding: 0.75rem 1rem; }
+    .panel-seguridad .seguridad-perm-row { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; padding: 0.4rem 0; border-bottom: 1px solid #eee; font-size: 0.9rem; }
+    .panel-seguridad .seguridad-perm-row:last-child { border-bottom: none; }
+    .panel-seguridad .toggle-switch { width: 44px; height: 24px; border-radius: 12px; background: #ccc; border: none; cursor: pointer; position: relative; flex-shrink: 0; padding: 0; }
+    .panel-seguridad .toggle-switch[aria-checked="true"] { background: #0d7d3d; }
+    .panel-seguridad .toggle-switch:hover { opacity: 0.9; }
+    .panel-seguridad .toggle-switch-slider { position: absolute; width: 20px; height: 20px; border-radius: 50%; background: #fff; top: 2px; left: 2px; transition: left 0.2s; box-shadow: 0 1px 3px rgba(0,0,0,0.25); pointer-events: none; }
+    .panel-seguridad .toggle-switch[aria-checked="true"] .toggle-switch-slider { left: 22px; }
     .col-proyeccion { background: #e8f4f0; }
     .disclaimer-proyeccion { font-size: 0.75rem; color: #555; font-weight: normal; padding: 0.35rem 0.75rem !important; border-top: none !important; background: #fafafa !important; text-align: left; }
     .btn-config-proyeccion { display: inline-flex; align-items: center; gap: 0.45rem; padding: 0.5rem 1rem; border: 1px solid #555; background: #fff; color: #333; border-radius: 6px; cursor: pointer; font-size: 0.9rem; font-family: inherit; }
@@ -191,7 +204,7 @@
         <span class="menu-label">Seguridad</span>
       </a>
     </nav>
-    <div class="sidebar-version" id="sidebar-version" aria-label="Versión">v1.3</div>
+    <div class="sidebar-version" id="sidebar-version" aria-label="Versión">v1.4</div>
   </aside>
 
   <main class="main-content">
@@ -313,7 +326,11 @@
           <span><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span>
           Seguridad – Usuarios y perfiles
         </h2>
-        <p style="margin:0 0 0.75rem 0; font-size:0.95rem; color:#555;">Solo el Admin puede asignar roles. Cambiá el rol y guardá.</p>
+        <p style="margin:0 0 0.75rem 0; font-size:0.95rem; color:#555;">Configurá los permisos de cada rol y asigná el rol a cada usuario.</p>
+        <h3 style="margin:0 0 0.5rem 0; font-size:1rem;">Permisos por rol</h3>
+        <div id="seguridad-permisos-loading" class="seguridad-permisos-loading" style="display:none;">Cargando permisos…</div>
+        <div id="seguridad-rol-cards" class="seguridad-rol-cards"></div>
+        <h3 style="margin:0 0 0.5rem 0; font-size:1rem;">Usuarios</h3>
         <div id="seguridad-loading" class="seguridad-loading">Cargando usuarios…</div>
         <div id="seguridad-tabla-wrap" style="display:none;">
           <table id="seguridad-tabla">
@@ -1375,7 +1392,52 @@
         });
       }
 
+      var ROL_ICONS = {
+        admin: '<svg class="rol-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>',
+        encargado: '<svg class="rol-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"/></svg>',
+        visor: '<svg class="rol-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>'
+      };
       function cargarSeguridad() {
+        var permLoading = document.getElementById('seguridad-permisos-loading');
+        var rolCards = document.getElementById('seguridad-rol-cards');
+        permLoading.style.display = 'block';
+        rolCards.innerHTML = '';
+        client.rpc('get_roles_permissions_for_admin').then(function(res) {
+          permLoading.style.display = 'none';
+          if (res.error || !res.data || res.data.length === 0) {
+            rolCards.innerHTML = '<p class="seguridad-permisos-loading">No se pudieron cargar los permisos.</p>';
+          } else {
+            var byRole = {};
+            res.data.forEach(function(row) {
+              if (!byRole[row.role]) byRole[row.role] = { label: row.role_label, perms: [] };
+              byRole[row.role].perms.push({ permission: row.permission, description: row.perm_description, granted: row.granted });
+            });
+            var order = ['admin', 'encargado', 'visor'];
+            var html = '';
+            order.forEach(function(role) {
+              if (!byRole[role]) return;
+              var r = byRole[role];
+              html += '<div class="seguridad-rol-card" data-role="' + esc(role) + '"><div class="seguridad-rol-header">' + (ROL_ICONS[role] || '') + '<span>' + esc(r.label) + '</span></div><div class="seguridad-rol-opciones">';
+              r.perms.forEach(function(p) {
+                var checked = p.granted ? 'true' : 'false';
+                html += '<div class="seguridad-perm-row"><span>' + esc(p.description) + '</span><button type="button" class="toggle-switch" role="switch" aria-checked="' + checked + '" data-role="' + esc(role) + '" data-permission="' + esc(p.permission) + '" title="Activar o desactivar"><span class="toggle-switch-slider"></span></button></div>';
+              });
+              html += '</div></div>';
+            });
+            rolCards.innerHTML = html;
+            rolCards.querySelectorAll('.toggle-switch').forEach(function(btn) {
+              btn.addEventListener('click', function() {
+                var role = btn.getAttribute('data-role');
+                var permission = btn.getAttribute('data-permission');
+                var newGranted = btn.getAttribute('aria-checked') !== 'true';
+                client.rpc('set_role_permission', { p_role: role, p_permission: permission, p_granted: newGranted }).then(function(r) {
+                  if (r.error) { alert('Error: ' + (r.error.message || 'No se pudo guardar.')); return; }
+                  btn.setAttribute('aria-checked', newGranted ? 'true' : 'false');
+                });
+              });
+            });
+          }
+        });
         var loading = document.getElementById('seguridad-loading');
         var wrap = document.getElementById('seguridad-tabla-wrap');
         var tbody = document.getElementById('seguridad-tbody');
