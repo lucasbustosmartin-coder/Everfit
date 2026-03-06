@@ -20,6 +20,9 @@ Los datos se leen de la tabla `base_everfit` en Supabase (Everfit). **Exclusione
 3. **Logo (opcional)**  
    El título de cada vista muestra **Logo.png** a la izquierda. Colocá el archivo **`Logo.png`** en la misma carpeta que `dashboard.html` (raíz del proyecto). Si no existe, solo se muestra el título. Al agregar nuevos componentes al menú, usá el mismo bloque `<header class="page-header">` con `<img class="page-logo">` y `<h1 id="page-title">` para el nombre del componente.
 
+4. **Logo reducido (favicon)**  
+   **`favicon.png`** es el icono de la solapa del navegador (y donde el sistema use el favicon): solo las letras **E** y **F** con el mismo estilo del logo (E en gris oscuro, F en cyan). Ya está referenciado en `dashboard.html` con `<link rel="icon" href="favicon.png">`. Para usar este icono en otro lugar en el futuro (“aplicar logo reducido”), usá el archivo **`favicon.png`** en la raíz del proyecto.
+
 ## Cómo usar
 
 - **Local:** abrí `dashboard.html` en el navegador (doble clic o `open dashboard.html`). Si abrís desde `file://`, algunos navegadores pueden bloquear las peticiones a Supabase; en ese caso serví la carpeta con un servidor local (ej. `npx serve .` en la raíz del proyecto).

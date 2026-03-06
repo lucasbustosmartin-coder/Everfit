@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard – Everfit</title>
+  <link rel="icon" type="image/png" href="favicon.png" />
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
@@ -183,7 +184,7 @@
         <span class="menu-label">Seguridad</span>
       </a>
     </nav>
-    <div class="sidebar-version" id="sidebar-version" aria-label="Versión">v1.1</div>
+    <div class="sidebar-version" id="sidebar-version" aria-label="Versión">v1.2</div>
   </aside>
 
   <main class="main-content">
@@ -363,7 +364,7 @@
   <script>
     (function() {
       // URL Everfit. La anon key va en config.js (no se sube a Git)
-      var SUPABASE_URL = 'https://skhuplgurhlezobobqrx.supabase.co';
+      var SUPABASE_URL = (typeof window.SUPABASE_URL !== 'undefined' && window.SUPABASE_URL) ? window.SUPABASE_URL : 'https://skhuplgurhlezobobqrx.supabase.co';
       var SUPABASE_ANON_KEY = (typeof window.SUPABASE_ANON_KEY !== 'undefined' ? window.SUPABASE_ANON_KEY : '') || '';
 
       if (!SUPABASE_ANON_KEY) {

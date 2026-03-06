@@ -73,9 +73,20 @@ Cuando tengas la URL del repo y (más adelante) la de Vercel:
    - **Output Directory:** si es estático, `dist` o `.` según cómo esté armado el proyecto.
 5. **Deploy**.
 
-### Configuración para que el dashboard cargue (evitar 404)
+### config.js en Vercel (evitar pantalla en blanco / 404 de config.js)
 
-Si al abrir la URL de Vercel ves **404 NOT FOUND**, es porque el proyecto no está sirviendo los archivos desde la raíz:
+En producción **config.js** no está en el repo (está en .gitignore). Se **genera en el build** desde variables de entorno:
+
+1. En Vercel: proyecto **everfit** → **Settings** → **Environment Variables**.
+2. Agregá la variable **SUPABASE_ANON_KEY** (Value = tu anon key de Supabase, la misma que usás en local en `config.js`). Entorno: **Production** (y Preview si quieres).
+3. Opcional: **SUPABASE_URL** solo si usás otra URL (por defecto el build usa la de Everfit).
+4. Guardá. Hacé un **Redeploy** del proyecto (Deployments → menú del último → Redeploy) para que el build vuelva a correr y genere `config.js` con la clave.
+
+El build ejecuta `node scripts/build-config.js`, que escribe `config.js` en la raíz con la anon key. Sin este paso, el navegador pide `config.js`, recibe 404 y la app queda en blanco o sin conectar a Supabase.
+
+### Configuración para que el dashboard cargue (evitar 404 de la página)
+
+Si al abrir la URL de Vercel ves **404 NOT FOUND** (página no encontrada), es porque el proyecto no está sirviendo los archivos desde la raíz:
 
 1. En Vercel: proyecto **everfit** → **Settings** → **General**.
 2. Bajá a **Build & Development Output** (o **Framework Preset**).
@@ -115,18 +126,30 @@ Una vez Vercel está conectado al repo, la app ya tiene una **URL pública**. Pa
 
 **Importante:** Con el módulo de seguridad activo, cada usuario debe **registrarse o iniciar sesión** en esa URL (email + contraseña). Compartí el link y que cada uno cree su cuenta; un Admin puede asignarles el rol después desde **Seguridad**.
 
-### 4.2 (Opcional) Dominio más corto o con tu marca
+### 4.2 Cambiar la URL .vercel.app (elegir nombre dentro de Vercel)
+
+La URL por defecto es `https://NOMBRE-DEL-PROYECTO.vercel.app`. Si querés otra más corta o que vos elijas (siempre en *.vercel.app):
+
+1. En Vercel: proyecto **everfit** → **Settings** (en el menú izquierdo).
+2. En **General**, buscá **Project Name**.
+3. Cambiá el nombre al que quieras (ej. `everfit`, `everfit-app`, `everfit-dash`). Solo letras minúsculas, números y guiones. Si el nombre está libre, la URL pasará a ser `https://NUEVO-NOMBRE.vercel.app`.
+4. Guardá (**Save**). Vercel actualiza la URL en unos segundos.
+5. Opcional: en **Domains** podés ver todas las URLs del proyecto; la que tenga la etiqueta "Production" es la que se comparte.
+
+Si el nombre que elegiste ya existe en otro proyecto de Vercel (o está reservado), Vercel te avisa y tendrás que probar otro (ej. `everfit-lb`, `everfit-app`).
+
+### 4.3 (Opcional) Dominio propio (tu marca)
 
 Si querés una URL tipo `https://everfit.tudominio.com` o `https://dashboard-everfit.com`:
 
-1. En Vercel: proyecto Everfit → pestaña **Settings** → **Domains**.
+1. En Vercel: proyecto Everfit → **Settings** → **Domains** (o **Domains** en el menú izquierdo).
 2. Clic en **Add** y escribí el dominio (ej. `everfit.tudominio.com` o un dominio que compres).
 3. Vercel te indica qué registro DNS agregar en tu proveedor (CNAME o A). Completá eso donde compraste el dominio.
-4. Cuando el DNS propague (minutos u horas), Vercel marcará el dominio como activo y esa será la URL principal que podés compartir.
+4. Cuando el DNS propague (minutos u horas), Vercel marcará el dominio como activo y esa será una URL más que podés usar para el mismo proyecto.
 
-Si **no** tenés dominio propio, la URL `https://NOMBRE-PROYECTO.vercel.app` que te dio Vercel al crear el proyecto es suficiente para compartir: es estable y no cambia entre deploys.
+Si **no** usás dominio propio, la URL `https://NOMBRE-PROYECTO.vercel.app` (la que definiste en 4.2) es suficiente para compartir: es estable y no cambia entre deploys.
 
-### 4.3 Resumen para compartir
+### 4.4 Resumen para compartir
 
 | Qué | Dónde / Cómo |
 |-----|----------------|

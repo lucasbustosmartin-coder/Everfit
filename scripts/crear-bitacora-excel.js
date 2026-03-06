@@ -23,6 +23,7 @@ const datosLog = [
   ['Fecha', 'Hora', 'titulo_tarea', 'desc_tarea', 'etapa'],
   ['__HOY__', '__AHORA__', 'Bitácora Everfit', 'Regla bitácora (Log, Resumen, Ref Git y Vercel, Versiones, Tecnología) y script crear-bitacora-excel.js sin solapa Presupuesto.', 'Setup'],
   ['__HOY__', '__AHORA__', 'Despliegue v1.1', 'Dashboard con login, Seguridad (roles), Actualizar base, flujo por mes, gráfico G/P. Push a main y vercel --prod.', 'Despliegue'],
+  ['__HOY__', '__AHORA__', 'Despliegue v1.2', 'Config desde env en Vercel, outputDirectory, favicon EF, script vercel-setup-env, docs. Push a main.', 'Despliegue'],
 ];
 
 const datosLogParaExcel = aplicarHoyAhora(datosLog);
@@ -59,7 +60,8 @@ wsRef['!cols'] = [{ wch: 28 }, { wch: 70 }];
 const versiones = [
   ['Versión', 'Fecha', 'Descripción'],
   ['1.0', '06/03/2026', 'Setup: estructura repo, reglas, script bitácora, volcado Excel a Supabase, tipos de cambio por API.'],
-  ['1.1', '__HOY__', 'Dashboard completo: login por email, módulo Seguridad (roles Admin/Encargado/Visor), Actualizar base (upload Excel), flujo por mes, gráfico G/P, filtros. Despliegue Vercel.'],
+  ['1.1', '06/03/2026', 'Dashboard completo: login por email, módulo Seguridad (roles Admin/Encargado/Visor), Actualizar base (upload Excel), flujo por mes, gráfico G/P, filtros. Despliegue Vercel.'],
+  ['1.2', '__HOY__', 'Config build para Vercel (config.js desde env), outputDirectory, favicon EF (logo reducido), script vercel-setup-env, docs URL y dominio.'],
 ];
 const versionesParaExcel = aplicarHoyAhora(versiones);
 const wsVersiones = XLSX.utils.aoa_to_sheet(versionesParaExcel);
