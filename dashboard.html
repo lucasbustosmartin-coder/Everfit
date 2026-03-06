@@ -41,6 +41,14 @@
     .resumen .card .card-icon.ingresos { color: #0d7d3d; }
     .resumen .card .card-icon.egresos { color: #b91c1c; }
     .resumen .valor { font-size: 1.5rem; font-weight: 700; }
+    .help-exclusiones { display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; padding: 0; border: none; background: none; color: #666; cursor: pointer; border-radius: 50%; margin-left: 0.25rem; vertical-align: middle; }
+    .help-exclusiones:hover { color: #1a1a1a; background: #eee; }
+    .help-exclusiones svg { width: 18px; height: 18px; }
+    .help-exclusiones-popover { display: none; position: absolute; z-index: 50; max-width: 320px; padding: 0.6rem 0.75rem; font-size: 0.8rem; color: #333; background: #fff; border: 1px solid #ccc; border-radius: 6px; box-shadow: 0 2px 8px rgba(0,0,0,0.12); margin-top: 0.25rem; }
+    .help-exclusiones-popover.activo { display: block; }
+    .help-exclusiones-wrap { position: relative; display: inline-flex; align-items: center; }
+    .resumen-container { padding: 1rem; }
+    .resumen-help-pos { position: absolute; top: 0.75rem; right: 0.75rem; }
     .filtro-sucursal { display: flex; align-items: center; gap: 0.35rem; flex-wrap: wrap; }
     .filtro-sucursal .btn-sucursal { padding: 0.45rem 0.85rem; border: 1px solid #ccc; background: #fff; border-radius: 6px; cursor: pointer; font-size: 0.9rem; font-family: inherit; }
     .filtro-sucursal .btn-sucursal:hover { background: #f0f0f0; border-color: #999; }
@@ -207,7 +215,7 @@
         <span class="menu-label">Seguridad</span>
       </a>
     </nav>
-    <div class="sidebar-version" id="sidebar-version" aria-label="Versión">v1.5</div>
+    <div class="sidebar-version" id="sidebar-version" aria-label="Versión">v1.6</div>
   </aside>
 
   <main class="main-content">
@@ -293,25 +301,45 @@
         </div>
       </div>
 
-      <div id="resumen" class="resumen" style="display:none;"></div>
+      <div id="resumen-wrap" class="card resumen-container" style="display:none; margin-bottom:1rem; position:relative;">
+        <div id="resumen" class="resumen"></div>
+        <span class="help-exclusiones-wrap resumen-help-pos">
+          <button type="button" class="help-exclusiones" id="help-tarjetas" title="Reglas de exclusión" aria-label="Ver reglas de exclusión">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          </button>
+          <div class="help-exclusiones-popover" id="help-tarjetas-popover">Exclusiones: solo centro_de_costos = Saldo Inicial. Se incluyen reales, pendientes y proyectados.</div>
+        </span>
+      </div>
 
       <div id="grafico-gp-wrap" class="card grafico-gp-wrap" style="display:none;">
         <div class="grafico-titulo">
           <span class="grafico-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg></span>
           G/P Mensual
+          <span class="help-exclusiones-wrap">
+            <button type="button" class="help-exclusiones" id="help-grafico" title="Reglas de exclusión" aria-label="Ver reglas de exclusión">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            </button>
+            <div class="help-exclusiones-popover" id="help-grafico-popover">Exclusiones: solo centro_de_costos = Saldo Inicial. Se incluyen reales, pendientes y proyectados.</div>
+          </span>
         </div>
         <p style="margin:0 0 0.5rem 0; font-size:0.9rem; color:#666;">Desde el mes del año anterior hasta el mes actual (ej. 03-2025 a 03-2026).</p>
         <div class="chart-container"><canvas id="chart-gp-mensual"></canvas></div>
       </div>
 
       <div id="panel-flujo" class="card" style="display:none;">
-        <div class="tabs-toolbar" style="display:flex; align-items:center; flex-wrap:wrap; gap:0.5rem; margin-bottom:0.75rem;">
+        <div class="tabs-toolbar" style="display:flex; align-items:center; flex-wrap:wrap; gap:0.5rem; margin-bottom:0.25rem;">
           <div class="tabs">
             <button type="button" class="tab activo" aria-label="Flujo por mes">
               <span class="tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20V10"/><path d="M18 20V4"/><path d="M6 20v-4"/></svg></span>
               Flujo por mes
             </button>
           </div>
+          <span class="help-exclusiones-wrap">
+            <button type="button" class="help-exclusiones" id="help-flujo" title="Reglas de exclusión" aria-label="Ver reglas de exclusión">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            </button>
+            <div class="help-exclusiones-popover" id="help-flujo-popover">Exclusiones: Saldo Inicial (centro_de_costos); en esta tabla además beneficiario Dividendos. Se incluyen reales, pendientes y proyectados.</div>
+          </span>
         </div>
         <p style="color:#666; font-size:0.9rem; margin:0 0 0.5rem 0;">Hacé clic en una fila para ver el detalle por concepto o beneficiario.</p>
         <div id="tabla-flujo-wrap">
@@ -576,28 +604,26 @@
       }
 
       /**
-       * EXCLUSIONES DEL CÁLCULO (documentadas también en docs/EXCLUSIONES_DASHBOARD.md)
-       * - Saldo Inicial: se excluyen filas con centro_de_costos === 'Saldo Inicial'.
-       * - Proyectado: se excluyen filas con real_pendiente === 'proyectado' (solo se cuentan reales/pendientes reales).
+       * EXCLUSIONES DEL CÁLCULO (documentadas en docs/EXCLUSIONES_DASHBOARD.md)
+       * - Saldo Inicial: se excluyen filas con centro_de_costos === 'Saldo Inicial'. Se incluyen reales, pendientes y proyectados.
        */
       function excluirSaldoInicial(r) {
         var centro = (r.centro_de_costos || '').trim().toLowerCase();
         return centro === 'saldo inicial';
       }
 
-      function excluirProyectado(r) {
-        var rp = (r.real_pendiente || '').trim().toLowerCase();
-        return rp === 'proyectado';
-      }
-
       function debeExcluirse(r) {
-        return excluirSaldoInicial(r) || excluirProyectado(r);
+        return excluirSaldoInicial(r);
       }
 
-      var PROYECCION_METODO_KEY = 'everfit_proyeccion_metodo';
-      var PROYECCION_MESES_KEY = 'everfit_proyeccion_meses';
-      var PROYECCION_CANTIDAD_KEY = 'everfit_proyeccion_cantidad';
-      var PROYECCION_RECORTE_KEY = 'everfit_proyeccion_recorte';
+      /** Solo en Flujo por mes (y proyección): excluir beneficiario "Dividendos". No aplica a Detalle por concepto/beneficiario. */
+      function excluirBeneficiarioDividendosFlujo(r) {
+        var b = (r.beneficiario || '').trim().toLowerCase();
+        return b === 'dividendos';
+      }
+
+      var configProyeccionCache = null;
+      var CONFIG_PROY_DEFAULTS = { metodo: 'promedio_ponderado', meses: 6, mesesAProyectar: 3, recortePct: 20 };
 
       function promedioPonderado(arr) {
         var nums = (arr || []).filter(function(x) { return typeof x === 'number' && !isNaN(x); });
@@ -656,15 +682,26 @@
         return res;
       }
       function getConfigProyeccion() {
-        var metodo = localStorage.getItem(PROYECCION_METODO_KEY) || 'promedio_ponderado';
-        var meses = parseInt(localStorage.getItem(PROYECCION_MESES_KEY) || '6', 10) || 6;
-        var cantidad = parseInt(localStorage.getItem(PROYECCION_CANTIDAD_KEY) || '3', 10) || 3;
-        var recorte = parseInt(localStorage.getItem(PROYECCION_RECORTE_KEY) || '20', 10) || 20;
-        var metodoValido = ['promedio_ponderado', 'promedio', 'mediana', 'promedio_recortado'].indexOf(metodo) !== -1 ? metodo : 'promedio_ponderado';
-        var mesesValido = [3, 6, 12, 24].indexOf(meses) !== -1 ? meses : 6;
-        var cantidadValido = Math.max(1, Math.min(12, cantidad));
-        var recorteValido = Math.max(0, Math.min(25, recorte));
-        return { metodo: metodoValido, meses: mesesValido, mesesAProyectar: cantidadValido, recortePct: recorteValido };
+        if (configProyeccionCache) return configProyeccionCache;
+        configProyeccionCache = { metodo: CONFIG_PROY_DEFAULTS.metodo, meses: CONFIG_PROY_DEFAULTS.meses, mesesAProyectar: CONFIG_PROY_DEFAULTS.mesesAProyectar, recortePct: CONFIG_PROY_DEFAULTS.recortePct };
+        return configProyeccionCache;
+      }
+
+      function loadConfigProyeccion() {
+        if (!currentUserId) return Promise.resolve();
+        return client.from('config_dashboard').select('proyeccion_metodo, proyeccion_meses, proyeccion_cantidad, proyeccion_recorte').eq('user_id', currentUserId).maybeSingle().then(function(r) {
+          if (r.error || !r.data) {
+            configProyeccionCache = { metodo: CONFIG_PROY_DEFAULTS.metodo, meses: CONFIG_PROY_DEFAULTS.meses, mesesAProyectar: CONFIG_PROY_DEFAULTS.mesesAProyectar, recortePct: CONFIG_PROY_DEFAULTS.recortePct };
+            return;
+          }
+          var d = r.data;
+          var metodo = ['promedio_ponderado', 'promedio', 'mediana', 'promedio_recortado'].indexOf(d.proyeccion_metodo) !== -1 ? d.proyeccion_metodo : CONFIG_PROY_DEFAULTS.metodo;
+          var meses = [3, 6, 12, 24].indexOf(Number(d.proyeccion_meses)) !== -1 ? Number(d.proyeccion_meses) : CONFIG_PROY_DEFAULTS.meses;
+          var cantidad = Math.max(1, Math.min(12, Number(d.proyeccion_cantidad) || CONFIG_PROY_DEFAULTS.mesesAProyectar));
+          var rNum = parseInt(d.proyeccion_recorte, 10);
+          var recorte = Math.max(0, Math.min(25, isNaN(rNum) ? CONFIG_PROY_DEFAULTS.recortePct : rNum));
+          configProyeccionCache = { metodo: metodo, meses: meses, mesesAProyectar: cantidad, recortePct: recorte };
+        });
       }
 
       function traerTodasLasFilas() {
@@ -694,7 +731,6 @@
         var porMes = {};
         var totalIngresos = 0;
         var totalEgresos = 0;
-
         datos.forEach(function(r) {
           if (debeExcluirse(r)) return;
           var f = fechaStr(r.fecha_pago);
@@ -711,15 +747,39 @@
             monto = importe / tasa;
           }
           var tipo = (r.ingresos_egresos || '').trim().toLowerCase();
-
           if (!porMes[key]) porMes[key] = { anio: anio, mes: mes, ingresos: 0, egresos: 0 };
-
           if (tipo.indexOf('ingreso') !== -1) {
             porMes[key].ingresos += monto;
             totalIngresos += monto;
           } else if (tipo.indexOf('egreso') !== -1) {
             porMes[key].egresos += monto;
             totalEgresos += monto;
+          }
+        });
+
+        var porMesFlujo = {};
+        datos.forEach(function(r) {
+          if (debeExcluirse(r)) return;
+          if (excluirBeneficiarioDividendosFlujo(r)) return;
+          var f = fechaStr(r.fecha_pago);
+          if (!f) return;
+          var parts = f.split('-').map(Number);
+          var anio = parts[0], mes = parts[1];
+          if (!anio || !mes) return;
+          var key = anio + '-' + String(mes).padStart(2, '0');
+          var importe = Number(r.importe) || 0;
+          var monto = importe;
+          if (moneda === 'USD') {
+            var tasa = getTasa(r.fecha_pago, tipoDolar);
+            if (tasa == null || tasa <= 0) return;
+            monto = importe / tasa;
+          }
+          var tipo = (r.ingresos_egresos || '').trim().toLowerCase();
+          if (!porMesFlujo[key]) porMesFlujo[key] = { anio: anio, mes: mes, ingresos: 0, egresos: 0 };
+          if (tipo.indexOf('ingreso') !== -1) {
+            porMesFlujo[key].ingresos += monto;
+          } else if (tipo.indexOf('egreso') !== -1) {
+            porMesFlujo[key].egresos += monto;
           }
         });
 
@@ -732,14 +792,16 @@
         var iconoGp = '<span class="card-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></svg></span>';
 
         var periodosLabels = ordenados.map(function(key) { return formatoPeriodoFromKey(key); });
-        var celdasIng = ordenados.map(function(k) { return '<td class="ingresos">' + simbolo + formatearNumero(porMes[k].ingresos, moneda) + '</td>'; });
-        var celdasEgr = ordenados.map(function(k) { return '<td class="egresos">' + simbolo + formatearNumero(porMes[k].egresos, moneda) + '</td>'; });
+        var celdasIng = ordenados.map(function(k) { var d = porMesFlujo[k] || { ingresos: 0, egresos: 0 }; return '<td class="ingresos">' + simbolo + formatearNumero(d.ingresos, moneda) + '</td>'; });
+        var celdasEgr = ordenados.map(function(k) { var d = porMesFlujo[k] || { ingresos: 0, egresos: 0 }; return '<td class="egresos">' + simbolo + formatearNumero(d.egresos, moneda) + '</td>'; });
         var celdasGp = ordenados.map(function(k) {
-          var d = porMes[k];
+          var d = porMesFlujo[k] || { ingresos: 0, egresos: 0 };
           var gp = d.ingresos - d.egresos;
           return '<td class="balance ' + (gp >= 0 ? 'positivo' : 'negativo') + '">' + simbolo + formatearNumero(gp, moneda) + '</td>';
         });
-        var celdasTotalRow = ordenados.map(function(k) { var d = porMes[k]; var gp = d.ingresos - d.egresos; return '<td class="balance ' + (gp >= 0 ? 'positivo' : 'negativo') + '">' + simbolo + formatearNumero(gp, moneda) + '</td>'; });
+        var celdasTotalRow = ordenados.map(function(k) { var d = porMesFlujo[k] || { ingresos: 0, egresos: 0 }; var gp = d.ingresos - d.egresos; return '<td class="balance ' + (gp >= 0 ? 'positivo' : 'negativo') + '">' + simbolo + formatearNumero(gp, moneda) + '</td>'; });
+        var totalIngresosFlujo = ordenados.reduce(function(s, k) { return s + ((porMesFlujo[k] || {}).ingresos || 0); }, 0);
+        var totalEgresosFlujo = ordenados.reduce(function(s, k) { return s + ((porMesFlujo[k] || {}).egresos || 0); }, 0);
         var proyLabels = [];
         var filasProyDisclaimer = '';
         var totalIngresosProy = 0, totalEgresosProy = 0;
@@ -748,8 +810,8 @@
           var N = Math.min(configProy.meses, ordenados.length);
           if (N > 0 && configProy.mesesAProyectar > 0) {
             var agg = configProy.metodo === 'promedio_ponderado' ? promedioPonderado : (configProy.metodo === 'promedio' ? promedio : (configProy.metodo === 'mediana' ? mediana : function(a) { return promedioRecortado(a, (configProy.recortePct || 20) / 100); }));
-            var valoresIng = ordenados.slice(-N).map(function(k) { return porMes[k].ingresos || 0; });
-            var valoresEgr = ordenados.slice(-N).map(function(k) { return porMes[k].egresos || 0; });
+            var valoresIng = ordenados.slice(-N).map(function(k) { return (porMesFlujo[k] || {}).ingresos || 0; });
+            var valoresEgr = ordenados.slice(-N).map(function(k) { return (porMesFlujo[k] || {}).egresos || 0; });
             var proyIng = proyeccionDesdeSerie(valoresIng, N, agg, configProy.mesesAProyectar);
             var proyEgr = proyeccionDesdeSerie(valoresEgr, N, agg, configProy.mesesAProyectar);
             var keyProy = keyMesEnCurso();
@@ -769,27 +831,28 @@
           }
         }
         periodosLabels = periodosLabels.concat(proyLabels);
-        var totalIngresosConProy = totalIngresos + totalIngresosProy;
-        var totalEgresosConProy = totalEgresos + totalEgresosProy;
-        var balanceTotalConProy = totalIngresosConProy - totalEgresosConProy;
+        var totalIngresosConProyFlujo = totalIngresosFlujo + totalIngresosProy;
+        var totalEgresosConProyFlujo = totalEgresosFlujo + totalEgresosProy;
+        var balanceTotalConProyFlujo = totalIngresosConProyFlujo - totalEgresosConProyFlujo;
         document.getElementById('resumen').innerHTML = [
           '<div class="card"><div class="card-titulo">' + iconoIng + 'Total ingresos</div><div class="valor ingresos">' + simbolo + formatearNumero(totalIngresos, moneda) + '</div></div>',
           '<div class="card"><div class="card-titulo">' + iconoEgr + 'Total egresos</div><div class="valor egresos">' + simbolo + formatearNumero(totalEgresos, moneda) + '</div></div>',
           '<div class="card"><div class="card-titulo">' + iconoGp + 'G/P Total</div><div class="valor balance ' + (balanceTotal >= 0 ? 'positivo' : 'negativo') + '">' + simbolo + formatearNumero(balanceTotal, moneda) + '</div></div>'
         ].join('');
-        document.getElementById('resumen').style.display = 'flex';
+        document.getElementById('resumen-wrap').style.display = 'block';
         var theadHtml = '<tr><th class="col-item">Item</th>' + periodosLabels.map(function(p, i) { return '<th' + (i >= ordenados.length ? ' class="col-proyeccion"' : '') + '>' + esc(p) + '</th>'; }).join('') + '<th>Total</th></tr>';
         document.getElementById('thead-flujo').innerHTML = theadHtml;
 
         var iconoIngreso = '<span class="item-con-icono"><span class="item-icon icono-ingresos" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="M19 12l-7 7-7-7"/></svg></span>Ingresos</span>';
         var iconoEgreso = '<span class="item-con-icono"><span class="item-icon icono-egresos" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5"/><path d="M5 12l7-7 7 7"/></svg></span>Egresos</span>';
         var iconoGP = '<span class="item-con-icono"><span class="item-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></svg></span>G/P</span>';
-        var tbodyHtml = '<tr class="fila-clickable" role="button" tabindex="0"><td class="col-item">' + iconoIngreso + '</td>' + celdasIng.join('') + '<td class="ingresos">' + simbolo + formatearNumero(totalIngresosConProy, moneda) + '</td></tr>';
-        tbodyHtml += '<tr class="fila-clickable" role="button" tabindex="0"><td class="col-item">' + iconoEgreso + '</td>' + celdasEgr.join('') + '<td class="egresos">' + simbolo + formatearNumero(totalEgresosConProy, moneda) + '</td></tr>';
-        tbodyHtml += '<tr class="fila-clickable" role="button" tabindex="0"><td class="col-item">' + iconoGP + '</td>' + celdasGp.join('') + '<td class="balance ' + (balanceTotalConProy >= 0 ? 'positivo' : 'negativo') + '">' + simbolo + formatearNumero(balanceTotalConProy, moneda) + '</td></tr>';
+        var tbodyHtml = '<tr class="fila-clickable" role="button" tabindex="0"><td class="col-item">' + iconoIngreso + '</td>' + celdasIng.join('') + '<td class="ingresos">' + simbolo + formatearNumero(totalIngresosConProyFlujo, moneda) + '</td></tr>';
+        tbodyHtml += '<tr class="fila-clickable" role="button" tabindex="0"><td class="col-item">' + iconoEgreso + '</td>' + celdasEgr.join('') + '<td class="egresos">' + simbolo + formatearNumero(totalEgresosConProyFlujo, moneda) + '</td></tr>';
+        tbodyHtml += '<tr class="fila-clickable" role="button" tabindex="0"><td class="col-item">' + iconoGP + '</td>' + celdasGp.join('') + '<td class="balance ' + (balanceTotalConProyFlujo >= 0 ? 'positivo' : 'negativo') + '">' + simbolo + formatearNumero(balanceTotalConProyFlujo, moneda) + '</td></tr>';
         document.getElementById('tbody-flujo').innerHTML = tbodyHtml;
 
-        var tfootHtml = '<tr><td class="col-item">Total</td>' + celdasTotalRow.join('') + '<td class="balance ' + (balanceTotalConProy >= 0 ? 'positivo' : 'negativo') + '">' + simbolo + formatearNumero(balanceTotalConProy, moneda) + '</td></tr>' + filasProyDisclaimer;
+        var exclusionesFlujoNote = '<tr class="disclaimer-proyeccion"><td colspan="' + (1 + periodosLabels.length + 1) + '">Solo en esta tabla se excluye además beneficiario Dividendos (tarjetas y gráfico incluyen todo).</td></tr>';
+        var tfootHtml = '<tr><td class="col-item">Total</td>' + celdasTotalRow.join('') + '<td class="balance ' + (balanceTotalConProyFlujo >= 0 ? 'positivo' : 'negativo') + '">' + simbolo + formatearNumero(balanceTotalConProyFlujo, moneda) + '</td></tr>' + filasProyDisclaimer + exclusionesFlujoNote;
         document.getElementById('tfoot-flujo').innerHTML = tfootHtml;
 
         document.getElementById('panel-flujo').style.display = 'block';
@@ -994,7 +1057,7 @@
         var benefHtml = tablaInvertida(porBeneficiarioPorMes, 'Beneficiario');
         document.getElementById('wrap-tabla-concepto').innerHTML = conceptHtml;
         document.getElementById('wrap-tabla-beneficiario').innerHTML = benefHtml;
-        document.getElementById('modal-detalle-exclusiones').textContent = 'Exclusiones: centro_de_costos = "Saldo Inicial"; real_pendiente = "proyectado". Solo se incluyen movimientos reales/pendientes.';
+        document.getElementById('modal-detalle-exclusiones').textContent = 'Exclusiones: solo centro_de_costos = "Saldo Inicial". Se incluyen reales, pendientes y proyectados.';
         document.getElementById('modal-detalle-backdrop').classList.remove('oculto');
       }
 
@@ -1366,8 +1429,10 @@
           var btnRefresh = document.getElementById('btn-refresh');
           if (btnRefresh) btnRefresh.addEventListener('click', function() { refreshPermisosYVista(); });
           setupVistasMenu();
+          setupHelpExclusiones();
           setupSeguridad();
-          cargarDatos()
+          var promConfig = (userPermissions.indexOf('ver_proyeccion') !== -1) ? loadConfigProyeccion() : Promise.resolve();
+          promConfig.then(function() { return cargarDatos(); })
             .then(function() { document.getElementById('loading').style.display = 'none'; })
             .catch(function(e) {
               document.getElementById('loading').style.display = 'none';
@@ -1390,6 +1455,27 @@
           if (menuSeg) menuSeg.style.display = userPermissions.indexOf('assign_roles') !== -1 ? '' : 'none';
           cargarDatos().then(renderizar).catch(function() {});
         });
+      }
+
+      function setupHelpExclusiones() {
+        var popovers = [
+          { btn: document.getElementById('help-tarjetas'), pop: document.getElementById('help-tarjetas-popover') },
+          { btn: document.getElementById('help-grafico'), pop: document.getElementById('help-grafico-popover') },
+          { btn: document.getElementById('help-flujo'), pop: document.getElementById('help-flujo-popover') }
+        ];
+        function closeAll() {
+          popovers.forEach(function(p) { if (p.pop) p.pop.classList.remove('activo'); });
+        }
+        popovers.forEach(function(p) {
+          if (!p.btn || !p.pop) return;
+          p.btn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            var was = p.pop.classList.contains('activo');
+            closeAll();
+            if (!was) p.pop.classList.add('activo');
+          });
+        });
+        document.addEventListener('click', closeAll);
       }
 
       function setupVistasMenu() {
@@ -1520,12 +1606,23 @@
           if (selRecorteWrap) selRecorteWrap.style.display = selMetodo.value === 'promedio_recortado' ? 'block' : 'none';
         });
         btnGuardar.addEventListener('click', function() {
-          localStorage.setItem(PROYECCION_METODO_KEY, selMetodo.value);
-          localStorage.setItem(PROYECCION_MESES_KEY, document.getElementById('config-proyeccion-meses').value);
-          localStorage.setItem(PROYECCION_CANTIDAD_KEY, document.getElementById('config-proyeccion-cantidad').value);
-          localStorage.setItem(PROYECCION_RECORTE_KEY, document.getElementById('config-proyeccion-recorte').value);
-          backdrop.classList.add('oculto');
-          renderizar();
+          var metodo = selMetodo.value;
+          var meses = parseInt(document.getElementById('config-proyeccion-meses').value, 10) || 6;
+          var cantidad = parseInt(document.getElementById('config-proyeccion-cantidad').value, 10) || 3;
+          var recorte = parseInt(document.getElementById('config-proyeccion-recorte').value, 10) || 20;
+          if (!currentUserId) { backdrop.classList.add('oculto'); return; }
+          client.from('config_dashboard').upsert({
+            user_id: currentUserId,
+            proyeccion_metodo: metodo,
+            proyeccion_meses: meses,
+            proyeccion_cantidad: cantidad,
+            proyeccion_recorte: recorte
+          }, { onConflict: 'user_id' }).then(function(r) {
+            if (r.error) { alert('Error al guardar: ' + (r.error.message || '')); return; }
+            configProyeccionCache = { metodo: metodo, meses: meses, mesesAProyectar: cantidad, recortePct: recorte };
+            backdrop.classList.add('oculto');
+            renderizar();
+          });
         });
       })();
 
