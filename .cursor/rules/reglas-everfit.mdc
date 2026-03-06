@@ -1,0 +1,24 @@
+---
+description: Contexto del proyecto Everfit: datos en Base/Base_Everfit.xlsx, Supabase como backend, script de volcado
+alwaysApply: true
+---
+
+# Reglas de trabajo – Everfit
+
+## Contexto del proyecto
+
+- **Datos de origen:** un único archivo Excel en `Base/Base_Everfit.xlsx`. La hoja principal de datos es **"Base"** (columnas: Beneficiario, Concepto, Centro de Costos, Detalle, Medio, Fechas, Importe, Observaciones, Sucursal, Ingresos-Egresos, Mes de Pago, etc.).
+- **Backend:** Supabase (PostgreSQL). Tablas: `base_everfit` (datos del Excel), `tipo_de_cambio` (para ARS/USD; se sincroniza desde otro proyecto con `scripts/sync_tipo_de_cambio_desde_origen.py`).
+- **Script de volcado:** `scripts/volcar_excel_a_supabase.py` lee `Base/Base_Everfit.xlsx`, hoja "Base", y inserta en `base_everfit`. Requiere `.env` con `SUPABASE_URL` y `SUPABASE_SERVICE_ROLE_KEY`.
+- **Estructura del repo:** `sql/` (DDL y scripts SQL), `scripts/` (Python/Node), `docs/` (guías), `Base/` (Excel). Ver regla **estructura-proyecto**.
+
+## Al modificar el Excel o el esquema
+
+- Si se agregan o renombran columnas en la hoja "Base" del Excel, actualizar en este orden: 1) `sql/supabase_base_everfit.sql` (si cambia el esquema), 2) el mapeo en `scripts/volcar_excel_a_supabase.py`, 3) la documentación en `docs/POBLAR_DESDE_EXCEL.md` y `docs/SUPABASE_REQUISITOS.md` si aplica.
+
+## Documentación de referencia
+
+- Crear y usar proyecto Supabase: `docs/SUPABASE_REQUISITOS.md`.
+- Volcar datos desde Excel: `docs/POBLAR_DESDE_EXCEL.md`.
+- Tipo de cambio (ARS/USD) desde otro proyecto: `docs/TIPO_DE_CAMBIO_DESDE_OTRO_PROYECTO.md`.
+- Git y Vercel (repo, push, deploy): `docs/GIT_Y_VERCEL.md`.
