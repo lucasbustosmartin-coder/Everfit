@@ -26,6 +26,7 @@ const datosLog = [
   ['__HOY__', '__AHORA__', 'Despliegue v1.2', 'Config desde env en Vercel, outputDirectory, favicon EF, script vercel-setup-env, docs. Push a main.', 'Despliegue'],
   ['__HOY__', '__AHORA__', 'Despliegue v1.3', 'Proyección en Flujo por mes (config, ventana móvil), total tabla con proyectados, tarjetas solo reales, encabezado con fondo en columnas proyectadas.', 'Despliegue'],
   ['__HOY__', '__AHORA__', 'Despliegue v1.4', 'Seguridad: permisos por rol configurables (Admin, Encargado, Visor) con icono y toggles on/off. SQL supabase_seguridad_permisos_editable.sql.', 'Despliegue'],
+  ['__HOY__', '__AHORA__', 'Despliegue v1.5', 'Botón refresh en barra (actualizar permisos y vista sin cerrar sesión). Auto-refresh al cambiar permisos en Seguridad.', 'Despliegue'],
 ];
 
 const datosLogParaExcel = aplicarHoyAhora(datosLog);
@@ -67,7 +68,8 @@ const versiones = [
   ['1.1', '06/03/2026', 'Dashboard completo: login por email, módulo Seguridad (roles Admin/Encargado/Visor), Actualizar base (upload Excel), flujo por mes, gráfico G/P, filtros. Despliegue Vercel.'],
   ['1.2', '06/03/2026', 'Config build para Vercel (config.js desde env), outputDirectory, favicon EF (logo reducido), script vercel-setup-env, docs URL y dominio.'],
   ['1.3', '06/03/2026', 'Proyección en Flujo por mes: config (método, meses historia, meses a proyectar, recorte %), ventana móvil. Total tabla con proyectados; tarjetas solo reales. Fondo distintivo en encabezado y celdas proyectadas.'],
-  ['1.4', '__HOY__', 'Seguridad: permisos por rol editables (iconos y toggles on/off para Admin, Encargado, Visor). SQL supabase_seguridad_permisos_editable.sql.'],
+  ['1.4', '06/03/2026', 'Seguridad: permisos por rol editables (iconos y toggles on/off para Admin, Encargado, Visor). SQL supabase_seguridad_permisos_editable.sql.'],
+  ['1.5', '__HOY__', 'Botón refresh en barra (actualizar permisos y vista sin cerrar sesión). Auto-refresh al cambiar permisos en Seguridad.'],
 ];
 const versionesParaExcel = aplicarHoyAhora(versiones);
 const wsVersiones = XLSX.utils.aoa_to_sheet(versionesParaExcel);

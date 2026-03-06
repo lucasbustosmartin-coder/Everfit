@@ -91,6 +91,9 @@
     .user-bar { display: flex; align-items: center; gap: 0.75rem; margin-left: auto; font-size: 0.9rem; color: #555; }
     .user-bar .btn-cerrar { padding: 0.4rem 0.75rem; border: 1px solid #ccc; background: #fff; border-radius: 6px; cursor: pointer; font-size: 0.85rem; }
     .user-bar .btn-cerrar:hover { background: #f0f0f0; }
+    .user-bar .btn-refresh { display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; padding: 0; border: 1px solid #ccc; background: #fff; border-radius: 6px; cursor: pointer; color: #555; }
+    .user-bar .btn-refresh:hover { background: #f0f0f0; color: #1a1a1a; }
+    .user-bar .btn-refresh svg { width: 18px; height: 18px; }
     .panel-seguridad table { margin-top: 0.75rem; }
     .panel-seguridad th { background: #1a1a1a; color: #fff; }
     .panel-seguridad select { padding: 0.35rem 0.5rem; border-radius: 6px; border: 1px solid #ccc; }
@@ -204,7 +207,7 @@
         <span class="menu-label">Seguridad</span>
       </a>
     </nav>
-    <div class="sidebar-version" id="sidebar-version" aria-label="Versión">v1.4</div>
+    <div class="sidebar-version" id="sidebar-version" aria-label="Versión">v1.5</div>
   </aside>
 
   <main class="main-content">
@@ -248,6 +251,9 @@
         <h1 id="page-title">Dashboard</h1>
         <div class="user-bar" id="user-bar">
           <span id="user-email"></span>
+          <button type="button" class="btn-refresh" id="btn-refresh" title="Actualizar permisos y vista" aria-label="Actualizar permisos y vista">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg>
+          </button>
           <button type="button" class="btn-cerrar" id="btn-cerrar-sesion">Cerrar sesión</button>
         </div>
       </header>
@@ -1357,6 +1363,8 @@
           document.getElementById('btn-cerrar-sesion').addEventListener('click', function() {
             client.auth.signOut().then(function() { showLogin(); });
           });
+          var btnRefresh = document.getElementById('btn-refresh');
+          if (btnRefresh) btnRefresh.addEventListener('click', function() { refreshPermisosYVista(); });
           setupVistasMenu();
           setupSeguridad();
           cargarDatos()
@@ -1366,6 +1374,21 @@
               document.getElementById('error').style.display = 'block';
               document.getElementById('error').textContent = 'Error: ' + (e.message || e);
             });
+        });
+      }
+
+      function refreshPermisosYVista() {
+        client.rpc('get_my_permissions').then(function(res) {
+          if (res.error) return;
+          userPermissions = res.data || [];
+          var btnUpload = document.getElementById('btn-actualizar-base');
+          var wrapUpload = btnUpload && btnUpload.closest('.filtros-der');
+          if (wrapUpload) wrapUpload.style.display = userPermissions.indexOf('upload_base') !== -1 ? '' : 'none';
+          var btnProy = document.getElementById('btn-config-proyeccion');
+          if (btnProy) btnProy.style.display = userPermissions.indexOf('ver_proyeccion') !== -1 ? '' : 'none';
+          var menuSeg = document.getElementById('menu-seguridad');
+          if (menuSeg) menuSeg.style.display = userPermissions.indexOf('assign_roles') !== -1 ? '' : 'none';
+          cargarDatos().then(renderizar).catch(function() {});
         });
       }
 
@@ -1433,6 +1456,7 @@
                 client.rpc('set_role_permission', { p_role: role, p_permission: permission, p_granted: newGranted }).then(function(r) {
                   if (r.error) { alert('Error: ' + (r.error.message || 'No se pudo guardar.')); return; }
                   btn.setAttribute('aria-checked', newGranted ? 'true' : 'false');
+                  refreshPermisosYVista();
                 });
               });
             });
