@@ -31,6 +31,7 @@ const datosLog = [
   ['__HOY__', '__AHORA__', 'Despliegue v1.7', 'Gráfico G/P Mensual: ocultar leyenda (barras verdes/rojas sin leyenda engañosa).', 'Despliegue'],
   ['__HOY__', '__AHORA__', 'Despliegue v1.8', 'Gráfico G/P: barras con G/P=0 visibles (minBarLength, color gris, tooltip "ingresos = egresos").', 'Despliegue'],
   ['__HOY__', '__AHORA__', 'Despliegue v1.9', 'Tipos de cambio por API desde Sistema-Contable-Nuevo (Opción 2). Fix upload Excel: fechas como ISO. ORIGEN_TC_* en config y build.', 'Despliegue'],
+  ['__HOY__', '__AHORA__', 'Despliegue v1.10', 'Modal gráfico por ítem en detalle (concepto/beneficiario) e icono en totales (Ingresos, Egresos, G/P). Icono sin contorno. Botones sucursal seleccionado en turquesa (#0d9488).', 'Despliegue'],
 ];
 
 const datosLogParaExcel = aplicarHoyAhora(datosLog);
@@ -77,7 +78,8 @@ const versiones = [
   ['1.6', '06/03/2026', 'Incluir real_pendiente=proyectado en todo. Help (?) con reglas de exclusión en tarjetas, gráfico y flujo. Tarjetas en una card con help dentro. Config proyección por usuario (config_dashboard). Dividendos solo excluido en tabla.'],
   ['1.7', '06/03/2026', 'Gráfico G/P Mensual: leyenda oculta (barras verdes/rojas sin leyenda).'],
   ['1.8', '06/03/2026', 'Gráfico G/P: barras con G/P=0 visibles (minBarLength, color gris, tooltip ingresos=egresos).'],
-  ['1.9', '__HOY__', 'Tipos de cambio por API desde Sistema-Contable-Nuevo (Opción 2). Fix upload Excel fechas→ISO. ORIGEN_TC_* en config y build.'],
+  ['1.9', '06/03/2026', 'Tipos de cambio por API desde Sistema-Contable-Nuevo (Opción 2). Fix upload Excel fechas→ISO. ORIGEN_TC_* en config y build.'],
+  ['1.10', '__HOY__', 'Modal gráfico por ítem en detalle (concepto/beneficiario) e icono en totales. Icono sin contorno. Botones sucursal seleccionado en turquesa.'],
 ];
 const versionesParaExcel = aplicarHoyAhora(versiones);
 const wsVersiones = XLSX.utils.aoa_to_sheet(versionesParaExcel);
