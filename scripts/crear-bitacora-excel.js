@@ -29,6 +29,7 @@ const datosLog = [
   ['__HOY__', '__AHORA__', 'Despliegue v1.5', 'Botón refresh en barra (actualizar permisos y vista sin cerrar sesión). Auto-refresh al cambiar permisos en Seguridad.', 'Despliegue'],
   ['__HOY__', '__AHORA__', 'Despliegue v1.6', 'Incluir proyectado en tarjetas, gráfico y flujo. Help (?) con reglas de exclusión en los tres. Tarjetas en una card con help dentro. Config proyección por usuario (config_dashboard). Exclusión Dividendos solo tabla.', 'Despliegue'],
   ['__HOY__', '__AHORA__', 'Despliegue v1.7', 'Gráfico G/P Mensual: ocultar leyenda (barras verdes/rojas sin leyenda engañosa).', 'Despliegue'],
+  ['__HOY__', '__AHORA__', 'Despliegue v1.8', 'Gráfico G/P: barras con G/P=0 visibles (minBarLength, color gris, tooltip "ingresos = egresos").', 'Despliegue'],
 ];
 
 const datosLogParaExcel = aplicarHoyAhora(datosLog);
@@ -73,7 +74,8 @@ const versiones = [
   ['1.4', '06/03/2026', 'Seguridad: permisos por rol editables (iconos y toggles on/off para Admin, Encargado, Visor). SQL supabase_seguridad_permisos_editable.sql.'],
   ['1.5', '06/03/2026', 'Botón refresh en barra (actualizar permisos y vista sin cerrar sesión). Auto-refresh al cambiar permisos en Seguridad.'],
   ['1.6', '06/03/2026', 'Incluir real_pendiente=proyectado en todo. Help (?) con reglas de exclusión en tarjetas, gráfico y flujo. Tarjetas en una card con help dentro. Config proyección por usuario (config_dashboard). Dividendos solo excluido en tabla.'],
-  ['1.7', '__HOY__', 'Gráfico G/P Mensual: leyenda oculta (barras verdes/rojas sin leyenda).'],
+  ['1.7', '06/03/2026', 'Gráfico G/P Mensual: leyenda oculta (barras verdes/rojas sin leyenda).'],
+  ['1.8', '__HOY__', 'Gráfico G/P: barras con G/P=0 visibles (minBarLength, color gris, tooltip ingresos=egresos).'],
 ];
 const versionesParaExcel = aplicarHoyAhora(versiones);
 const wsVersiones = XLSX.utils.aoa_to_sheet(versionesParaExcel);
