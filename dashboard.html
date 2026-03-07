@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Dashboard – Everfit</title>
   <link rel="icon" type="image/png" href="favicon.png" />
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -231,6 +231,82 @@
     #tabla-flujo td.col-item .item-icon svg { width: 100%; height: 100%; stroke: currentColor; }
     #tabla-flujo td.col-item .item-icon.icono-ingresos { color: #0d7d3d; }
     #tabla-flujo td.col-item .item-icon.icono-egresos { color: #b91c1c; }
+
+    /* ========== Responsive: móviles y tablets ========== */
+    @media (max-width: 768px) {
+      body { font-size: 15px; }
+      .main-content { padding: 0.75rem 1rem; padding-bottom: max(1rem, env(safe-area-inset-bottom)); }
+      .app { max-width: none; }
+      .page-header { gap: 0.5rem; margin-bottom: 0.75rem; }
+      .page-header .page-logo { height: 36px; max-width: 120px; }
+      .page-header h1, .page-header #page-title { font-size: 1.25rem; }
+      .user-bar { margin-left: 0; width: 100%; order: 3; flex-wrap: wrap; gap: 0.5rem; justify-content: flex-end; }
+      .user-bar .btn-cerrar { min-height: 44px; padding: 0.5rem 0.85rem; }
+      .user-bar .btn-refresh { min-width: 44px; min-height: 44px; }
+      .card { padding: 1rem; margin-bottom: 0.75rem; border-radius: 6px; }
+      .filtros { flex-direction: column; align-items: stretch; gap: 0.75rem; margin-bottom: 0.75rem; }
+      .filtros .filtros-izq { flex-direction: column; align-items: stretch; gap: 0.6rem; }
+      .filtros .filtros-der { margin-left: 0; justify-content: flex-start; flex-wrap: wrap; }
+      .filtros label { flex-wrap: wrap; }
+      .toggle-moneda button { min-height: 44px; padding: 0.55rem 1rem; }
+      .filtro-sucursal .btn-sucursal { min-height: 44px; padding: 0.5rem 0.75rem; }
+      .btn-actualizar-base, .btn-config-proyeccion { min-height: 44px; }
+      .resumen { gap: 0.75rem; margin-bottom: 0.75rem; }
+      .resumen .card { min-width: 0; flex: 1 1 100%; }
+      .resumen .valor { font-size: 1.35rem; }
+      .resumen-container { padding: 0.75rem 1rem; }
+      .resumen-help-pos { top: 0.5rem; right: 0.5rem; }
+      .ultima-actualizacion-leyenda { font-size: 0.75rem; margin-top: 0.5rem; padding-top: 0.5rem; }
+      .grafico-gp-wrap .chart-container { height: 240px; }
+      .grafico-gp-wrap .grafico-titulo { font-size: 1rem; }
+      #tabla-flujo-wrap { max-height: 60vh; margin-top: 0.35rem; -webkit-overflow-scrolling: touch; }
+      #tabla-flujo th, #tabla-flujo td { padding: 0.4rem 0.5rem; font-size: 0.875rem; }
+      #tabla-flujo th.col-item, #tabla-flujo td.col-item { min-width: 80px; }
+      .tabs button { min-height: 44px; padding: 0.5rem 0.85rem; }
+      .modal-backdrop { padding: 0.5rem; align-items: flex-start; padding-top: max(0.5rem, env(safe-area-inset-top)); }
+      .modal { max-height: 90vh; border-radius: 10px; }
+      .modal-header { padding: 0.75rem 1rem; }
+      .modal-header h2 { font-size: 1.1rem; }
+      .modal-body { padding: 0.75rem 1rem; }
+      .modal-tabla-wrap { max-height: 50vh; -webkit-overflow-scrolling: touch; }
+      .modal-tabla th, .modal-tabla td { padding: 0.4rem 0.5rem; font-size: 0.8rem; }
+      .modal-tabla th.col-item, .modal-tabla td.col-item { min-width: 100px; }
+      .modal-close { min-width: 44px; min-height: 44px; }
+      .modal-grafico-item .chart-container { height: 260px !important; }
+      .modal-grafico-item .modal-body { padding: 0.75rem 1rem; }
+      .login-screen { margin: 1rem; padding: 1.25rem; }
+      .help-exclusiones { min-width: 44px; min-height: 44px; }
+      .panel-seguridad .seguridad-rol-header { padding: 0.6rem 0.85rem; font-size: 0.95rem; }
+      .panel-seguridad .seguridad-perm-row { padding: 0.5rem 0; }
+      #seguridad-tabla-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+      .panel-seguridad table { font-size: 0.9rem; }
+      .modal-body .modal-tabs button { min-height: 44px; }
+      .tabla-ratios th, .tabla-ratios td, #tbody-ratios td { padding: 0.4rem 0.5rem; font-size: 0.875rem; }
+    }
+
+    @media (max-width: 480px) {
+      .main-content { padding: 0.5rem 0.75rem; }
+      .sidebar { width: 52px; min-width: 52px; }
+      .sidebar.expanded { width: 200px; }
+      .sidebar-toggle { width: 52px; height: 48px; }
+      .page-header .page-logo { height: 32px; max-width: 100px; }
+      .page-header h1, .page-header #page-title { font-size: 1.1rem; }
+      .resumen .card { flex: 1 1 100%; }
+      .resumen .card .card-titulo { font-size: 0.9rem; }
+      .resumen .valor { font-size: 1.25rem; }
+      .grafico-gp-wrap .chart-container { height: 200px; }
+      #tabla-flujo th, #tabla-flujo td { padding: 0.35rem 0.4rem; font-size: 0.8rem; }
+      #tabla-flujo th.col-item, #tabla-flujo td.col-item { min-width: 72px; }
+      .modal { width: 100%; max-height: 95vh; }
+      .modal-tabla th, .modal-tabla td { font-size: 0.75rem; padding: 0.35rem 0.4rem; }
+      .modal-tabla th.col-item, .modal-tabla td.col-item { min-width: 85px; }
+      .modal-upload .upload-zone { padding: 1rem; }
+      .modal-upload .form-actions { flex-direction: column; }
+      .modal-upload .form-actions button { width: 100%; min-height: 44px; }
+      .config-proyeccion .form-group { margin-bottom: 0.6rem; }
+      .modal-grafico-item .chart-container { height: 220px !important; }
+      #modal-grafico-item .modal-body .chart-container { min-height: 200px; }
+    }
   </style>
 </head>
 <body>
@@ -249,7 +325,7 @@
         <span class="menu-label">Seguridad</span>
       </a>
     </nav>
-    <div class="sidebar-version" id="sidebar-version" aria-label="Versión">v1.11</div>
+    <div class="sidebar-version" id="sidebar-version" aria-label="Versión">v1.12</div>
   </aside>
 
   <main class="main-content">

@@ -10,11 +10,20 @@ alwaysApply: true
 - **Datos de origen:** un único archivo Excel en `Base/Base_Everfit.xlsx`. La hoja principal de datos es **"Base"** (columnas: Beneficiario, Concepto, Centro de Costos, Detalle, Medio, Fechas, Importe, Observaciones, Sucursal, Ingresos-Egresos, Mes de Pago, etc.).
 - **Backend:** Supabase (PostgreSQL). Tablas: `base_everfit` (datos del Excel), `tipo_de_cambio` (para ARS/USD; se sincroniza desde otro proyecto con `scripts/sync_tipo_de_cambio_desde_origen.py`).
 - **Script de volcado:** `scripts/volcar_excel_a_supabase.py` lee `Base/Base_Everfit.xlsx`, hoja "Base", y inserta en `base_everfit`. Requiere `.env` con `SUPABASE_URL` y `SUPABASE_SERVICE_ROLE_KEY`.
+- **Dashboard:** `dashboard.html` en la raíz: solapa Flujo por mes (Mes-Año, Ingresos, Egresos, G/P) desde `base_everfit`. Ver `docs/DASHBOARD.md`.
 - **Estructura del repo:** `sql/` (DDL y scripts SQL), `scripts/` (Python/Node), `docs/` (guías), `Base/` (Excel). Ver regla **estructura-proyecto**.
 
 ## Al modificar el Excel o el esquema
 
 - Si se agregan o renombran columnas en la hoja "Base" del Excel, actualizar en este orden: 1) `sql/supabase_base_everfit.sql` (si cambia el esquema), 2) el mapeo en `scripts/volcar_excel_a_supabase.py`, 3) la documentación en `docs/POBLAR_DESDE_EXCEL.md` y `docs/SUPABASE_REQUISITOS.md` si aplica.
+
+## Responsive / móvil
+
+- **Desde ahora en más:** al agregar o modificar vistas, formularios, tablas o modales en el dashboard (o en cualquier UI del proyecto), tener **siempre en cuenta la responsividad en móviles**. Incluir o ajustar estilos para pantallas pequeñas: breakpoints típicos 768px (tablet/móvil grande) y 480px (móvil chico), touch targets mínimos 44px, padding y fuentes reducidos, scroll horizontal con `-webkit-overflow-scrolling: touch` donde haga falta, y `viewport-fit=cover` si aplica. No dejar que nuevos componentes rompan el layout en celulares.
+
+## Despliegue
+
+- Cuando el usuario pida desplegar (ej. "desplegar", "ok desplegar"), aplicar **siempre** el flujo completo en este orden: 1) Incrementar versión en `dashboard.html` (id `sidebar-version`), 2) Actualizar bitácora en `scripts/crear-bitacora-excel.js` (Versiones, Log, Resumen según corresponda), 3) Regenerar Excel (`node scripts/crear-bitacora-excel.js`), 4) Commit y push a `main` con mensaje `vX.Y: descripción`, 5) `vercel --prod`. Detalle en la regla **bitacora-tareas**.
 
 ## Documentación de referencia
 
@@ -22,3 +31,5 @@ alwaysApply: true
 - Volcar datos desde Excel: `docs/POBLAR_DESDE_EXCEL.md`.
 - Tipo de cambio (ARS/USD) desde otro proyecto: `docs/TIPO_DE_CAMBIO_DESDE_OTRO_PROYECTO.md`.
 - Git y Vercel (repo, push, deploy): `docs/GIT_Y_VERCEL.md`.
+- Dashboard (config, RLS, uso): `docs/DASHBOARD.md`.
+- Fechas en Argentina (timezone para todo el manejo de fechas): `docs/FECHAS_ARGENTINA.md`.
