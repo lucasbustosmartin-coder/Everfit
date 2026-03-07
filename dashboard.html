@@ -41,6 +41,9 @@
     .resumen .card .card-icon.ingresos { color: #0d7d3d; }
     .resumen .card .card-icon.egresos { color: #b91c1c; }
     .resumen .valor { font-size: 1.5rem; font-weight: 700; }
+    .ultima-actualizacion-leyenda { display: flex; align-items: center; gap: 0.4rem; margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid #eee; font-size: 0.8rem; color: #666; }
+    .ultima-actualizacion-leyenda .ultima-actualizacion-icon { width: 14px; height: 14px; flex-shrink: 0; color: #888; }
+    .ultima-actualizacion-leyenda .ultima-actualizacion-icon svg { width: 100%; height: 100%; stroke: currentColor; }
     .help-exclusiones { display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; padding: 0; border: none; background: none; color: #666; cursor: pointer; border-radius: 50%; margin-left: 0.25rem; vertical-align: middle; }
     .help-exclusiones:hover { color: #1a1a1a; background: #eee; }
     .help-exclusiones svg { width: 18px; height: 18px; }
@@ -246,7 +249,7 @@
         <span class="menu-label">Seguridad</span>
       </a>
     </nav>
-    <div class="sidebar-version" id="sidebar-version" aria-label="Versión">v1.10</div>
+    <div class="sidebar-version" id="sidebar-version" aria-label="Versión">v1.11</div>
   </aside>
 
   <main class="main-content">
@@ -334,6 +337,10 @@
 
       <div id="resumen-wrap" class="card resumen-container" style="display:none; margin-bottom:1rem; position:relative;">
         <div id="resumen" class="resumen"></div>
+        <div id="ultima-actualizacion-leyenda" class="ultima-actualizacion-leyenda" style="display:none;" aria-live="polite">
+          <span class="ultima-actualizacion-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span>
+          <span id="ultima-actualizacion-texto">Última actualización: –</span>
+        </div>
         <span class="help-exclusiones-wrap resumen-help-pos">
           <button type="button" class="help-exclusiones" id="help-tarjetas" title="Reglas de exclusión" aria-label="Ver reglas de exclusión">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
@@ -926,6 +933,7 @@
           '<div class="card"><div class="card-titulo">' + iconoGp + 'G/P Total</div><div class="valor balance ' + (balanceTotal >= 0 ? 'positivo' : 'negativo') + '">' + simbolo + formatearNumero(balanceTotal, moneda) + '</div></div>'
         ].join('');
         document.getElementById('resumen-wrap').style.display = 'block';
+        actualizarLeyendaUltimaActualizacion();
         var theadHtml = '<tr><th class="col-item">Item</th>' + periodosLabels.map(function(p, i) { return '<th' + (i >= ordenados.length ? ' class="col-proyeccion"' : '') + '>' + esc(p) + '</th>'; }).join('') + '<th>Total</th></tr>';
         document.getElementById('thead-flujo').innerHTML = theadHtml;
 
@@ -1249,6 +1257,27 @@
         });
       }
 
+      /** Actualiza la leyenda "Última actualización" debajo de las tarjetas (fecha/hora Argentina, usuario). */
+      function actualizarLeyendaUltimaActualizacion() {
+        var el = document.getElementById('ultima-actualizacion-leyenda');
+        var txt = document.getElementById('ultima-actualizacion-texto');
+        if (!el || !txt) return;
+        client.from('log_actualizacion_base').select('at, user_email').order('at', { ascending: false }).limit(1).maybeSingle()
+          .then(function(res) {
+            if (res.error || !res.data) {
+              el.style.display = 'none';
+              return;
+            }
+            var at = res.data.at;
+            var email = (res.data.user_email || '').trim() || '—';
+            var d = at ? new Date(at) : null;
+            var fechaHora = d ? d.toLocaleString('es-AR', { timeZone: ZONA_ARGENTINA, day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false }) : '—';
+            txt.textContent = 'Última actualización: ' + fechaHora + ' por ' + email;
+            el.style.display = 'flex';
+          })
+          .catch(function() { el.style.display = 'none'; });
+      }
+
       function cargarDatos() {
         var avisoTC = document.getElementById('aviso-tc-error');
         var promesaTC = clientOrigenTC
@@ -1570,12 +1599,15 @@
             }
             return fetchIds(0).then(function() {
               if (ids.length === 0) return Promise.resolve();
-              progressEl.textContent = 'Eliminando ' + ids.length + ' filas…';
+              var total = ids.length;
+              progressEl.textContent = 'Eliminando 0 / ' + total + '…';
               function deleteBatch(start) {
                 if (start >= ids.length) return Promise.resolve();
                 var chunk = ids.slice(start, start + BATCH);
                 return writeClient.from('base_everfit').delete().in('id', chunk).then(function(res) {
                   if (res.error) throw res.error;
+                  var eliminadas = Math.min(start + chunk.length, total);
+                  progressEl.textContent = 'Eliminando ' + eliminadas + ' / ' + total + '…';
                   return deleteBatch(start + chunk.length);
                 });
               }
@@ -1611,10 +1643,14 @@
                   });
                 }
                 return insertBatch(0).then(function() {
-                  progressEl.textContent = 'Listo. Recargando vista…';
                   okEl.textContent = 'Base actualizada: ' + inserted + ' filas.';
+                  progressEl.textContent = 'Registrando actualización…';
+                  return client.rpc('log_actualizacion_base').then(function() {}, function() {});
+                }).then(function() {
+                  progressEl.textContent = 'Listo. Recargando vista…';
                   return recargarSoloBase();
                 }).then(function() {
+                  actualizarLeyendaUltimaActualizacion();
                   setTimeout(function() {
                     backdrop.classList.add('oculto');
                     resetUploadModal();

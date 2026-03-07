@@ -32,6 +32,7 @@ const datosLog = [
   ['__HOY__', '__AHORA__', 'Despliegue v1.8', 'Gráfico G/P: barras con G/P=0 visibles (minBarLength, color gris, tooltip "ingresos = egresos").', 'Despliegue'],
   ['__HOY__', '__AHORA__', 'Despliegue v1.9', 'Tipos de cambio por API desde Sistema-Contable-Nuevo (Opción 2). Fix upload Excel: fechas como ISO. ORIGEN_TC_* en config y build.', 'Despliegue'],
   ['__HOY__', '__AHORA__', 'Despliegue v1.10', 'Modal gráfico por ítem en detalle (concepto/beneficiario) e icono en totales (Ingresos, Egresos, G/P). Icono sin contorno. Botones sucursal seleccionado en turquesa (#0d9488).', 'Despliegue'],
+  ['__HOY__', '__AHORA__', 'Despliegue v1.11', 'Log actualización base (tabla, RPC, leyenda Última actualización con reloj y hora Argentina). Progreso eliminación en upload (Eliminando X / N). Fix RPC sin .catch.', 'Despliegue'],
 ];
 
 const datosLogParaExcel = aplicarHoyAhora(datosLog);
@@ -79,7 +80,8 @@ const versiones = [
   ['1.7', '06/03/2026', 'Gráfico G/P Mensual: leyenda oculta (barras verdes/rojas sin leyenda).'],
   ['1.8', '06/03/2026', 'Gráfico G/P: barras con G/P=0 visibles (minBarLength, color gris, tooltip ingresos=egresos).'],
   ['1.9', '06/03/2026', 'Tipos de cambio por API desde Sistema-Contable-Nuevo (Opción 2). Fix upload Excel fechas→ISO. ORIGEN_TC_* en config y build.'],
-  ['1.10', '__HOY__', 'Modal gráfico por ítem en detalle (concepto/beneficiario) e icono en totales. Icono sin contorno. Botones sucursal seleccionado en turquesa.'],
+  ['1.10', '07/03/2026', 'Modal gráfico por ítem en detalle (concepto/beneficiario) e icono en totales. Icono sin contorno. Botones sucursal seleccionado en turquesa.'],
+  ['1.11', '__HOY__', 'Log actualización base y leyenda Última actualización. Progreso eliminación en upload. Fix RPC log.'],
 ];
 const versionesParaExcel = aplicarHoyAhora(versiones);
 const wsVersiones = XLSX.utils.aoa_to_sheet(versionesParaExcel);
