@@ -2,11 +2,30 @@
 
 Para tener montos en **ARS y USD** en Everfit, se usan los tipos de cambio (MEP, CCL, oficial). La **fuente de verdad** es el proyecto **Sistema-Contable-Nuevo**, tabla **`tipos_cambio_global`**.
 
-El script de sync lee esa tabla por API y escribe en la tabla **`tipo_de_cambio`** del proyecto Everfit (misma estructura: `fecha`, `usd_mep`, `usd_ccl`, `usd_oficial`).
+- **Opción 2 (implementada):** el dashboard lee **directo por API** desde `tipos_cambio_global` del origen. Si configurás `ORIGEN_TC_URL` y `ORIGEN_TC_ANON_KEY`, los datos se actualizan solos al cargar/refrescar.
+- **Opción 1:** script de sync que copia a la tabla local `tipo_de_cambio` de Everfit (útil si no querés exponer lectura anon en el origen).
 
 ---
 
-## Opción 1 – Sincronización a Everfit (recomendada)
+## Opción 2 – Consumo por API desde el dashboard (implementada)
+
+El dashboard puede leer tipos de cambio **directamente** del proyecto Sistema-Contable-Nuevo. No hace falta correr el script de sync: cada vez que cargás o refrescás, trae los datos del origen.
+
+**Pasos:**
+
+1. **En Sistema-Contable-Nuevo:** permitir lectura anon en `tipos_cambio_global`. En Supabase SQL Editor del **proyecto origen** ejecutá el contenido de **`docs/ORIGEN_RLS_TIPOS_CAMBIO_ANON.sql`** (crea política `SELECT TO anon`).
+2. **En Everfit (local):** en `config.js` definí:
+   ```js
+   window.ORIGEN_TC_URL = 'https://XXXX.supabase.co';   // URL del proyecto Sistema-Contable-Nuevo
+   window.ORIGEN_TC_ANON_KEY = 'eyJ...';               // anon key de ese proyecto (Settings → API)
+   ```
+3. **En Vercel (producción):** en Environment Variables agregá `ORIGEN_TC_URL` y `ORIGEN_TC_ANON_KEY` (mismos valores). Redeploy para que el build genere `config.js` con esas claves.
+
+Si **no** configurás origen, el dashboard sigue leyendo de la tabla local **`tipo_de_cambio`** de Everfit (y podés seguir usando el script de sync cuando quieras).
+
+---
+
+## Opción 1 – Sincronización a Everfit (script manual)
 
 Everfit tiene su **propia tabla** `tipo_de_cambio`. Un script lee desde **Sistema-Contable-Nuevo** (`tipos_cambio_global`) y actualiza Everfit.
 
@@ -33,38 +52,15 @@ En tu app o dashboard de Everfit consultás siempre **el Supabase de Everfit**:
 
 ---
 
-## Opción 2 – Consumo en vivo por API (siempre actualizado)
+## Detalle técnico Opción 2 (referencia)
 
-En lugar de copiar datos, la app de Everfit **consume directo** la API del proyecto Sistema-Contable-Nuevo. Cada vez que necesitás tipos de cambio, hacés un `select` al origen. No hace falta correr el script de sync: los datos son siempre los del origen.
-
-**Ventaja:** un registro nuevo en el origen se ve en Everfit en la siguiente carga o refetch.  
-**Desventaja:** Everfit depende de que Sistema-Contable-Nuevo esté arriba; además hay que usar una key con acceso (ver abajo).
-
-Ejemplo en la app (dos clientes Supabase):
+El dashboard usa un segundo cliente Supabase cuando `ORIGEN_TC_URL` y `ORIGEN_TC_ANON_KEY` están definidos, y hace:
 
 ```javascript
-import { createClient } from '@supabase/supabase-js';
-
-// Cliente Everfit (base_everfit, etc.)
-const supabaseEverfit = createClient(
-  import.meta.env.VITE_SUPABASE_URL,
-  import.meta.env.VITE_SUPABASE_ANON_KEY
-);
-
-// Cliente origen (solo para tipos de cambio)
-const supabaseOrigen = createClient(
-  import.meta.env.VITE_ORIGEN_TC_URL,
-  import.meta.env.VITE_ORIGEN_TC_ANON_KEY   // ver nota sobre RLS abajo
-);
-
-// Cuando necesitás tipos de cambio (siempre frescos del origen)
-const { data: tiposCambio } = await supabaseOrigen
-  .from('tipos_cambio_global')
-  .select('fecha, usd_mep, usd_ccl, usd_oficial')
-  .order('fecha', { ascending: true });
+clientOrigen.from('tipos_cambio_global').select('fecha, usd_mep, usd_ccl, usd_oficial').order('fecha')
 ```
 
-**RLS en el origen:** en Sistema-Contable-Nuevo la tabla `tipos_cambio_global` tiene RLS solo para **authenticated**. Para leer desde el frontend de Everfit con **anon** tenés que: (1) agregar en el origen una política que permita `SELECT` para `anon` en esa tabla (si te parece bien que sea lectura pública), o (2) tener un backend en Everfit que use la **service_role** del origen y exponga un endpoint; el frontend llama a ese endpoint en lugar de al Supabase del origen.
+**RLS en el origen:** si en Sistema-Contable-Nuevo la tabla solo permitía `authenticated`, hay que ejecutar `docs/ORIGEN_RLS_TIPOS_CAMBIO_ANON.sql` en ese proyecto para permitir `SELECT TO anon` (solo lectura; no expone datos sensibles).
 
 ---
 

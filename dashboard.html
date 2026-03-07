@@ -215,7 +215,7 @@
         <span class="menu-label">Seguridad</span>
       </a>
     </nav>
-    <div class="sidebar-version" id="sidebar-version" aria-label="Versión">v1.8</div>
+    <div class="sidebar-version" id="sidebar-version" aria-label="Versión">v1.9</div>
   </aside>
 
   <main class="main-content">
@@ -482,6 +482,10 @@
       }
 
       var client = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+      // Opción 2: tipos de cambio desde API del proyecto origen (si está configurado)
+      var ORIGEN_TC_URL = (typeof window.ORIGEN_TC_URL !== 'undefined' && window.ORIGEN_TC_URL) ? window.ORIGEN_TC_URL : '';
+      var ORIGEN_TC_ANON_KEY = (typeof window.ORIGEN_TC_ANON_KEY !== 'undefined' && window.ORIGEN_TC_ANON_KEY) ? window.ORIGEN_TC_ANON_KEY : '';
+      var clientOrigenTC = (ORIGEN_TC_URL && ORIGEN_TC_ANON_KEY) ? window.supabase.createClient(ORIGEN_TC_URL, ORIGEN_TC_ANON_KEY) : null;
       var userPermissions = [];
       var currentUserEmail = '';
       var currentUserId = null;
@@ -1078,9 +1082,12 @@
       }
 
       function cargarDatos() {
+        var promesaTC = clientOrigenTC
+          ? clientOrigenTC.from('tipos_cambio_global').select('fecha, usd_mep, usd_ccl, usd_oficial').order('fecha')
+          : client.from('tipo_de_cambio').select('fecha, usd_mep, usd_ccl, usd_oficial').order('fecha');
         return Promise.all([
           traerTodasLasFilas(),
-          client.from('tipo_de_cambio').select('fecha, usd_mep, usd_ccl, usd_oficial').order('fecha')
+          promesaTC
         ]).then(function(results) {
             var rows = results[0];
             var tcRes = results[1];
@@ -1191,7 +1198,8 @@
           'Sucursal': 'sucursal', 'Ingresos-Egresos': 'ingresos_egresos', 'Mes de Pago': 'mes_de_pago'
         };
 
-        function normalizarValorUpload(val) {
+        var COLUMNAS_FECHA = { fecha_emision: 1, fecha_original_pago: 1, fecha_pago: 1 };
+        function normalizarValorUpload(val, colDb) {
           if (val === undefined || val === null) return null;
           if (typeof val === 'number' && (val !== val || (val === 0 && 1/val < 0))) return null;
           if (typeof val === 'string') {
@@ -1199,7 +1207,8 @@
             if (s === '' || s === '-') return null;
             return s;
           }
-          if (typeof val === 'number' && val > 0 && val < 30000) {
+          // Solo en columnas date: Excel serial (ej. 45320 = 2024) → ISO YYYY-MM-DD (Postgres rechaza números en date)
+          if (colDb && COLUMNAS_FECHA[colDb] && typeof val === 'number' && val >= 1 && val <= 500000) {
             var d = new Date((val - 25569) * 86400 * 1000);
             if (!isNaN(d.getTime())) return d.toISOString().slice(0, 10);
           }
@@ -1221,7 +1230,7 @@
               var idx = headers.indexOf(col);
               var colDb = COLUMNAS_EXCEL_A_DB[col];
               var val = idx >= 0 && row[idx] !== undefined ? row[idx] : null;
-              rec[colDb] = normalizarValorUpload(val);
+              rec[colDb] = normalizarValorUpload(val, colDb);
             }
             rows.push(rec);
           }

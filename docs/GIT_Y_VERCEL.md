@@ -80,7 +80,8 @@ En producción **config.js** no está en el repo (está en .gitignore). Se **gen
 1. En Vercel: proyecto **everfit** → **Settings** → **Environment Variables**.
 2. Agregá la variable **SUPABASE_ANON_KEY** (Value = tu anon key de Supabase, la misma que usás en local en `config.js`). Entorno: **Production** (y Preview si quieres).
 3. Opcional: **SUPABASE_URL** solo si usás otra URL (por defecto el build usa la de Everfit).
-4. Guardá. Hacé un **Redeploy** del proyecto (Deployments → menú del último → Redeploy) para que el build vuelva a correr y genere `config.js` con la clave.
+4. Opcional (tipos de cambio por API): **ORIGEN_TC_URL** y **ORIGEN_TC_ANON_KEY** del proyecto Sistema-Contable-Nuevo para que el dashboard lea `tipos_cambio_global` del origen. Ver `docs/TIPO_DE_CAMBIO_DESDE_OTRO_PROYECTO.md`.
+5. Guardá. Hacé un **Redeploy** del proyecto (Deployments → menú del último → Redeploy) para que el build vuelva a correr y genere `config.js` con la clave.
 
 El build ejecuta `node scripts/build-config.js`, que escribe `config.js` en la raíz con la anon key. Sin este paso, el navegador pide `config.js`, recibe 404 y la app queda en blanco o sin conectar a Supabase.
 
