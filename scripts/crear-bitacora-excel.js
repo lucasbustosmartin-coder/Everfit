@@ -34,6 +34,7 @@ const datosLog = [
   ['__HOY__', '__AHORA__', 'Despliegue v1.10', 'Modal gráfico por ítem en detalle (concepto/beneficiario) e icono en totales (Ingresos, Egresos, G/P). Icono sin contorno. Botones sucursal seleccionado en turquesa (#0d9488).', 'Despliegue'],
   ['__HOY__', '__AHORA__', 'Despliegue v1.11', 'Log actualización base (tabla, RPC, leyenda Última actualización con reloj y hora Argentina). Progreso eliminación en upload (Eliminando X / N). Fix RPC sin .catch.', 'Despliegue'],
   ['__HOY__', '__AHORA__', 'Despliegue v1.12', 'Dashboard responsive para móviles (breakpoints 768px y 480px, touch 44px, safe-area, tablas y modales adaptados). Regla responsive en reglas-everfit.', 'Despliegue'],
+  ['__HOY__', '__AHORA__', 'Despliegue v1.13', 'Filtro multi-sucursal (varias sucursales a la vez). Seguridad: sucursales permitidas por usuario (Admin configura qué ve cada uno). Total respeta sucursales asignadas. SQL supabase_sucursales_por_usuario.sql.', 'Despliegue'],
 ];
 
 const datosLogParaExcel = aplicarHoyAhora(datosLog);
@@ -83,7 +84,8 @@ const versiones = [
   ['1.9', '06/03/2026', 'Tipos de cambio por API desde Sistema-Contable-Nuevo (Opción 2). Fix upload Excel fechas→ISO. ORIGEN_TC_* en config y build.'],
   ['1.10', '07/03/2026', 'Modal gráfico por ítem en detalle (concepto/beneficiario) e icono en totales. Icono sin contorno. Botones sucursal seleccionado en turquesa.'],
   ['1.11', '07/03/2026', 'Log actualización base y leyenda Última actualización. Progreso eliminación en upload. Fix RPC log.'],
-  ['1.12', '__HOY__', 'Dashboard responsive móviles. Regla: tener en cuenta responsive a partir de ahora.'],
+  ['1.12', '07/03/2026', 'Dashboard responsive móviles. Regla: tener en cuenta responsive a partir de ahora.'],
+  ['1.13', '__HOY__', 'Filtro multi-sucursal. Sucursales permitidas por usuario en Seguridad. Total respeta asignación. SQL supabase_sucursales_por_usuario.sql.'],
 ];
 const versionesParaExcel = aplicarHoyAhora(versiones);
 const wsVersiones = XLSX.utils.aoa_to_sheet(versionesParaExcel);

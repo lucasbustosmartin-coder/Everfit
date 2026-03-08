@@ -110,6 +110,8 @@
     .panel-seguridad select { padding: 0.35rem 0.5rem; border-radius: 6px; border: 1px solid #ccc; }
     .panel-seguridad .btn-guardar-rol { padding: 0.35rem 0.6rem; font-size: 0.85rem; background: #0d7d3d; color: #fff; border: none; border-radius: 6px; cursor: pointer; }
     .panel-seguridad .btn-guardar-rol:hover { background: #0a5c2e; }
+    .panel-seguridad .btn-sucursales-config { padding: 0.25rem 0.5rem; font-size: 0.8rem; background: #fff; color: #555; border: 1px solid #ccc; border-radius: 6px; cursor: pointer; margin-left: 0.25rem; }
+    .panel-seguridad .btn-sucursales-config:hover { background: #f0f0f0; border-color: #999; }
     .panel-seguridad .seguridad-loading { color: #666; }
     .panel-seguridad .seguridad-permisos-loading { color: #666; font-size: 0.9rem; margin-bottom: 0.5rem; }
     .panel-seguridad .seguridad-rol-cards { display: flex; flex-direction: column; gap: 1.25rem; margin-bottom: 1.5rem; }
@@ -325,7 +327,7 @@
         <span class="menu-label">Seguridad</span>
       </a>
     </nav>
-    <div class="sidebar-version" id="sidebar-version" aria-label="Versión">v1.12</div>
+    <div class="sidebar-version" id="sidebar-version" aria-label="Versión">v1.13</div>
   </aside>
 
   <main class="main-content">
@@ -476,7 +478,7 @@
           <span><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span>
           Seguridad – Usuarios y perfiles
         </h2>
-        <p style="margin:0 0 0.75rem 0; font-size:0.95rem; color:#555;">Configurá los permisos de cada rol y asigná el rol a cada usuario.</p>
+        <p style="margin:0 0 0.75rem 0; font-size:0.95rem; color:#555;">Configurá los permisos de cada rol, asigná el rol a cada usuario y qué sucursales puede ver cada uno.</p>
         <h3 style="margin:0 0 0.5rem 0; font-size:1rem;">Permisos por rol</h3>
         <div id="seguridad-permisos-loading" class="seguridad-permisos-loading" style="display:none;">Cargando permisos…</div>
         <div id="seguridad-rol-cards" class="seguridad-rol-cards"></div>
@@ -484,9 +486,35 @@
         <div id="seguridad-loading" class="seguridad-loading">Cargando usuarios…</div>
         <div id="seguridad-tabla-wrap" style="display:none;">
           <table id="seguridad-tabla">
-            <thead><tr><th>Email</th><th>Rol</th><th>Acción</th></tr></thead>
+            <thead><tr><th>Email</th><th>Rol</th><th>Sucursales</th><th>Acción</th></tr></thead>
             <tbody id="seguridad-tbody"></tbody>
           </table>
+        </div>
+      </div>
+
+      <div id="modal-sucursales-backdrop" class="modal-backdrop oculto">
+        <div class="modal" style="max-width:420px;">
+          <div class="modal-header">
+            <h2 id="modal-sucursales-titulo">Sucursales que puede ver</h2>
+            <button type="button" class="modal-close" id="modal-sucursales-close" aria-label="Cerrar"><span class="icon-close"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg></span></button>
+          </div>
+          <div class="modal-body">
+            <p style="margin:0 0 0.75rem 0; font-size:0.9rem; color:#555;">Si no se marca ninguna restricción, el usuario ve todas las sucursales.</p>
+            <div class="form-group">
+              <label style="display:flex; align-items:center; gap:0.5rem; cursor:pointer;">
+                <input type="checkbox" id="sucursales-todas" />
+                <span>Puede ver todas las sucursales</span>
+              </label>
+            </div>
+            <div id="sucursales-checkboxes-wrap" style="display:none; margin-top:0.5rem;">
+              <p style="margin:0 0 0.35rem 0; font-size:0.85rem; color:#666;">O restringir a:</p>
+              <div id="sucursales-checkboxes"></div>
+            </div>
+            <div class="form-actions" style="margin-top:1rem;">
+              <button type="button" id="modal-sucursales-guardar" class="btn-actualizar-base">Guardar</button>
+              <button type="button" id="modal-sucursales-cancelar" style="padding:0.5rem 1rem; border:1px solid #999; background:#fff; border-radius:6px; cursor:pointer; font-size:0.9rem;">Cancelar</button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -682,16 +710,28 @@
       var cacheTC = {};
       var fechasConTasa = { mep: [], ccl: [], oficial: [] };
       var cacheBaseEverfit = [];
-      var sucursalFilter = '';
+      /** Array de sucursales seleccionadas; vacío = todas. */
+      var sucursalFilterSet = [];
+      /** Sucursales que el usuario puede ver (null o vacío = todas). */
+      var myAllowedSucursales = null;
 
-      function getSucursalFilter() { return sucursalFilter; }
+      function getSucursalFilter() { return sucursalFilterSet; }
 
       function getDatosFiltrados() {
-        if (!sucursalFilter) return cacheBaseEverfit;
-        return cacheBaseEverfit.filter(function(r) {
-          var s = (r.sucursal || '').trim();
-          return s === sucursalFilter;
-        });
+        var base = cacheBaseEverfit;
+        if (sucursalFilterSet.length > 0) {
+          return base.filter(function(r) {
+            var s = (r.sucursal || '').trim();
+            return sucursalFilterSet.indexOf(s) !== -1;
+          });
+        }
+        if (myAllowedSucursales && myAllowedSucursales.length > 0) {
+          return base.filter(function(r) {
+            var s = (r.sucursal || '').trim();
+            return myAllowedSucursales.indexOf(s) !== -1;
+          });
+        }
+        return base;
       }
 
       function getSucursalesDisponibles() {
@@ -700,7 +740,10 @@
           var s = (r.sucursal || '').trim();
           if (s) set[s] = true;
         });
-        return Object.keys(set).sort();
+        var list = Object.keys(set).sort();
+        if (myAllowedSucursales && myAllowedSucursales.length > 0)
+          list = list.filter(function(s) { return myAllowedSucursales.indexOf(s) !== -1; });
+        return list;
       }
 
       // Si no hay tasa para la fecha (o es 0), se usa la del día anterior disponible; nunca convertir con tasa 0.
@@ -1397,12 +1440,23 @@
             var contSuc = document.getElementById('filtro-sucursal');
             if (sucursales.length > 0 && wrapSuc && contSuc) {
               wrapSuc.style.display = '';
-              contSuc.innerHTML = '<button type="button" class="btn-sucursal activo" data-sucursal="">Total</button>' + sucursales.map(function(s) { return '<button type="button" class="btn-sucursal" data-sucursal="' + String(s).replace(/"/g, '&quot;') + '">' + esc(s) + '</button>'; }).join('');
+              contSuc.innerHTML = '<button type="button" class="btn-sucursal' + (sucursalFilterSet.length === 0 ? ' activo' : '') + '" data-sucursal="" title="Todas">Total</button>' + sucursales.map(function(s) { return '<button type="button" class="btn-sucursal' + (sucursalFilterSet.indexOf(s) !== -1 ? ' activo' : '') + '" data-sucursal="' + String(s).replace(/"/g, '&quot;') + '">' + esc(s) + '</button>'; }).join('');
               contSuc.querySelectorAll('.btn-sucursal').forEach(function(btn) {
                 btn.addEventListener('click', function() {
-                  contSuc.querySelectorAll('.btn-sucursal').forEach(function(b) { b.classList.remove('activo'); });
-                  this.classList.add('activo');
-                  sucursalFilter = (this.getAttribute('data-sucursal') || '').trim();
+                  var val = (this.getAttribute('data-sucursal') || '').trim();
+                  if (val === '') {
+                    sucursalFilterSet = [];
+                    contSuc.querySelectorAll('.btn-sucursal').forEach(function(b) { b.classList.remove('activo'); });
+                    this.classList.add('activo');
+                  } else {
+                    var idx = sucursalFilterSet.indexOf(val);
+                    if (idx === -1) sucursalFilterSet.push(val); else sucursalFilterSet.splice(idx, 1);
+                    contSuc.querySelectorAll('.btn-sucursal').forEach(function(b) {
+                      var s = (b.getAttribute('data-sucursal') || '').trim();
+                      if (s === '') b.classList.toggle('activo', sucursalFilterSet.length === 0);
+                      else b.classList.toggle('activo', sucursalFilterSet.indexOf(s) !== -1);
+                    });
+                  }
                   renderizar();
                 });
               });
@@ -1823,13 +1877,17 @@
         currentUserEmail = session.user.email || '';
         currentUserId = session.user.id;
         ensureProfile(session).then(function() {
-          return client.rpc('get_my_permissions');
-        }).then(function(res) {
+          return Promise.all([ client.rpc('get_my_permissions'), client.rpc('get_my_allowed_sucursales') ]);
+        }).then(function(results) {
+          var res = results[0];
           if (res.error) {
             document.getElementById('login-error').textContent = res.error.message || 'Error al cargar permisos.';
             return;
           }
           userPermissions = res.data || [];
+          var sucRes = results[1];
+          if (!sucRes.error && Array.isArray(sucRes.data)) myAllowedSucursales = sucRes.data.length ? sucRes.data : null;
+          else myAllowedSucursales = null;
           showAppContent();
           document.getElementById('user-email').textContent = currentUserEmail;
           var btnUpload = document.getElementById('btn-actualizar-base');
@@ -1859,9 +1917,13 @@
       }
 
       function refreshPermisosYVista() {
-        client.rpc('get_my_permissions').then(function(res) {
+        Promise.all([ client.rpc('get_my_permissions'), client.rpc('get_my_allowed_sucursales') ]).then(function(results) {
+          var res = results[0];
           if (res.error) return;
           userPermissions = res.data || [];
+          var sucRes = results[1];
+          if (!sucRes.error && Array.isArray(sucRes.data)) myAllowedSucursales = sucRes.data.length ? sucRes.data : null;
+          else myAllowedSucursales = null;
           var btnUpload = document.getElementById('btn-actualizar-base');
           var wrapUpload = btnUpload && btnUpload.closest('.filtros-der');
           if (wrapUpload) wrapUpload.style.display = userPermissions.indexOf('upload_base') !== -1 ? '' : 'none';
@@ -1969,19 +2031,24 @@
         var tbody = document.getElementById('seguridad-tbody');
         loading.style.display = 'block';
         wrap.style.display = 'none';
-        client.rpc('get_users_for_admin').then(function(res) {
+        Promise.all([ client.rpc('get_users_for_admin'), client.rpc('get_sucursales_list') ]).then(function(results) {
+          var res = results[0];
+          var sucListRes = results[1];
           loading.style.display = 'none';
           if (res.error) {
             loading.textContent = 'Error: ' + (res.error.message || 'No tenés permiso.');
             return;
           }
           var users = res.data || [];
+          var sucursalesList = (!sucListRes.error && Array.isArray(sucListRes.data)) ? sucListRes.data : [];
           wrap.style.display = 'block';
           tbody.innerHTML = users.map(function(u) {
             var uid = u.user_id;
             var email = (u.email || '').replace(/</g, '&lt;').replace(/>/g, '&gt;');
             var role = (u.role || 'visor');
-            return '<tr data-user-id="' + uid + '"><td>' + email + '</td><td><select class="seguridad-rol" data-user-id="' + uid + '"><option value="admin"' + (role === 'admin' ? ' selected' : '') + '>Admin</option><option value="encargado"' + (role === 'encargado' ? ' selected' : '') + '>Encargado</option><option value="visor"' + (role === 'visor' ? ' selected' : '') + '>Visor</option></select></td><td><button type="button" class="btn-guardar-rol" data-user-id="' + uid + '">Guardar</button></td></tr>';
+            var suc = u.sucursales_permitidas;
+            var sucText = !suc || suc.length === 0 ? 'Todas' : suc.join(', ');
+            return '<tr data-user-id="' + uid + '"><td>' + email + '</td><td><select class="seguridad-rol" data-user-id="' + uid + '"><option value="admin"' + (role === 'admin' ? ' selected' : '') + '>Admin</option><option value="encargado"' + (role === 'encargado' ? ' selected' : '') + '>Encargado</option><option value="visor"' + (role === 'visor' ? ' selected' : '') + '>Visor</option></select></td><td><span class="seguridad-sucursales-text">' + esc(sucText) + '</span> <button type="button" class="btn-sucursales-config" data-user-id="' + uid + '" title="Configurar sucursales">Configurar</button></td><td><button type="button" class="btn-guardar-rol" data-user-id="' + uid + '">Guardar</button></td></tr>';
           }).join('');
           tbody.querySelectorAll('.btn-guardar-rol').forEach(function(btn) {
             btn.addEventListener('click', function() {
@@ -1993,6 +2060,64 @@
                 if (r.error) alert('Error: ' + (r.error.message || 'No se pudo guardar.'));
               });
             });
+          });
+          openModalSucursalesOnClick(tbody, users, sucursalesList);
+        });
+      }
+
+      var modalSucursalesUserId = null;
+
+      function openModalSucursalesOnClick(tbody, users, sucursalesList) {
+        var backdrop = document.getElementById('modal-sucursales-backdrop');
+        var titulo = document.getElementById('modal-sucursales-titulo');
+        var checkTodas = document.getElementById('sucursales-todas');
+        var wrapCb = document.getElementById('sucursales-checkboxes-wrap');
+        var containerCb = document.getElementById('sucursales-checkboxes');
+        var btnGuardar = document.getElementById('modal-sucursales-guardar');
+        var btnCancelar = document.getElementById('modal-sucursales-cancelar');
+        if (!backdrop._sucursalesModalSetup) {
+          backdrop._sucursalesModalSetup = true;
+          document.getElementById('modal-sucursales-close').addEventListener('click', function() { backdrop.classList.add('oculto'); modalSucursalesUserId = null; });
+          if (btnCancelar) btnCancelar.addEventListener('click', function() { backdrop.classList.add('oculto'); modalSucursalesUserId = null; });
+          backdrop.addEventListener('click', function(e) { if (e.target === backdrop) { backdrop.classList.add('oculto'); modalSucursalesUserId = null; } });
+          if (checkTodas) checkTodas.addEventListener('change', function() { if (checkTodas.checked) containerCb.querySelectorAll('.sucursal-cb').forEach(function(cb) { cb.checked = false; }); });
+          if (containerCb) containerCb.addEventListener('change', function() { var any = containerCb.querySelectorAll('.sucursal-cb:checked').length > 0; if (any && checkTodas) checkTodas.checked = false; });
+          btnGuardar.addEventListener('click', function() {
+            if (!modalSucursalesUserId) return;
+            var todas = checkTodas && checkTodas.checked;
+            var arr = null;
+            if (!todas && containerCb) {
+              arr = [];
+              containerCb.querySelectorAll('.sucursal-cb:checked').forEach(function(cb) { arr.push(cb.getAttribute('data-sucursal')); });
+              if (arr.length === 0) arr = null;
+            }
+            client.rpc('set_user_sucursales', { p_user_id: modalSucursalesUserId, p_sucursales: arr }).then(function(r) {
+              if (r.error) { alert('Error: ' + (r.error.message || 'No se pudo guardar.')); return; }
+              var t = document.getElementById('seguridad-tbody');
+              if (t) { var row = t.querySelector('tr[data-user-id="' + modalSucursalesUserId + '"]'); if (row) { var textEl = row.querySelector('.seguridad-sucursales-text'); if (textEl) textEl.textContent = !arr || arr.length === 0 ? 'Todas' : arr.join(', '); } }
+              backdrop.classList.add('oculto');
+              modalSucursalesUserId = null;
+              refreshPermisosYVista();
+            });
+          });
+        }
+        tbody.querySelectorAll('.btn-sucursales-config').forEach(function(btn) {
+          btn.addEventListener('click', function() {
+            var uid = btn.getAttribute('data-user-id');
+            var u = users.filter(function(x) { return x.user_id === uid; })[0];
+            var email = (u && u.email) ? u.email : uid;
+            modalSucursalesUserId = uid;
+            titulo.textContent = 'Sucursales: ' + String(email).substring(0, 35) + (String(email).length > 35 ? '…' : '');
+            var suc = u.sucursales_permitidas;
+            var todas = !suc || suc.length === 0;
+            checkTodas.checked = todas;
+            wrapCb.style.display = sucursalesList.length > 0 ? 'block' : 'none';
+            containerCb.innerHTML = sucursalesList.map(function(s) {
+              var checked = todas || (suc && suc.indexOf(s) !== -1);
+              return '<label style="display:flex; align-items:center; gap:0.5rem; margin-bottom:0.25rem; cursor:pointer;"><input type="checkbox" class="sucursal-cb" data-sucursal="' + esc(s) + '"' + (checked ? ' checked' : '') + ' /><span>' + esc(s) + '</span></label>';
+            }).join('');
+            if (!todas) containerCb.querySelectorAll('.sucursal-cb').forEach(function(cb) { cb.checked = suc.indexOf(cb.getAttribute('data-sucursal')) !== -1; });
+            backdrop.classList.remove('oculto');
           });
         });
       }
