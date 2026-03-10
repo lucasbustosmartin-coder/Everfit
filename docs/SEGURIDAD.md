@@ -38,6 +38,9 @@ Eso crea:
 - Funciones: `get_my_role()`, `has_permission(perm)`, `get_my_permissions()`, `get_users_for_admin()`.
 - RLS en `base_everfit`: solo usuarios autenticados pueden leer; solo quienes tienen permiso `upload_base` pueden insertar/borrar.
 - RLS en `app_user_profile` y `user_profiles` para que solo Admin vea y asigne perfiles.
+- RLS en `app_role`, `app_permission` y `app_role_permission`: solo lectura para autenticados (evita el aviso UNRESTRICTED en Table Editor). Los cambios a permisos por rol se hacen vía RPC `set_role_permission` (solo Admin).
+
+Si ya tenés el proyecto creado y en Table Editor ves **UNRESTRICTED** en esas tres tablas, ejecutá **`sql/supabase_rls_app_roles_tables.sql`** en el SQL Editor para aplicar RLS sin tocar el resto.
 
 ### 3. Crear tu usuario y asignarte Admin (bootstrap)
 

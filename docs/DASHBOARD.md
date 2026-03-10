@@ -43,3 +43,5 @@ En la barra de filtros, a la derecha, hay un botón **Actualizar base** (icono d
 2. Confirmar: se **vacía** la tabla `base_everfit` y se **vuelven a cargar** todas las filas del Excel.
 
 **Requisito:** para usar esta función desde el navegador hay que definir en `config.js` la clave **`SUPABASE_SERVICE_ROLE_KEY`** (Supabase → Project Settings → API → service_role). **Solo usala en entorno de confianza** (ej. local); no subas esa clave al repositorio. Si no está configurada, el modal indica que podés usar en su lugar el script **`python scripts/volcar_excel_a_supabase.py`** para actualizar la base desde la terminal.
+
+Debajo de las tarjetas de resumen (Total ingresos, Total egresos, G/P) se muestra **Última actualización** con ícono de reloj, fecha y hora en Argentina y el email de quien ejecutó "Actualizar base". Para que esto funcione, ejecutá en Supabase SQL Editor el script **`sql/supabase_log_actualizacion_base.sql`** (crea la tabla `log_actualizacion_base` y la RPC `log_actualizacion_base()`). Si no ejecutaste ese script, la leyenda no se muestra y el upload sigue funcionando igual.

@@ -16,6 +16,9 @@ dist-ssr
 .env
 .env.local
 
+# Clave anon para el dashboard (no subir)
+config.js
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
@@ -26,3 +29,5 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+.vercel
+.env*.local

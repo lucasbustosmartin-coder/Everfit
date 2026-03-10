@@ -148,6 +148,24 @@ AS $$
   WHERE public.has_permission('assign_roles');
 $$;
 
+-- ========== 3b. RLS en tablas de catálogo (roles y permisos) ==========
+-- Quita el aviso UNRESTRICTED; solo lectura para autenticados. Escritura vía RPC (SECURITY DEFINER).
+
+ALTER TABLE public.app_role ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "app_role_select_authenticated" ON public.app_role;
+CREATE POLICY "app_role_select_authenticated"
+  ON public.app_role FOR SELECT TO authenticated USING (true);
+
+ALTER TABLE public.app_permission ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "app_permission_select_authenticated" ON public.app_permission;
+CREATE POLICY "app_permission_select_authenticated"
+  ON public.app_permission FOR SELECT TO authenticated USING (true);
+
+ALTER TABLE public.app_role_permission ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "app_role_permission_select_authenticated" ON public.app_role_permission;
+CREATE POLICY "app_role_permission_select_authenticated"
+  ON public.app_role_permission FOR SELECT TO authenticated USING (true);
+
 -- ========== 4. RLS en user_profiles ==========
 
 ALTER TABLE public.user_profiles ENABLE ROW LEVEL SECURITY;

@@ -81,6 +81,9 @@ def excel_a_filas(archivo: Path, hoja: str) -> list[dict]:
                     continue
                 val = row.get(col_excel)
                 rec[col_db] = normalizar_valor(val)
+            centro = (rec.get("centro_de_costos") or "").strip().lower()
+            if centro == "saldo inicial":
+                continue
             filas.append(rec)
     except Exception as e:
         print(f"  Error leyendo {nombre_archivo} hoja '{hoja}': {e}")
