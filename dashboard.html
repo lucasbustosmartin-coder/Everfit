@@ -327,7 +327,7 @@
         <span class="menu-label">Seguridad</span>
       </a>
     </nav>
-    <div class="sidebar-version" id="sidebar-version" aria-label="Versión">v1.13</div>
+    <div class="sidebar-version" id="sidebar-version" aria-label="Versión">v1.14</div>
   </aside>
 
   <main class="main-content">
@@ -671,6 +671,17 @@
             }
             return Promise.resolve();
           });
+      }
+
+      /** Cierra el modal solo cuando el usuario hizo clic realmente en el backdrop (mousedown + click en backdrop). Evita cerrar al elegir una opción de un select. */
+      function setupBackdropCloseOnlyOnRealClick(backdrop, onClose) {
+        if (!backdrop || typeof onClose !== 'function') return;
+        var mousedownOnBackdrop = false;
+        backdrop.addEventListener('mousedown', function(e) { mousedownOnBackdrop = (e.target === backdrop); }, true);
+        backdrop.addEventListener('click', function(e) {
+          if (e.target === backdrop && mousedownOnBackdrop) onClose();
+          mousedownOnBackdrop = false;
+        }, true);
       }
 
       function fechaStr(val) {
@@ -1497,7 +1508,7 @@
         var body = document.getElementById('modal-detalle-body');
         if (!backdrop || !body) return;
         document.getElementById('modal-detalle-close').addEventListener('click', function() { backdrop.classList.add('oculto'); });
-        backdrop.addEventListener('click', function(e) { if (e.target === backdrop) backdrop.classList.add('oculto'); });
+        setupBackdropCloseOnlyOnRealClick(backdrop, function() { backdrop.classList.add('oculto'); });
         body.addEventListener('click', function(e) {
           var tab = e.target.closest('.modal-tab');
           if (!tab) return;
@@ -1606,7 +1617,7 @@
         });
 
         if (btnClose) btnClose.addEventListener('click', cerrarModalGraficoItem);
-        backdrop.addEventListener('click', function(e) { if (e.target === backdrop) cerrarModalGraficoItem(); });
+        setupBackdropCloseOnlyOnRealClick(backdrop, cerrarModalGraficoItem);
       })();
 
       (function setupModalUpload() {
@@ -1691,7 +1702,7 @@
 
         btnClose.addEventListener('click', function() { backdrop.classList.add('oculto'); });
         btnCancel.addEventListener('click', function() { backdrop.classList.add('oculto'); });
-        backdrop.addEventListener('click', function(e) { if (e.target === backdrop) backdrop.classList.add('oculto'); });
+        setupBackdropCloseOnlyOnRealClick(backdrop, function() { backdrop.classList.add('oculto'); });
 
         fileInput.addEventListener('change', function() {
           var f = fileInput.files && fileInput.files[0];
@@ -2079,7 +2090,7 @@
           backdrop._sucursalesModalSetup = true;
           document.getElementById('modal-sucursales-close').addEventListener('click', function() { backdrop.classList.add('oculto'); modalSucursalesUserId = null; });
           if (btnCancelar) btnCancelar.addEventListener('click', function() { backdrop.classList.add('oculto'); modalSucursalesUserId = null; });
-          backdrop.addEventListener('click', function(e) { if (e.target === backdrop) { backdrop.classList.add('oculto'); modalSucursalesUserId = null; } });
+          setupBackdropCloseOnlyOnRealClick(backdrop, function() { backdrop.classList.add('oculto'); modalSucursalesUserId = null; });
           if (checkTodas) checkTodas.addEventListener('change', function() { if (checkTodas.checked) containerCb.querySelectorAll('.sucursal-cb').forEach(function(cb) { cb.checked = false; }); });
           if (containerCb) containerCb.addEventListener('change', function() { var any = containerCb.querySelectorAll('.sucursal-cb:checked').length > 0; if (any && checkTodas) checkTodas.checked = false; });
           btnGuardar.addEventListener('click', function() {
@@ -2142,7 +2153,7 @@
         });
         btnClose.addEventListener('click', function() { backdrop.classList.add('oculto'); });
         if (btnCancel) btnCancel.addEventListener('click', function() { backdrop.classList.add('oculto'); });
-        backdrop.addEventListener('click', function(e) { if (e.target === backdrop) backdrop.classList.add('oculto'); });
+        setupBackdropCloseOnlyOnRealClick(backdrop, function() { backdrop.classList.add('oculto'); });
         selMetodo.addEventListener('change', function() {
           if (selRecorteWrap) selRecorteWrap.style.display = selMetodo.value === 'promedio_recortado' ? 'block' : 'none';
         });

@@ -35,6 +35,7 @@ const datosLog = [
   ['__HOY__', '__AHORA__', 'Despliegue v1.11', 'Log actualización base (tabla, RPC, leyenda Última actualización con reloj y hora Argentina). Progreso eliminación en upload (Eliminando X / N). Fix RPC sin .catch.', 'Despliegue'],
   ['__HOY__', '__AHORA__', 'Despliegue v1.12', 'Dashboard responsive para móviles (breakpoints 768px y 480px, touch 44px, safe-area, tablas y modales adaptados). Regla responsive en reglas-everfit.', 'Despliegue'],
   ['__HOY__', '__AHORA__', 'Despliegue v1.13', 'Filtro multi-sucursal (varias sucursales a la vez). Seguridad: sucursales permitidas por usuario (Admin configura qué ve cada uno). Total respeta sucursales asignadas. SQL supabase_sucursales_por_usuario.sql.', 'Despliegue'],
+  ['__HOY__', '__AHORA__', 'Despliegue v1.14', 'Modales: no cerrar al elegir opción de select (mousedown+click en backdrop). Helper setupBackdropCloseOnlyOnRealClick en todos los modales.', 'Despliegue'],
 ];
 
 const datosLogParaExcel = aplicarHoyAhora(datosLog);
@@ -86,6 +87,7 @@ const versiones = [
   ['1.11', '07/03/2026', 'Log actualización base y leyenda Última actualización. Progreso eliminación en upload. Fix RPC log.'],
   ['1.12', '07/03/2026', 'Dashboard responsive móviles. Regla: tener en cuenta responsive a partir de ahora.'],
   ['1.13', '__HOY__', 'Filtro multi-sucursal. Sucursales permitidas por usuario en Seguridad. Total respeta asignación. SQL supabase_sucursales_por_usuario.sql.'],
+  ['1.14', '__HOY__', 'Modales: no cerrar al elegir opción de select (mousedown+click en backdrop). Helper setupBackdropCloseOnlyOnRealClick en todos los modales.'],
 ];
 const versionesParaExcel = aplicarHoyAhora(versiones);
 const wsVersiones = XLSX.utils.aoa_to_sheet(versionesParaExcel);
