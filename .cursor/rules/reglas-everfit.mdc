@@ -11,6 +11,7 @@ alwaysApply: true
 - **Backend:** Supabase (PostgreSQL). Tablas: `base_everfit` (datos del Excel), `tipo_de_cambio` (para ARS/USD; se sincroniza desde otro proyecto con `scripts/sync_tipo_de_cambio_desde_origen.py`).
 - **Script de volcado:** `scripts/volcar_excel_a_supabase.py` lee `Base/Base_Everfit.xlsx`, hoja "Base", y inserta en `base_everfit`. Requiere `.env` con `SUPABASE_URL` y `SUPABASE_SERVICE_ROLE_KEY`.
 - **Dashboard:** `dashboard.html` en la raíz: solapa Flujo por mes (Mes-Año, Ingresos, Egresos, G/P) desde `base_everfit`. Ver `docs/DASHBOARD.md`.
+- **Límite PostgREST (~1000 filas por request):** al cargar datos, el dashboard pagina `base_everfit` y la tabla de tipos de cambio (`tipos_cambio_global` vía API origen o `tipo_de_cambio` local) en bloques de 1000 hasta agotar filas, para que Flujo por mes y conversiones ARS/USD no queden truncados.
 - **Estructura del repo:** `sql/` (DDL y scripts SQL), `scripts/` (Python/Node), `docs/` (guías), `Base/` (Excel). Ver regla **estructura-proyecto**.
 
 ## Al modificar el Excel o el esquema

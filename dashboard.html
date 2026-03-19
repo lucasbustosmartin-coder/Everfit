@@ -80,11 +80,14 @@
     .filtros label { display: flex; align-items: center; gap: 0.5rem; }
     .btn-actualizar-base { display: inline-flex; align-items: center; gap: 0.45rem; padding: 0.5rem 1rem; border: 1px solid #0d7d3d; background: #0d7d3d; color: #fff; border-radius: 6px; cursor: pointer; font-size: 0.9rem; font-family: inherit; }
     .btn-actualizar-base:hover { background: #0a5c2e; border-color: #0a5c2e; }
+    .btn-actualizar-base:disabled, .btn-actualizar-base[disabled] { opacity: 0.55; cursor: not-allowed; }
     .btn-actualizar-base .btn-upload-icon { width: 18px; height: 18px; }
     .btn-actualizar-base .btn-upload-icon svg { width: 100%; height: 100%; stroke: currentColor; }
     .modal-upload .upload-zone { border: 2px dashed #ccc; border-radius: 8px; padding: 1.5rem; text-align: center; margin: 0.75rem 0; background: #fafafa; }
     .modal-upload .upload-zone.dragover { border-color: #0d7d3d; background: #f0fdf4; }
-    .modal-upload .upload-progress { margin: 0.75rem 0; font-size: 0.9rem; color: #555; }
+    .modal-upload .upload-progress { margin: 0.75rem 0 0.35rem; font-size: 0.92rem; color: #1f2937; background: #eef2ff; border: 1px solid #c7d2fe; border-radius: 8px; padding: 0.55rem 0.65rem; min-height: 56px; font-weight: 600; white-space: pre-wrap; }
+    .modal-upload .upload-progressbar-wrap { width: 100%; height: 10px; background: #e5e7eb; border-radius: 999px; overflow: hidden; border: 1px solid #d1d5db; margin-bottom: 0.65rem; }
+    .modal-upload .upload-progressbar-fill { height: 100%; width: 0%; background: linear-gradient(90deg, #16a34a, #22c55e); transition: width 0.2s ease; }
     .modal-upload .upload-error { color: #b91c1c; margin-top: 0.5rem; }
     .modal-upload .upload-ok { color: #0d7d3d; margin-top: 0.5rem; }
     .modal-upload .form-actions { margin-top: 1rem; display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap; }
@@ -327,7 +330,7 @@
         <span class="menu-label">Seguridad</span>
       </a>
     </nav>
-    <div class="sidebar-version" id="sidebar-version" aria-label="Versión">v1.14</div>
+    <div class="sidebar-version" id="sidebar-version" aria-label="Versión">v1.15</div>
   </aside>
 
   <main class="main-content">
@@ -567,7 +570,8 @@
           <input type="file" id="upload-file" accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" style="margin-bottom:0.5rem;" />
           <p id="upload-file-name" style="margin:0; font-size:0.9rem; color:#666;"></p>
         </div>
-        <div class="upload-progress" id="upload-progress"></div>
+        <div class="upload-progress" id="upload-progress">Esperando archivo para validar...</div>
+        <div class="upload-progressbar-wrap" aria-hidden="true"><div id="upload-progressbar-fill" class="upload-progressbar-fill"></div></div>
         <div id="upload-error" class="upload-error"></div>
         <div id="upload-ok" class="upload-ok"></div>
         <div class="form-actions">
@@ -891,21 +895,46 @@
         });
       }
 
+      /** PostgREST/Supabase suele limitar ~1000 filas por request. */
+      var SUPABASE_PAGE_SIZE = 1000;
+
       function traerTodasLasFilas() {
-        var PAGE = 1000;
         var todas = [];
         function fetchPage(offset) {
           return client
             .from('base_everfit')
             .select('fecha_pago, importe, ingresos_egresos, centro_de_costos, concepto, beneficiario, real_pendiente, sucursal')
-            .range(offset, offset + PAGE - 1)
+            .range(offset, offset + SUPABASE_PAGE_SIZE - 1)
             .then(function(_ref) {
               var data = _ref.data;
               var err = _ref.error;
               if (err) throw err;
               todas.push.apply(todas, data || []);
-              if ((data || []).length < PAGE) return todas;
-              return fetchPage(offset + PAGE);
+              if ((data || []).length < SUPABASE_PAGE_SIZE) return todas;
+              return fetchPage(offset + SUPABASE_PAGE_SIZE);
+            });
+        }
+        return fetchPage(0);
+      }
+
+      /** tipos_cambio_global (origen) o tipo_de_cambio (local), siempre paginado. */
+      function traerTodosLosTiposDeCambio() {
+        var c = clientOrigenTC || client;
+        var tabla = clientOrigenTC ? 'tipos_cambio_global' : 'tipo_de_cambio';
+        var todas = [];
+        function fetchPage(offset) {
+          return c
+            .from(tabla)
+            .select('fecha, usd_mep, usd_ccl, usd_oficial')
+            .order('fecha', { ascending: true })
+            .range(offset, offset + SUPABASE_PAGE_SIZE - 1)
+            .then(function(_ref) {
+              var data = _ref.data;
+              var err = _ref.error;
+              if (err) throw err;
+              todas.push.apply(todas, data || []);
+              if ((data || []).length < SUPABASE_PAGE_SIZE) return todas;
+              return fetchPage(offset + SUPABASE_PAGE_SIZE);
             });
         }
         return fetchPage(0);
@@ -1410,17 +1439,13 @@
 
       function cargarDatos() {
         var avisoTC = document.getElementById('aviso-tc-error');
-        var promesaTC = clientOrigenTC
-          ? clientOrigenTC.from('tipos_cambio_global').select('fecha, usd_mep, usd_ccl, usd_oficial').order('fecha')
-          : client.from('tipo_de_cambio').select('fecha, usd_mep, usd_ccl, usd_oficial').order('fecha');
         return traerTodasLasFilas().then(function(rows) {
           cacheBaseEverfit = rows || [];
-          return promesaTC.then(function(tcRes) {
-            if (tcRes.error) throw new Error('Tipos de cambio: ' + (tcRes.error.message || tcRes.error.code || 'error desconocido'));
+          return traerTodosLosTiposDeCambio().then(function(tcRows) {
             if (avisoTC) avisoTC.style.display = 'none';
             cacheTC = {};
             fechasConTasa = { mep: [], ccl: [], oficial: [] };
-            (tcRes.data || []).forEach(function(r) {
+            (tcRows || []).forEach(function(r) {
               var f = fechaStr(r.fecha);
               if (!f) return;
               cacheTC[f] = {
@@ -1629,9 +1654,11 @@
         var fileNameEl = document.getElementById('upload-file-name');
         var btnConfirm = document.getElementById('upload-btn-confirm');
         var progressEl = document.getElementById('upload-progress');
+        var progressBarFillEl = document.getElementById('upload-progressbar-fill');
         var errorEl = document.getElementById('upload-error');
         var okEl = document.getElementById('upload-ok');
         var keyWarning = document.getElementById('upload-key-warning');
+        var uploadEnCurso = false;
 
         if (!backdrop || !btnOpen) return;
 
@@ -1685,10 +1712,24 @@
           return rows;
         }
 
+        function setUploadBusy(isBusy) {
+          uploadEnCurso = !!isBusy;
+          btnOpen.disabled = uploadEnCurso;
+          btnClose.disabled = uploadEnCurso;
+          btnCancel.disabled = uploadEnCurso;
+          fileInput.disabled = uploadEnCurso;
+          if (uploadEnCurso) btnConfirm.disabled = true;
+        }
+
+        function setProgress(text, pct) {
+          progressEl.textContent = text || '';
+          if (progressBarFillEl) progressBarFillEl.style.width = Math.max(0, Math.min(100, Number(pct) || 0)) + '%';
+        }
+
         function resetUploadModal() {
           fileInput.value = '';
           fileNameEl.textContent = '';
-          progressEl.textContent = '';
+          setProgress('Esperando archivo para validar...', 0);
           errorEl.textContent = '';
           okEl.textContent = '';
           btnConfirm.disabled = true;
@@ -1700,9 +1741,9 @@
           backdrop.classList.remove('oculto');
         });
 
-        btnClose.addEventListener('click', function() { backdrop.classList.add('oculto'); });
-        btnCancel.addEventListener('click', function() { backdrop.classList.add('oculto'); });
-        setupBackdropCloseOnlyOnRealClick(backdrop, function() { backdrop.classList.add('oculto'); });
+        btnClose.addEventListener('click', function() { if (!uploadEnCurso) backdrop.classList.add('oculto'); });
+        btnCancel.addEventListener('click', function() { if (!uploadEnCurso) backdrop.classList.add('oculto'); });
+        setupBackdropCloseOnlyOnRealClick(backdrop, function() { if (!uploadEnCurso) backdrop.classList.add('oculto'); });
 
         fileInput.addEventListener('change', function() {
           var f = fileInput.files && fileInput.files[0];
@@ -1710,14 +1751,15 @@
           btnConfirm.disabled = !f;
           errorEl.textContent = '';
           okEl.textContent = '';
+          setProgress(f ? 'Archivo listo para procesar.' : 'Esperando archivo para validar...', 0);
         });
 
         btnConfirm.addEventListener('click', function() {
           var f = fileInput.files && fileInput.files[0];
           if (!f) return;
 
-          btnConfirm.disabled = true;
-          progressEl.textContent = 'Preparando…';
+          setUploadBusy(true);
+          setProgress('Preparando…', 2);
           errorEl.textContent = '';
           okEl.textContent = '';
 
@@ -1726,38 +1768,42 @@
           var FETCH_ID_BATCH = 1000;
 
           function run() {
-            progressEl.textContent = 'Vaciando tabla…';
-            var ids = [];
-            function fetchIds(offset) {
-              return writeClient.from('base_everfit').select('id').range(offset, offset + FETCH_ID_BATCH - 1)
-                .then(function(res) {
-                  if (res.error) throw res.error;
-                  var data = res.data || [];
-                  data.forEach(function(r) { ids.push(r.id); });
-                  if (data.length < FETCH_ID_BATCH) return Promise.resolve();
-                  return fetchIds(offset + FETCH_ID_BATCH);
-                });
-            }
-            return fetchIds(0).then(function() {
-              if (ids.length === 0) return Promise.resolve();
-              var total = ids.length;
-              progressEl.textContent = 'Eliminando 0 / ' + total + '…';
-              function deleteBatch(start) {
-                if (start >= ids.length) return Promise.resolve();
-                var chunk = ids.slice(start, start + BATCH);
-                return writeClient.from('base_everfit').delete().in('id', chunk).then(function(res) {
-                  if (res.error) throw res.error;
-                  var eliminadas = Math.min(start + chunk.length, total);
-                  progressEl.textContent = 'Eliminando ' + eliminadas + ' / ' + total + '…';
-                  return deleteBatch(start + chunk.length);
-                });
+            setProgress('Vaciando tabla…', 5);
+            return writeClient.from('base_everfit').delete().neq('id', 0).then(function(resFast) {
+              if (!resFast.error) return Promise.resolve();
+              var ids = [];
+              function fetchIds(offset) {
+                return writeClient.from('base_everfit').select('id').range(offset, offset + FETCH_ID_BATCH - 1)
+                  .then(function(res) {
+                    if (res.error) throw res.error;
+                    var data = res.data || [];
+                    data.forEach(function(r) { ids.push(r.id); });
+                    if (data.length < FETCH_ID_BATCH) return Promise.resolve();
+                    return fetchIds(offset + FETCH_ID_BATCH);
+                  });
               }
-              return deleteBatch(0);
+              return fetchIds(0).then(function() {
+                if (ids.length === 0) return Promise.resolve();
+                var total = ids.length;
+                setProgress('Eliminando 0 / ' + total + '…', 10);
+                function deleteBatch(start) {
+                  if (start >= ids.length) return Promise.resolve();
+                  var chunk = ids.slice(start, start + BATCH);
+                  return writeClient.from('base_everfit').delete().in('id', chunk).then(function(res) {
+                    if (res.error) throw res.error;
+                    var eliminadas = Math.min(start + chunk.length, total);
+                    var pct = 10 + Math.round((eliminadas / Math.max(total, 1)) * 40);
+                    setProgress('Eliminando ' + eliminadas + ' / ' + total + '…', pct);
+                    return deleteBatch(start + chunk.length);
+                  });
+                }
+                return deleteBatch(0);
+              });
             });
           }
 
           run().then(function() {
-            progressEl.textContent = 'Leyendo Excel…';
+            setProgress('Leyendo Excel…', 50);
             var reader = new FileReader();
             reader.onload = function(e) {
               try {
@@ -1771,7 +1817,7 @@
                   btnConfirm.disabled = false;
                   return;
                 }
-                progressEl.textContent = 'Insertando ' + filas.length + ' filas…';
+                setProgress('Insertando 0 / ' + filas.length + '…', 55);
                 var inserted = 0;
                 function insertBatch(start) {
                   if (start >= filas.length) return Promise.resolve();
@@ -1779,19 +1825,21 @@
                   return writeClient.from('base_everfit').insert(chunk).then(function(res) {
                     if (res.error) throw res.error;
                     inserted += chunk.length;
-                    progressEl.textContent = 'Insertadas ' + inserted + ' / ' + filas.length + '…';
+                    var pct = 55 + Math.round((inserted / Math.max(filas.length, 1)) * 40);
+                    setProgress('Insertadas ' + inserted + ' / ' + filas.length + '…', pct);
                     return insertBatch(start + chunk.length);
                   });
                 }
                 return insertBatch(0).then(function() {
                   okEl.textContent = 'Base actualizada: ' + inserted + ' filas.';
-                  progressEl.textContent = 'Registrando actualización…';
+                  setProgress('Registrando actualización…', 96);
                   return client.rpc('log_actualizacion_base').then(function() {}, function() {});
                 }).then(function() {
-                  progressEl.textContent = 'Listo. Recargando vista…';
+                  setProgress('Listo. Recargando vista…', 99);
                   return recargarSoloBase();
                 }).then(function() {
                   actualizarLeyendaUltimaActualizacion();
+                  setProgress('Completado.', 100);
                   setTimeout(function() {
                     backdrop.classList.add('oculto');
                     resetUploadModal();
@@ -1808,19 +1856,21 @@
               }
             };
             reader.onerror = function() {
-              progressEl.textContent = '';
+              setProgress('', 0);
               errorEl.textContent = 'Error leyendo el archivo.';
               btnConfirm.disabled = false;
             };
             reader.readAsArrayBuffer(f);
           }).catch(function(err) {
-            progressEl.textContent = '';
+            setProgress('', 0);
             var msg = err.message || String(err);
             errorEl.textContent = 'Error: ' + msg;
             if (msg.indexOf('CORS') !== -1 || msg.indexOf('fetch') !== -1 || msg.indexOf('Failed') !== -1) {
               errorEl.innerHTML = 'Error de red o CORS (a veces es 403 por permisos o sesión). Probá cerrar sesión y volver a entrar, o actualizar la base desde la terminal: <code>python scripts/volcar_excel_a_supabase.py</code>.';
             }
             btnConfirm.disabled = false;
+          }).finally(function() {
+            setUploadBusy(false);
           });
         });
       })();
