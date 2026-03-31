@@ -37,6 +37,8 @@ const datosLog = [
   ['__HOY__', '__AHORA__', 'Despliegue v1.13', 'Filtro multi-sucursal (varias sucursales a la vez). Seguridad: sucursales permitidas por usuario (Admin configura qué ve cada uno). Total respeta sucursales asignadas. SQL supabase_sucursales_por_usuario.sql.', 'Despliegue'],
   ['__HOY__', '__AHORA__', 'Despliegue v1.14', 'Modales: no cerrar al elegir opción de select (mousedown+click en backdrop). Helper setupBackdropCloseOnlyOnRealClick en todos los modales.', 'Despliegue'],
   ['__HOY__', '__AHORA__', 'Despliegue v1.15', 'Tipos de cambio cargados con paginación (límite PostgREST ~1000 filas por consulta). Constante SUPABASE_PAGE_SIZE alineada con base_everfit. Regla reglas-everfit actualizada. Despliegue a producción.', 'Despliegue'],
+  ['__HOY__', '__AHORA__', 'Dashboard fechas Argentina', 'Gráfico G/P mensual y proyección: mes actual con calendario Argentina (no zona del navegador). fecha_pago ISO/timestamptz: agrupar por día en Argentina (evita slice UTC).', 'Corrección'],
+  ['__HOY__', '__AHORA__', 'Despliegue v1.16', 'Fechas Argentina en gráfico G/P (rango 13 meses y mes en curso/proyección) y agrupación por día calendario en fecha_pago con hora desde Supabase. Push a main y vercel --prod.', 'Despliegue'],
 ];
 
 const datosLogParaExcel = aplicarHoyAhora(datosLog);
@@ -50,7 +52,7 @@ const funcionalidades = [
   ['Volcado Excel → Supabase', 'Script scripts/volcar_excel_a_supabase.py lee el Excel e inserta en base_everfit. Requiere .env con SUPABASE_URL y SUPABASE_SERVICE_ROLE_KEY.'],
   ['Tipos de cambio (ARS/USD)', 'Consumo por API desde proyecto Sistema-Contable-Nuevo (tabla tipos_cambio_global). Opcional: sync local con scripts/sync_tipo_de_cambio_desde_origen.py.'],
   ['Estructura del repo', 'Carpetas sql/, scripts/, docs/, Base/. Reglas en .cursor/rules (estructura-proyecto, reglas-everfit, bitácora, preguntas-solo-respuesta).'],
-  ['Dashboard Everfit', 'Una página (dashboard.html): flujo por mes, resumen, gráfico G/P, filtros moneda/sucursal. Login por email; módulo Seguridad (Admin asigna roles). Actualizar base: truncar y cargar Excel desde el navegador. Carga paginada de base_everfit y de tipos de cambio (evita tope ~1000 filas de PostgREST).'],
+  ['Dashboard Everfit', 'Una página (dashboard.html): flujo por mes, resumen, gráfico G/P, filtros moneda/sucursal. Fechas de negocio y mes actual en America/Argentina/Buenos_Aires (incl. fecha_pago con hora desde Supabase). Login por email; módulo Seguridad (Admin asigna roles). Actualizar base: truncar y cargar Excel desde el navegador. Carga paginada de base_everfit y de tipos de cambio (evita tope ~1000 filas de PostgREST).'],
   ['Proyección Flujo por mes', 'Meses proyectados en tabla (permiso ver_proyeccion). Config: método (promedio/mediana/promedio recortado), meses de historia, meses a proyectar, recorte %. Ventana móvil. Total columna incluye proyectados; tarjetas siempre reales. Encabezado y celdas proyectadas con fondo distintivo.'],
   ['Seguridad – Permisos por rol', 'En Seguridad (Admin): cada rol (Admin, Encargado, Visor) con icono y lista de permisos con toggle on/off editable. RPC get_roles_permissions_for_admin y set_role_permission. Ejecutar sql/supabase_seguridad_permisos_editable.sql.'],
 ];
@@ -90,6 +92,7 @@ const versiones = [
   ['1.13', '__HOY__', 'Filtro multi-sucursal. Sucursales permitidas por usuario en Seguridad. Total respeta asignación. SQL supabase_sucursales_por_usuario.sql.'],
   ['1.14', '__HOY__', 'Modales: no cerrar al elegir opción de select (mousedown+click en backdrop). Helper setupBackdropCloseOnlyOnRealClick en todos los modales.'],
   ['1.15', '__HOY__', 'Tipos de cambio con paginación al cargar (tipos_cambio_global / tipo_de_cambio). Regla proyecto: documentar límite PostgREST y paginación en reglas-everfit.'],
+  ['1.16', '__HOY__', 'Fechas America/Argentina/Buenos_Aires: gráfico G/P y clave mes en curso; fecha_pago ISO/timestamptz agrupada por día local (no slice UTC).'],
 ];
 const versionesParaExcel = aplicarHoyAhora(versiones);
 const wsVersiones = XLSX.utils.aoa_to_sheet(versionesParaExcel);

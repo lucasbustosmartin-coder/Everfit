@@ -330,7 +330,7 @@
         <span class="menu-label">Seguridad</span>
       </a>
     </nav>
-    <div class="sidebar-version" id="sidebar-version" aria-label="Versión">v1.15</div>
+    <div class="sidebar-version" id="sidebar-version" aria-label="Versión">v1.16</div>
   </aside>
 
   <main class="main-content">
@@ -690,7 +690,20 @@
 
       function fechaStr(val) {
         if (val == null) return null;
-        if (typeof val === 'string' && /^\d{4}-\d{2}-\d{2}/.test(val)) return val.slice(0, 10);
+        if (typeof val === 'string') {
+          var ts = val.trim();
+          // Solo calendario YYYY-MM-DD (sin hora): valor de negocio, no convertir zona
+          if (/^\d{4}-\d{2}-\d{2}$/.test(ts)) return ts.slice(0, 10);
+          // ISO con hora (timestamptz en Supabase): día calendario en Argentina, no el slice UTC
+          if (/^\d{4}-\d{2}-\d{2}/.test(ts)) {
+            var parsed = new Date(ts);
+            if (!isNaN(parsed.getTime())) {
+              var sArg = parsed.toLocaleDateString('en-CA', { timeZone: ZONA_ARGENTINA });
+              if (sArg && /^\d{4}-\d{2}-\d{2}$/.test(sArg)) return sArg;
+            }
+            return ts.slice(0, 10);
+          }
+        }
         if (val instanceof Date && !isNaN(val.getTime())) {
           var s = val.toLocaleDateString('en-CA', { timeZone: ZONA_ARGENTINA });
           if (s && /^\d{4}-\d{2}-\d{2}$/.test(s)) return s;
@@ -700,6 +713,17 @@
           return y + '-' + m + '-' + d;
         }
         return null;
+      }
+
+      /** Año/mes/día actual en Argentina (misma convención que fechaStr y docs/FECHAS_ARGENTINA.md). */
+      function fechaPartesAhoraArgentina() {
+        var d = new Date();
+        var s = d.toLocaleDateString('en-CA', { timeZone: ZONA_ARGENTINA });
+        if (s && /^\d{4}-\d{2}-\d{2}$/.test(s)) {
+          var p = s.split('-').map(Number);
+          return { anio: p[0], mes: p[1], dia: p[2] };
+        }
+        return { anio: d.getFullYear(), mes: d.getMonth() + 1, dia: d.getDate() };
       }
 
       /** Formato de período en todos lados: MM-YYYY (ej. 01-2024) */
@@ -853,12 +877,10 @@
         if (mes >= 12) return (anio + 1) + '-01';
         return anio + '-' + String(mes + 1).padStart(2, '0');
       }
-      /** Clave del mes en curso (anio-mes, ej. 2026-03). La proyección arranca desde este mes. */
+      /** Clave del mes en curso (anio-mes, ej. 2026-03). La proyección arranca desde este mes. Zona Argentina. */
       function keyMesEnCurso() {
-        var now = new Date();
-        var anio = now.getFullYear();
-        var mes = now.getMonth() + 1;
-        return anio + '-' + String(mes).padStart(2, '0');
+        var fa = fechaPartesAhoraArgentina();
+        return fa.anio + '-' + String(fa.mes).padStart(2, '0');
       }
       function proyeccionDesdeSerie(valores, N, agg, cant) {
         var c = (cant != null && cant >= 1 && cant <= 12) ? cant : 3;
@@ -1178,11 +1200,11 @@
         actualizarGraficoGP(porMes, moneda, simbolo);
       }
 
-      /** Últimos 13 meses: desde (mes actual - 12) hasta mes actual inclusive. Ej: si hoy es Mar-2026 → 03-2025 … 03-2026. */
+      /** Últimos 13 meses: desde (mes actual - 12) hasta mes actual inclusive. Mes actual = calendario Argentina. */
       function getUltimos12Meses() {
-        var now = new Date();
-        var anio = now.getFullYear();
-        var mes = now.getMonth() + 1;
+        var fa = fechaPartesAhoraArgentina();
+        var anio = fa.anio;
+        var mes = fa.mes;
         var keys = [];
         for (var i = 0; i < 13; i++) {
           var m = mes - i;
