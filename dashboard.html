@@ -330,7 +330,7 @@
         <span class="menu-label">Seguridad</span>
       </a>
     </nav>
-    <div class="sidebar-version" id="sidebar-version" aria-label="Versión">v1.16</div>
+    <div class="sidebar-version" id="sidebar-version" aria-label="Versión">v1.17</div>
   </aside>
 
   <main class="main-content">
@@ -438,7 +438,7 @@
             <button type="button" class="help-exclusiones" id="help-grafico" title="Reglas de exclusión" aria-label="Ver reglas de exclusión">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
             </button>
-            <div class="help-exclusiones-popover" id="help-grafico-popover">Exclusiones: solo centro_de_costos = Saldo Inicial. Se incluyen reales, pendientes y proyectados.</div>
+            <div class="help-exclusiones-popover" id="help-grafico-popover">Exclusiones: Saldo Inicial (centro_de_costos); mismo criterio que la tabla Flujo por mes: además beneficiario Dividendos. Se incluyen reales, pendientes y proyectados.</div>
           </span>
         </div>
         <p style="margin:0 0 0.5rem 0; font-size:0.9rem; color:#666;">Desde el mes del año anterior hasta el mes actual (ej. 03-2025 a 03-2026).</p>
@@ -1126,7 +1126,7 @@
         tbodyHtml += '<tr class="fila-clickable" role="button" tabindex="0"><td class="col-item">' + iconoGP + '</td>' + celdasGp.join('') + '<td class="balance ' + (balanceTotalConProyFlujo >= 0 ? 'positivo' : 'negativo') + '">' + simbolo + formatearNumero(balanceTotalConProyFlujo, moneda) + '</td></tr>';
         document.getElementById('tbody-flujo').innerHTML = tbodyHtml;
 
-        var exclusionesFlujoNote = '<tr class="disclaimer-proyeccion"><td colspan="' + (1 + periodosLabels.length + 1) + '">Solo en esta tabla se excluye además beneficiario Dividendos (tarjetas y gráfico incluyen todo).</td></tr>';
+        var exclusionesFlujoNote = '<tr class="disclaimer-proyeccion"><td colspan="' + (1 + periodosLabels.length + 1) + '">Esta tabla y el gráfico G/P Mensual excluyen además beneficiario Dividendos (las tarjetas resumen y el detalle por concepto/beneficiario incluyen todo).</td></tr>';
         var tfootHtml = '<tr><td class="col-item">Total</td>' + celdasTotalRow.join('') + '<td class="balance ' + (balanceTotalConProyFlujo >= 0 ? 'positivo' : 'negativo') + '">' + simbolo + formatearNumero(balanceTotalConProyFlujo, moneda) + '</td></tr>' + filasProyDisclaimer + exclusionesFlujoNote;
         document.getElementById('tfoot-flujo').innerHTML = tfootHtml;
 
@@ -1197,7 +1197,7 @@
         document.getElementById('tbody-ratios').innerHTML = ratiosBodyHtml;
 
         document.getElementById('panel-flujo').style.display = 'block';
-        actualizarGraficoGP(porMes, moneda, simbolo);
+        actualizarGraficoGP(porMesFlujo, moneda, simbolo);
       }
 
       /** Últimos 13 meses: desde (mes actual - 12) hasta mes actual inclusive. Mes actual = calendario Argentina. */
