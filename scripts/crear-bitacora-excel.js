@@ -40,6 +40,9 @@ const datosLog = [
   ['__HOY__', '__AHORA__', 'Dashboard fechas Argentina', 'Gráfico G/P mensual y proyección: mes actual con calendario Argentina (no zona del navegador). fecha_pago ISO/timestamptz: agrupar por día en Argentina (evita slice UTC).', 'Corrección'],
   ['__HOY__', '__AHORA__', 'Despliegue v1.16', 'Fechas Argentina en gráfico G/P (rango 13 meses y mes en curso/proyección) y agrupación por día calendario en fecha_pago con hora desde Supabase. Push a main y vercel --prod.', 'Despliegue'],
   ['__HOY__', '__AHORA__', 'Despliegue v1.17', 'Gráfico G/P Mensual usa porMesFlujo: mismos totales por mes que la tabla Flujo (excluye Dividendos). Ayuda (?), pie de tabla y docs/EXCLUSIONES_DASHBOARD.md.', 'Despliegue'],
+  ['__HOY__', '__AHORA__', 'Dashboard local: mensaje si falta config', 'Mensaje visible fuera de app-content cuando falta SUPABASE_ANON_KEY (config.js en .gitignore). Errores RPC/sesión muestran panel en la app en lugar de pantalla en blanco.', 'Corrección'],
+  ['__HOY__', '__AHORA__', 'Tarjetas: otra vez con Dividendos', 'Cards vuelven a porMes (incluyen Dividendos); tabla y gráfico siguen con porMesFlujo. Criterio documentado en EXCLUSIONES_DASHBOARD.md.', 'Ajuste'],
+  ['__HOY__', '__AHORA__', 'Despliegue v1.18', 'Fechas Argentina en fecha_pago y rango G/P; gráfico alineado con tabla Flujo (porMesFlujo); tarjetas con porMes (incluye Dividendos); mensaje si falta config local; manejo errores RPC/sesión; docs EXCLUSIONES. Push a main y vercel --prod.', 'Despliegue'],
 ];
 
 const datosLogParaExcel = aplicarHoyAhora(datosLog);
@@ -53,7 +56,7 @@ const funcionalidades = [
   ['Volcado Excel → Supabase', 'Script scripts/volcar_excel_a_supabase.py lee el Excel e inserta en base_everfit. Requiere .env con SUPABASE_URL y SUPABASE_SERVICE_ROLE_KEY.'],
   ['Tipos de cambio (ARS/USD)', 'Consumo por API desde proyecto Sistema-Contable-Nuevo (tabla tipos_cambio_global). Opcional: sync local con scripts/sync_tipo_de_cambio_desde_origen.py.'],
   ['Estructura del repo', 'Carpetas sql/, scripts/, docs/, Base/. Reglas en .cursor/rules (estructura-proyecto, reglas-everfit, bitácora, preguntas-solo-respuesta).'],
-  ['Dashboard Everfit', 'Una página (dashboard.html): flujo por mes, resumen, gráfico G/P (mismos totales por mes que la tabla Flujo; excluye Dividendos), filtros moneda/sucursal. Fechas de negocio y mes actual en America/Argentina/Buenos_Aires (incl. fecha_pago con hora desde Supabase). Login por email; módulo Seguridad (Admin asigna roles). Actualizar base: truncar y cargar Excel desde el navegador. Carga paginada de base_everfit y de tipos de cambio (evita tope ~1000 filas de PostgREST).'],
+  ['Dashboard Everfit', 'Una página (dashboard.html): flujo por mes y gráfico G/P excluyen Dividendos (porMesFlujo); tarjetas totales incluyen todo salvo Saldo Inicial (porMes). Fechas en America/Argentina/Buenos_Aires. Login por email; Seguridad; actualizar base desde el navegador. Carga paginada de base_everfit y tipos de cambio.'],
   ['Proyección Flujo por mes', 'Meses proyectados en tabla (permiso ver_proyeccion). Config: método (promedio/mediana/promedio recortado), meses de historia, meses a proyectar, recorte %. Ventana móvil. Total columna incluye proyectados; tarjetas siempre reales. Encabezado y celdas proyectadas con fondo distintivo.'],
   ['Seguridad – Permisos por rol', 'En Seguridad (Admin): cada rol (Admin, Encargado, Visor) con icono y lista de permisos con toggle on/off editable. RPC get_roles_permissions_for_admin y set_role_permission. Ejecutar sql/supabase_seguridad_permisos_editable.sql.'],
 ];
@@ -95,6 +98,7 @@ const versiones = [
   ['1.15', '__HOY__', 'Tipos de cambio con paginación al cargar (tipos_cambio_global / tipo_de_cambio). Regla proyecto: documentar límite PostgREST y paginación en reglas-everfit.'],
   ['1.16', '__HOY__', 'Fechas America/Argentina/Buenos_Aires: gráfico G/P y clave mes en curso; fecha_pago ISO/timestamptz agrupada por día local (no slice UTC).'],
   ['1.17', '__HOY__', 'Gráfico G/P Mensual alineado con tabla Flujo por mes (porMesFlujo; excluye Dividendos). Documentación EXCLUSIONES_DASHBOARD.md actualizada.'],
+  ['1.18', '__HOY__', 'Consolidado: fechas AR en agrupación y mes actual; gráfico=tabla Flujo; tarjetas con Dividendos; UX local sin anon key y errores sesión/RPC visibles. EXCLUSIONES_DASHBOARD.md.'],
 ];
 const versionesParaExcel = aplicarHoyAhora(versiones);
 const wsVersiones = XLSX.utils.aoa_to_sheet(versionesParaExcel);

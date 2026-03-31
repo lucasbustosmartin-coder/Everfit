@@ -330,10 +330,11 @@
         <span class="menu-label">Seguridad</span>
       </a>
     </nav>
-    <div class="sidebar-version" id="sidebar-version" aria-label="Versión">v1.17</div>
+    <div class="sidebar-version" id="sidebar-version" aria-label="Versión">v1.18</div>
   </aside>
 
   <main class="main-content">
+    <div id="config-gate-error" class="card error" style="display:none; max-width:560px; margin:2rem auto;" role="alert"></div>
     <div id="login-screen" class="login-screen card" style="display:none;">
       <img src="Logo.png" alt="Everfit" class="login-logo" onerror="this.style.display='none'" />
       <h2>Iniciar sesión</h2>
@@ -426,7 +427,7 @@
           <button type="button" class="help-exclusiones" id="help-tarjetas" title="Reglas de exclusión" aria-label="Ver reglas de exclusión">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
           </button>
-          <div class="help-exclusiones-popover" id="help-tarjetas-popover">Exclusiones: solo centro_de_costos = Saldo Inicial. Se incluyen reales, pendientes y proyectados.</div>
+            <div class="help-exclusiones-popover" id="help-tarjetas-popover">Exclusiones: solo centro_de_costos = Saldo Inicial. Incluyen Dividendos, reales, pendientes y proyectados. Suma global (sin columnas de proyección de la tabla).</div>
         </span>
       </div>
 
@@ -635,9 +636,13 @@
       var SUPABASE_ANON_KEY = (typeof window.SUPABASE_ANON_KEY !== 'undefined' ? window.SUPABASE_ANON_KEY : '') || '';
 
       if (!SUPABASE_ANON_KEY) {
-        document.getElementById('loading').style.display = 'none';
-        document.getElementById('error').style.display = 'block';
-        document.getElementById('error').innerHTML = 'Falta la anon key. Copiá <code>config.example.js</code> a <code>config.js</code> y pegá la anon key de Everfit (Supabase → proyecto Everfit → Project Settings → API → anon public).';
+        var gate = document.getElementById('config-gate-error');
+        var sb = document.getElementById('sidebar');
+        if (sb) sb.style.display = 'none';
+        if (gate) {
+          gate.style.display = 'block';
+          gate.innerHTML = '<p style="margin:0 0 0.75rem 0;"><strong>Falta la clave anónima de Supabase</strong> en local. No es un tema de permisos de la app.</p><p style="margin:0;">Copiá <code>config.example.js</code> a <code>config.js</code> en la raíz del proyecto, pegá la <strong>anon public</strong> del proyecto Everfit (Supabase → Project Settings → API) y recargá. Si usás Vite (<code>npm run dev</code>), asegurate de que exista <code>config.js</code> al lado de <code>dashboard.html</code>.</p>';
+        }
         return;
       }
 
@@ -1964,7 +1969,11 @@
         }).then(function(results) {
           var res = results[0];
           if (res.error) {
-            document.getElementById('login-error').textContent = res.error.message || 'Error al cargar permisos.';
+            showAppContent();
+            document.getElementById('loading').style.display = 'none';
+            var errPanel = document.getElementById('error');
+            errPanel.style.display = 'block';
+            errPanel.textContent = (res.error.message || 'Error al cargar permisos.') + ' Revisá RLS y que existan las RPC get_my_permissions / get_my_allowed_sucursales.';
             return;
           }
           userPermissions = res.data || [];
@@ -1996,6 +2005,12 @@
               document.getElementById('error').style.display = 'block';
               document.getElementById('error').textContent = 'Error: ' + (e.message || e);
             });
+        }).catch(function(e) {
+          showAppContent();
+          document.getElementById('loading').style.display = 'none';
+          var errPanel = document.getElementById('error');
+          errPanel.style.display = 'block';
+          errPanel.textContent = 'Error al inicializar la sesión: ' + (e && e.message ? e.message : e);
         });
       }
 
@@ -2261,6 +2276,11 @@
           return;
         }
         onSessionReady(session);
+      }).catch(function(err) {
+        showLogin();
+        setupLoginAndRegister();
+        var le = document.getElementById('login-error');
+        if (le) le.textContent = 'No se pudo recuperar la sesión: ' + (err && err.message ? err.message : err);
       });
     })();
   </script>
