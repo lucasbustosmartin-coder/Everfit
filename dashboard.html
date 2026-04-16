@@ -61,6 +61,8 @@
     .grafico-gp-wrap .grafico-titulo .grafico-icon { width: 22px; height: 22px; color: #555; }
     .grafico-gp-wrap .grafico-titulo .grafico-icon svg { width: 100%; height: 100%; stroke: currentColor; }
     .grafico-gp-wrap .chart-container { position: relative; height: 280px; width: 100%; }
+    .asistencia-activos-mes-wrap { min-height: 200px; width: 100%; }
+    .asistencia-activos-mes-wrap .chart-container { position: relative; height: 280px; width: 100%; min-width: 0; }
     table { width: 100%; border-collapse: collapse; }
     th, td { text-align: right; padding: 0.5rem 0.75rem; border-bottom: 1px solid #eee; }
     th { font-weight: 600; color: #555; }
@@ -268,6 +270,7 @@
       .resumen-help-pos { top: 0.5rem; right: 0.5rem; }
       .ultima-actualizacion-leyenda { font-size: 0.75rem; margin-top: 0.5rem; padding-top: 0.5rem; }
       .grafico-gp-wrap .chart-container { height: 240px; }
+      .asistencia-activos-mes-wrap .chart-container { height: 240px; }
       .grafico-gp-wrap .grafico-titulo { font-size: 1rem; }
       #tabla-flujo-wrap { max-height: 60vh; margin-top: 0.35rem; -webkit-overflow-scrolling: touch; }
       #tabla-flujo th, #tabla-flujo td { padding: 0.4rem 0.5rem; font-size: 0.875rem; }
@@ -309,6 +312,7 @@
       .resumen .card .card-titulo { font-size: 0.9rem; }
       .resumen .valor { font-size: 1.25rem; }
       .grafico-gp-wrap .chart-container { height: 200px; }
+      .asistencia-activos-mes-wrap .chart-container { height: 200px; }
       #tabla-flujo th, #tabla-flujo td { padding: 0.35rem 0.4rem; font-size: 0.8rem; }
       #tabla-flujo th.col-item, #tabla-flujo td.col-item { min-width: 72px; }
       .modal { width: 100%; max-height: 95vh; }
@@ -495,7 +499,7 @@
         <span class="menu-label">Seguridad</span>
       </a>
     </nav>
-    <div class="sidebar-version" id="sidebar-version" aria-label="Versión">v1.24</div>
+    <div class="sidebar-version" id="sidebar-version" aria-label="Versión">v1.25</div>
   </aside>
 
   <main class="main-content">
@@ -685,7 +689,7 @@
           <p class="asistencia-metodo"><strong>Metodología:</strong> cada registro es un <strong>ingreso</strong>; se asume estancia de <strong>1 hora</strong>. La celda muestra cuántas personas estarían simultáneamente dentro del club en esa franja horaria (solape de intervalos [ingreso, ingreso+1h) con la franja). Podés combinar sucursales con los botones (igual que en Home: Total o varias activas).</p>
           <div id="asistencia-help-wrap" class="help-exclusiones-wrap" style="display:inline-flex;">
             <button type="button" class="help-exclusiones" id="help-asistencia" title="Ayuda vista asistencia" aria-label="Ayuda"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></button>
-            <div class="help-exclusiones-popover" id="help-asistencia-popover"><strong>Mapa:</strong> columnas = horas. Filas = calendario (día/mes) o <strong>Lun–Dom</strong> (promedio por día de la semana en el período). Vista <strong>año completo</strong> en calendario: filas = meses, valor = promedio diario en esa hora. <strong>Frecuencia:</strong> días distintos con visita ÷ <em>semanas en que hubo al menos un ingreso</em> (no todo el año si solo vino un mes). Sin franja horaria del mapa. Fila verde = rango modal. <strong>Permanencia:</strong> primera–última visita <em>solo dentro del rango Año/Mes del reporte</em> (no usa historial fuera de lo cargado); el techo en meses coincide con la duración de ese rango. Rangos mensuales y cola dinámica (tope 60 meses). En la tabla de rangos, columna <strong>Acción</strong> (ojo): abre solo los clientes de ese rango; desde ahí, otro ojo por cliente abre el resumen y un segundo ojo muestra u oculta las asistencias por fecha. <strong>Multi-sede:</strong> con «Total» o varias sedes, ≥2 sedes; con <strong>una</strong> sede, quienes pasaron por ella y por otra. Ámbar = sede con más visitas.</div>
+            <div class="help-exclusiones-popover" id="help-asistencia-popover"><strong>Mapa:</strong> columnas = horas. Filas = calendario (día/mes) o <strong>Lun–Dom</strong> (promedio por día de la semana en el período). Vista <strong>año completo</strong> en calendario: filas = meses, valor = promedio diario en esa hora. <strong>Clientes activos (gráfico):</strong> personas distintas con ≥1 ingreso por mes calendario (mismo filtro que el mapa); el eje termina en el <strong>último mes cerrado</strong> (Argentina), sin el mes en curso; tendencia = promedio móvil de 3 meses; con varias sedes, el total suavizado cuenta cada persona una sola vez aunque visite varias sedes seleccionadas. <strong>Frecuencia:</strong> días distintos con visita ÷ <em>semanas en que hubo al menos un ingreso</em> (no todo el año si solo vino un mes). Sin franja horaria del mapa. Fila verde = rango modal. <strong>Permanencia:</strong> primera–última visita <em>solo dentro del rango Año/Mes del reporte</em> (no usa historial fuera de lo cargado); el techo en meses coincide con la duración de ese rango. Rangos mensuales y cola dinámica (tope 60 meses). En la tabla de rangos, columna <strong>Acción</strong> (ojo): abre solo los clientes de ese rango; desde ahí, otro ojo por cliente abre el resumen y un segundo ojo muestra u oculta las asistencias por fecha. <strong>Multi-sede:</strong> con «Total» o varias sedes, ≥2 sedes; con <strong>una</strong> sede, quienes pasaron por ella y por otra. Ámbar = sede con más visitas.</div>
           </div>
         </div>
         <div class="card" style="margin-bottom:1rem;">
@@ -701,6 +705,13 @@
           </div>
           <p style="margin:0 0 0.5rem 0; font-size:0.85rem; color:#666;">Por defecto <strong>Por hora</strong> (filas = día del mes o mes del año). Las <strong>columnas</strong> son siempre las horas del rango. Podés agrupar filas por <strong>Lun–Dom</strong> (promedio por día de la semana).</p>
           <div id="asistencia-heatmap-wrap" class="asistencia-heatmap-wrap"></div>
+        </div>
+        <div class="card">
+          <h2 style="margin:0 0 0.5rem 0; font-size:1.1rem;">Clientes activos por mes</h2>
+          <p style="margin:0 0 0.5rem 0; font-size:0.88rem; color:#666;">Mismo <strong>período, sucursales y permisos</strong> que el mapa. Por mes calendario: <strong>personas distintas</strong> con al menos un ingreso (misma clave que el resto de la vista: ID empleado o nombre+apellido). El gráfico <strong>termina en el último mes calendario completo</strong> (Argentina), sin el mes en curso, para no comparar un mes cerrado con uno abierto. <strong>Total</strong>: serie mensual + tendencia (promedio móvil de 3 meses). <strong>Varias sucursales</strong>: una línea por sede y solo la tendencia del total (personas únicas en el mes en todas las sedes seleccionadas, sin contar dos veces si una persona visitó más de una sede elegida). <strong>Una sede</strong>: esa sede + su tendencia.</p>
+          <div id="asistencia-activos-mes-wrap" class="asistencia-activos-mes-wrap">
+            <div class="chart-container"><canvas id="chart-asistencia-activos-mes" aria-label="Gráfico de clientes activos por mes"></canvas></div>
+          </div>
         </div>
         <div class="card">
           <h2 style="margin:0 0 0.5rem 0; font-size:1.1rem;">Frecuencia de uso (distribución)</h2>
@@ -957,6 +968,11 @@
       }
 
       var client = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+      /**
+       * Máximo de filas pedidas por request (.range). Debe ser ≤ «Max rows» (Supabase → Data API).
+       * La paginación avanza según las filas realmente devueltas hasta cubrir todo el conjunto.
+       */
+      var SUPABASE_PAGE_SIZE = 15000;
       // Opción 2: tipos de cambio desde API del proyecto origen (si está configurado)
       var ORIGEN_TC_URL = (typeof window.ORIGEN_TC_URL !== 'undefined' && window.ORIGEN_TC_URL) ? window.ORIGEN_TC_URL : '';
       var ORIGEN_TC_ANON_KEY = (typeof window.ORIGEN_TC_ANON_KEY !== 'undefined' && window.ORIGEN_TC_ANON_KEY) ? window.ORIGEN_TC_ANON_KEY : '';
@@ -1169,6 +1185,19 @@
         return { anio: d.getFullYear(), mes: d.getMonth() + 1, dia: d.getDate() };
       }
 
+      /** Último mes calendario ya cerrado (Argentina): el anterior al mes en curso. Clave `YYYY-MM` para comparar con meses del gráfico. */
+      function getAsistenciaUltimoMesCalendarioCerradoYM() {
+        var fa = fechaPartesAhoraArgentina();
+        var y = fa.anio;
+        var m = fa.mes;
+        m--;
+        if (m < 1) {
+          m = 12;
+          y--;
+        }
+        return y + '-' + String(m).padStart(2, '0');
+      }
+
       /** Formato de período en todos lados: MM-YYYY (ej. 01-2024) */
       function formatoPeriodoMMYYYY(mes, anio) {
         var m = mes != null && mes >= 1 && mes <= 12 ? String(mes).padStart(2, '0') : String(mes || '');
@@ -1323,17 +1352,18 @@
        */
       function traerTransaccionesAsistenciaRango(fechaDesde, fechaHasta, onProgress) {
         var cols = 'sucursal, fecha, tiempo, nombre, apellido, empleado_id';
-        var pageSz = typeof SUPABASE_PAGE_SIZE === 'number' ? SUPABASE_PAGE_SIZE : 1000;
+        var pageSz = typeof SUPABASE_PAGE_SIZE === 'number' ? SUPABASE_PAGE_SIZE : 15000;
         function doFetch(totalCount) {
           var todas = [];
+          function reportProgress(pctCap) {
+            if (typeof onProgress !== 'function') return;
+            var pct = totalCount > 0 ? Math.min(pctCap != null ? pctCap : 95, Math.floor((todas.length / totalCount) * 100)) : null;
+            var sub = totalCount > 0
+              ? todas.length.toLocaleString('es-AR') + ' / ' + totalCount.toLocaleString('es-AR') + ' registros'
+              : ('Descargados: ' + todas.length.toLocaleString('es-AR'));
+            onProgress(pct, sub);
+          }
           function fetchPage(offset) {
-            if (typeof onProgress === 'function') {
-              var pct = totalCount > 0 ? Math.min(95, Math.floor((offset / totalCount) * 100)) : null;
-              var sub = totalCount > 0
-                ? todas.length.toLocaleString('es-AR') + ' / ' + totalCount.toLocaleString('es-AR') + ' registros'
-                : ('Descargados: ' + todas.length.toLocaleString('es-AR'));
-              onProgress(pct, sub);
-            }
             return client
               .from('transacciones_asistencia')
               .select(cols)
@@ -1345,14 +1375,33 @@
                 var data = _ref.data;
                 var err = _ref.error;
                 if (err) throw err;
-                todas.push.apply(todas, data || []);
-                if ((data || []).length < pageSz) {
-                  if (typeof onProgress === 'function' && totalCount > 0) {
-                    onProgress(100, todas.length.toLocaleString('es-AR') + ' / ' + totalCount.toLocaleString('es-AR') + ' registros');
+                var batch = data || [];
+                var n = batch.length;
+                todas.push.apply(todas, batch);
+                if (totalCount > 0) {
+                  reportProgress(todas.length >= totalCount ? 100 : 95);
+                  if (n === 0 || todas.length >= totalCount) {
+                    if (typeof onProgress === 'function') {
+                      onProgress(100, todas.length.toLocaleString('es-AR') + ' / ' + totalCount.toLocaleString('es-AR') + ' registros');
+                    }
+                    return todas;
+                  }
+                  return fetchPage(offset + n);
+                }
+                reportProgress(null);
+                if (n === 0) {
+                  if (typeof onProgress === 'function') {
+                    onProgress(100, 'Descargados: ' + todas.length.toLocaleString('es-AR') + ' registros');
                   }
                   return todas;
                 }
-                return fetchPage(offset + pageSz);
+                if (n < pageSz) {
+                  if (typeof onProgress === 'function') {
+                    onProgress(100, 'Descargados: ' + todas.length.toLocaleString('es-AR') + ' registros');
+                  }
+                  return todas;
+                }
+                return fetchPage(offset + n);
               });
           }
           return fetchPage(0);
@@ -1489,6 +1538,39 @@
           if (asistenciaSucursalFilterSet.length > 0 && asistenciaSucursalFilterSet.indexOf(s) === -1) return false;
           return true;
         });
+      }
+
+      function iterarMesesCalendarioDesdeHasta(desdeStr, hastaStr, cb) {
+        var a = desdeStr.split('-').map(Number);
+        var b = hastaStr.split('-').map(Number);
+        var y = a[0], m = a[1];
+        var endY = b[0], endM = b[1];
+        if (a.length < 2 || b.length < 2 || [y, m, endY, endM].some(function(x) { return typeof x !== 'number' || isNaN(x); })) return;
+        if (y > endY || (y === endY && m > endM)) return;
+        while (y < endY || (y === endY && m <= endM)) {
+          cb(y + '-' + String(m).padStart(2, '0'));
+          m++;
+          if (m > 12) { m = 1; y++; }
+        }
+      }
+
+      function formatoLabelMesActivosAsistencia(ymKey) {
+        var p = ymKey.split('-');
+        var y = parseInt(p[0], 10), mo = parseInt(p[1], 10);
+        if (isNaN(y) || isNaN(mo)) return ymKey;
+        return (MESES_CORT_ASIST[mo] || String(mo)) + ' ' + String(y).slice(-2);
+      }
+
+      function asistenciaMediaMovil3(arr) {
+        var out = [];
+        for (var i = 0; i < arr.length; i++) {
+          if (i < 2) out.push(null);
+          else {
+            var s = Number(arr[i - 2]) + Number(arr[i - 1]) + Number(arr[i]);
+            out.push(Math.round(s / 3 * 10) / 10);
+          }
+        }
+        return out;
       }
 
       /** Todas las filas del período cargado respetando solo sucursales permitidas al usuario (sin filtro de sucursal de la vista). Sirve para detectar multi-sede aunque el filtro sea una sola sede. */
@@ -2270,6 +2352,167 @@
         }
       }
 
+      var chartAsistenciaActivos = null;
+
+      function pintarGraficoActivosAsistencia() {
+        var canvas = document.getElementById('chart-asistencia-activos-mes');
+        var wrap = document.getElementById('asistencia-activos-mes-wrap');
+        if (!canvas || !wrap || typeof Chart === 'undefined') return;
+
+        var rg = getAsistenciaRangoUi();
+        var rows = getAsistenciaRowsFiltered();
+        var meses = [];
+        iterarMesesCalendarioDesdeHasta(rg.desde, rg.hasta, function(ym) { meses.push(ym); });
+        var ymMaxGraf = getAsistenciaUltimoMesCalendarioCerradoYM();
+        meses = meses.filter(function(ym) { return ym <= ymMaxGraf; });
+        if (meses.length === 0) {
+          wrap.style.display = 'none';
+          if (chartAsistenciaActivos) {
+            chartAsistenciaActivos.destroy();
+            chartAsistenciaActivos = null;
+          }
+          return;
+        }
+        wrap.style.display = 'block';
+
+        var labels = meses.map(formatoLabelMesActivosAsistencia);
+        var mesIdx = {};
+        for (var mi = 0; mi < meses.length; mi++) mesIdx[meses[mi]] = mi;
+
+        function conteosPorMesPred(pred) {
+          var sets = meses.map(function() { return {}; });
+          for (var ri = 0; ri < rows.length; ri++) {
+            var r = rows[ri];
+            if (!pred(r)) continue;
+            var f = asistenciaFechaISO(r);
+            if (!/^\d{4}-\d{2}-\d{2}$/.test(f)) continue;
+            var ym = f.slice(0, 7);
+            var idx = mesIdx[ym];
+            if (idx === undefined) continue;
+            sets[idx][personaKeyAsistencia(r)] = true;
+          }
+          return meses.map(function(_, j) { return Object.keys(sets[j]).length; });
+        }
+
+        var filt = asistenciaSucursalFilterSet || [];
+        var datasets = [];
+
+        if (filt.length === 0) {
+          var rawT = conteosPorMesPred(function() { return true; });
+          datasets.push({
+            label: 'Clientes activos',
+            data: rawT,
+            borderColor: '#0d9488',
+            backgroundColor: 'rgba(13, 148, 136, 0.08)',
+            fill: false,
+            tension: 0.25,
+            pointRadius: 3,
+            pointHoverRadius: 5
+          });
+          datasets.push({
+            label: 'Tendencia (prom. 3 meses)',
+            data: asistenciaMediaMovil3(rawT),
+            borderColor: '#0f766e',
+            borderDash: [5, 5],
+            fill: false,
+            tension: 0.35,
+            pointRadius: 0
+          });
+        } else if (filt.length === 1) {
+          var s0 = filt[0];
+          var raw1 = conteosPorMesPred(function(r) { return (r.sucursal || '').trim() === s0; });
+          datasets.push({
+            label: s0,
+            data: raw1,
+            borderColor: '#0d9488',
+            backgroundColor: 'rgba(13, 148, 136, 0.08)',
+            fill: false,
+            tension: 0.25,
+            pointRadius: 3
+          });
+          datasets.push({
+            label: 'Tendencia (prom. 3 meses)',
+            data: asistenciaMediaMovil3(raw1),
+            borderColor: '#0f766e',
+            borderDash: [5, 5],
+            fill: false,
+            tension: 0.35,
+            pointRadius: 0
+          });
+        } else {
+          var palette = ['#0d9488', '#6366f1', '#ca8a04', '#be185d', '#475569', '#0891b2', '#a855f7'];
+          for (var si = 0; si < filt.length; si++) {
+            (function(sedNom, idxPal) {
+              var rawS = conteosPorMesPred(function(r) { return (r.sucursal || '').trim() === sedNom; });
+              datasets.push({
+                label: sedNom,
+                data: rawS,
+                borderColor: palette[idxPal % palette.length],
+                backgroundColor: 'transparent',
+                fill: false,
+                tension: 0.2,
+                pointRadius: 2
+              });
+            })(filt[si], si);
+          }
+          var rawTot = conteosPorMesPred(function() { return true; });
+          datasets.push({
+            label: 'Total (tendencia 3 meses)',
+            data: asistenciaMediaMovil3(rawTot),
+            borderColor: '#0f172a',
+            borderWidth: 2,
+            borderDash: [4, 3],
+            fill: false,
+            tension: 0.35,
+            pointRadius: 0
+          });
+        }
+
+        if (chartAsistenciaActivos) chartAsistenciaActivos.destroy();
+        chartAsistenciaActivos = new Chart(canvas, {
+          type: 'line',
+          data: { labels: labels, datasets: datasets },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            interaction: { mode: 'index', intersect: false },
+            plugins: {
+              legend: {
+                position: 'bottom',
+                labels: { boxWidth: 12, font: { size: 11 }, padding: 8 }
+              },
+              tooltip: {
+                callbacks: {
+                  label: function(ctx) {
+                    var v = ctx.raw;
+                    if (v == null) return ctx.dataset.label + ': —';
+                    var n = Number(v);
+                    var suf = (n === 1 ? '' : 's');
+                    return ctx.dataset.label + ': ' + n + ' cliente' + suf;
+                  }
+                }
+              }
+            },
+            scales: {
+              y: {
+                beginAtZero: true,
+                ticks: { font: { size: 11 } },
+                grid: { color: 'rgba(0,0,0,0.06)' }
+              },
+              x: {
+                ticks: { maxRotation: 45, font: { size: 10 } },
+                grid: { display: false }
+              }
+            }
+          }
+        });
+        requestAnimationFrame(function() {
+          requestAnimationFrame(function() {
+            if (chartAsistenciaActivos) chartAsistenciaActivos.resize();
+          });
+        });
+      }
+
       function pintarAsistenciaVista(anio, mesNum, hDesde, hHasta, optMultiAnioMapa) {
         var wrapH = document.getElementById('asistencia-heatmap-wrap');
         var wrapFreq = document.getElementById('asistencia-frecuencia-wrap');
@@ -2390,6 +2633,7 @@
           if (wrapFreq) wrapFreq.innerHTML = renderFrecuenciaClientesHtml();
           if (wrapPerm) wrapPerm.innerHTML = renderPermanenciaDistribucionHtml();
           if (wrapMulti) wrapMulti.innerHTML = renderMultiSedeHtml();
+          pintarGraficoActivosAsistencia();
         });
       }
 
@@ -2716,23 +2960,25 @@
         });
       }
 
-      /** PostgREST/Supabase suele limitar ~1000 filas por request. */
-      var SUPABASE_PAGE_SIZE = 1000;
+      /** Ver SUPABASE_PAGE_SIZE junto a createClient (paginación base_everfit / tipos de cambio). */
 
       function traerTodasLasFilas() {
         var todas = [];
+        var pageSz = SUPABASE_PAGE_SIZE;
         function fetchPage(offset) {
           return client
             .from('base_everfit')
             .select('fecha_pago, importe, ingresos_egresos, centro_de_costos, concepto, beneficiario, real_pendiente, sucursal')
-            .range(offset, offset + SUPABASE_PAGE_SIZE - 1)
+            .range(offset, offset + pageSz - 1)
             .then(function(_ref) {
               var data = _ref.data;
               var err = _ref.error;
               if (err) throw err;
-              todas.push.apply(todas, data || []);
-              if ((data || []).length < SUPABASE_PAGE_SIZE) return todas;
-              return fetchPage(offset + SUPABASE_PAGE_SIZE);
+              var batch = data || [];
+              var n = batch.length;
+              todas.push.apply(todas, batch);
+              if (n === 0) return todas;
+              return fetchPage(offset + n);
             });
         }
         return fetchPage(0);
@@ -2743,19 +2989,22 @@
         var c = clientOrigenTC || client;
         var tabla = clientOrigenTC ? 'tipos_cambio_global' : 'tipo_de_cambio';
         var todas = [];
+        var pageSz = SUPABASE_PAGE_SIZE;
         function fetchPage(offset) {
           return c
             .from(tabla)
             .select('fecha, usd_mep, usd_ccl, usd_oficial')
             .order('fecha', { ascending: true })
-            .range(offset, offset + SUPABASE_PAGE_SIZE - 1)
+            .range(offset, offset + pageSz - 1)
             .then(function(_ref) {
               var data = _ref.data;
               var err = _ref.error;
               if (err) throw err;
-              todas.push.apply(todas, data || []);
-              if ((data || []).length < SUPABASE_PAGE_SIZE) return todas;
-              return fetchPage(offset + SUPABASE_PAGE_SIZE);
+              var batch = data || [];
+              var n = batch.length;
+              todas.push.apply(todas, batch);
+              if (n === 0) return todas;
+              return fetchPage(offset + n);
             });
         }
         return fetchPage(0);

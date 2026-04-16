@@ -11,7 +11,7 @@ alwaysApply: true
 - **Backend:** Supabase (PostgreSQL). Tablas: `base_everfit` (datos del Excel), `tipo_de_cambio` (para ARS/USD; se sincroniza desde otro proyecto con `scripts/sync_tipo_de_cambio_desde_origen.py`), `transacciones_asistencia` (import Excel Transacciones por sucursal desde el dashboard; ver `docs/TRANSACCIONES_ASISTENCIA.md`).
 - **Script de volcado:** `scripts/volcar_excel_a_supabase.py` lee `Base/Base_Everfit.xlsx`, hoja "Base", y inserta en `base_everfit`. Requiere `.env` con `SUPABASE_URL` y `SUPABASE_SERVICE_ROLE_KEY`.
 - **Dashboard:** `dashboard.html` en la raíz: solapa Flujo por mes (Mes-Año, Ingresos, Egresos, G/P) desde `base_everfit`. Menú **Asistencia** (permiso `ver_asistencia`, configurable en Seguridad): `transacciones_asistencia`, concurrencia por día/hora (1 h por ingreso), filtros año/mes/sucursal. Ver `docs/DASHBOARD.md`, `sql/supabase_asistencia_ver_permiso.sql`.
-- **Límite PostgREST (~1000 filas por request):** al cargar datos, el dashboard pagina `base_everfit` y la tabla de tipos de cambio (`tipos_cambio_global` vía API origen o `tipo_de_cambio` local) en bloques de 1000 hasta agotar filas, para que Flujo por mes y conversiones ARS/USD no queden truncados.
+- **Límite PostgREST (paginación):** el dashboard usa `SUPABASE_PAGE_SIZE` en `dashboard.html` (p. ej. 15000 filas por request; debe coincidir con **Max rows** en Supabase → Data API) y pagina `base_everfit`, tipos de cambio y `transacciones_asistencia` hasta agotar filas.
 - **Estructura del repo:** `sql/` (DDL y scripts SQL), `scripts/` (Python/Node), `docs/` (guías), `Base/` (Excel). Ver regla **estructura-proyecto**.
 
 ## Fechas de negocio (regla estricta — no omitir)
