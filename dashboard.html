@@ -499,7 +499,7 @@
         <span class="menu-label">Seguridad</span>
       </a>
     </nav>
-    <div class="sidebar-version" id="sidebar-version" aria-label="Versión">v1.25</div>
+    <div class="sidebar-version" id="sidebar-version" aria-label="Versión">v1.26</div>
   </aside>
 
   <main class="main-content">
@@ -689,7 +689,7 @@
           <p class="asistencia-metodo"><strong>Metodología:</strong> cada registro es un <strong>ingreso</strong>; se asume estancia de <strong>1 hora</strong>. La celda muestra cuántas personas estarían simultáneamente dentro del club en esa franja horaria (solape de intervalos [ingreso, ingreso+1h) con la franja). Podés combinar sucursales con los botones (igual que en Home: Total o varias activas).</p>
           <div id="asistencia-help-wrap" class="help-exclusiones-wrap" style="display:inline-flex;">
             <button type="button" class="help-exclusiones" id="help-asistencia" title="Ayuda vista asistencia" aria-label="Ayuda"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></button>
-            <div class="help-exclusiones-popover" id="help-asistencia-popover"><strong>Mapa:</strong> columnas = horas. Filas = calendario (día/mes) o <strong>Lun–Dom</strong> (promedio por día de la semana en el período). Vista <strong>año completo</strong> en calendario: filas = meses, valor = promedio diario en esa hora. <strong>Clientes activos (gráfico):</strong> personas distintas con ≥1 ingreso por mes calendario (mismo filtro que el mapa); el eje termina en el <strong>último mes cerrado</strong> (Argentina), sin el mes en curso; tendencia = promedio móvil de 3 meses; con varias sedes, el total suavizado cuenta cada persona una sola vez aunque visite varias sedes seleccionadas. <strong>Frecuencia:</strong> días distintos con visita ÷ <em>semanas en que hubo al menos un ingreso</em> (no todo el año si solo vino un mes). Sin franja horaria del mapa. Fila verde = rango modal. <strong>Permanencia:</strong> primera–última visita <em>solo dentro del rango Año/Mes del reporte</em> (no usa historial fuera de lo cargado); el techo en meses coincide con la duración de ese rango. Rangos mensuales y cola dinámica (tope 60 meses). En la tabla de rangos, columna <strong>Acción</strong> (ojo): abre solo los clientes de ese rango; desde ahí, otro ojo por cliente abre el resumen y un segundo ojo muestra u oculta las asistencias por fecha. <strong>Multi-sede:</strong> con «Total» o varias sedes, ≥2 sedes; con <strong>una</strong> sede, quienes pasaron por ella y por otra. Ámbar = sede con más visitas.</div>
+            <div class="help-exclusiones-popover" id="help-asistencia-popover"><strong>Mapa:</strong> columnas = horas. Filas = calendario (día/mes) o <strong>Lun–Dom</strong> (promedio por día de la semana en el período). Vista <strong>año completo</strong> en calendario: filas = meses, valor = promedio diario en esa hora. <strong>Clientes activos (gráfico):</strong> personas distintas con ≥1 ingreso por mes calendario (mismo filtro que el mapa); el eje termina en el <strong>último mes cerrado</strong> (Argentina), sin el mes en curso; tendencia = promedio móvil de 3 meses; con varias sedes, el total suavizado cuenta cada persona una sola vez aunque visite varias sedes seleccionadas; cada línea por sede <strong>arranca en el primer mes con datos</strong> de esa sede (sin ceros hacia atrás antes de la apertura). <strong>Frecuencia:</strong> días distintos con visita ÷ <em>semanas en que hubo al menos un ingreso</em> (no todo el año si solo vino un mes). Sin franja horaria del mapa. Fila verde = rango modal. <strong>Permanencia:</strong> primera–última visita <em>solo dentro del rango Año/Mes del reporte</em> (no usa historial fuera de lo cargado); el techo en meses coincide con la duración de ese rango. Rangos mensuales y cola dinámica (tope 60 meses). En la tabla de rangos, columna <strong>Acción</strong> (ojo): abre solo los clientes de ese rango; desde ahí, otro ojo por cliente abre el resumen y un segundo ojo muestra u oculta las asistencias por fecha. <strong>Multi-sede:</strong> con «Total» o varias sedes, ≥2 sedes; con <strong>una</strong> sede, quienes pasaron por ella y por otra. Ámbar = sede con más visitas.</div>
           </div>
         </div>
         <div class="card" style="margin-bottom:1rem;">
@@ -708,7 +708,7 @@
         </div>
         <div class="card">
           <h2 style="margin:0 0 0.5rem 0; font-size:1.1rem;">Clientes activos por mes</h2>
-          <p style="margin:0 0 0.5rem 0; font-size:0.88rem; color:#666;">Mismo <strong>período, sucursales y permisos</strong> que el mapa. Por mes calendario: <strong>personas distintas</strong> con al menos un ingreso (misma clave que el resto de la vista: ID empleado o nombre+apellido). El gráfico <strong>termina en el último mes calendario completo</strong> (Argentina), sin el mes en curso, para no comparar un mes cerrado con uno abierto. <strong>Total</strong>: serie mensual + tendencia (promedio móvil de 3 meses). <strong>Varias sucursales</strong>: una línea por sede y solo la tendencia del total (personas únicas en el mes en todas las sedes seleccionadas, sin contar dos veces si una persona visitó más de una sede elegida). <strong>Una sede</strong>: esa sede + su tendencia.</p>
+          <p style="margin:0 0 0.5rem 0; font-size:0.88rem; color:#666;">Mismo <strong>período, sucursales y permisos</strong> que el mapa. Por mes calendario: <strong>personas distintas</strong> con al menos un ingreso (misma clave que el resto de la vista: ID empleado o nombre+apellido). El gráfico <strong>termina en el último mes calendario completo</strong> (Argentina), sin el mes en curso, para no comparar un mes cerrado con uno abierto. <strong>Total</strong>: serie mensual + tendencia (promedio móvil de 3 meses). <strong>Varias sucursales</strong>: una línea por sede (cada una <strong>arranca en el primer mes con datos</strong> en esa sede, sin ceros hacia atrás antes de la apertura) y solo la tendencia del total (personas únicas en el mes en todas las sedes seleccionadas, sin contar dos veces si una persona visitó más de una sede elegida). <strong>Una sede</strong>: esa sede + su tendencia.</p>
           <div id="asistencia-activos-mes-wrap" class="asistencia-activos-mes-wrap">
             <div class="chart-container"><canvas id="chart-asistencia-activos-mes" aria-label="Gráfico de clientes activos por mes"></canvas></div>
           </div>
@@ -1570,6 +1570,18 @@
             out.push(Math.round(s / 3 * 10) / 10);
           }
         }
+        return out;
+      }
+
+      /**
+       * Con varias sucursales en el gráfico: no dibujar la línea en meses anteriores al primero con ≥1 activo
+       * en esa sede (evita una recta en cero antes de la apertura, p. ej. Cabildo desde diciembre).
+       */
+      function asistenciaNulosAntesDelPrimerMesConDatos(serie) {
+        var out = serie.slice();
+        var i0 = 0;
+        while (i0 < out.length && !(Number(out[i0]) > 0)) i0++;
+        for (var i = 0; i < i0; i++) out[i] = null;
         return out;
       }
 
@@ -2444,6 +2456,7 @@
           for (var si = 0; si < filt.length; si++) {
             (function(sedNom, idxPal) {
               var rawS = conteosPorMesPred(function(r) { return (r.sucursal || '').trim() === sedNom; });
+              rawS = asistenciaNulosAntesDelPrimerMesConDatos(rawS);
               datasets.push({
                 label: sedNom,
                 data: rawS,

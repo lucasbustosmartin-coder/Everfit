@@ -1,8 +1,8 @@
 {
-  "versionLabel": "v1.25",
+  "versionLabel": "v1.26",
   "lines": [
-    "Asistencia: gráfico «Clientes activos por mes» (líneas y tendencia de 3 meses), mismo filtro que el mapa; el eje termina en el último mes calendario completo en Argentina, sin el mes en curso.",
-    "Carga de datos: paginación alineada con tu Max rows en Supabase (15.000 por página) y avance por cantidad de filas realmente devueltas, para no cortar ni confundir el progreso.",
-    "Cuando hay una nueva versión del dashboard, te mostramos un resumen de novedades para que elijas recargar ahora o más tarde."
+    "Se optimizó la comunicación con el servidor al cargar datos, para que en muchos casos notes tiempos de respuesta más ágiles.",
+    "Incluimos ajustes menores de rendimiento y estabilidad en el uso diario del panel.",
+    "Cuando hay una nueva versión, podés recargar ahora o seguir trabajando y actualizar más tarde."
   ]
 }
