@@ -43,6 +43,7 @@ const datosLog = [
   ['__HOY__', '__AHORA__', 'Dashboard local: mensaje si falta config', 'Mensaje visible fuera de app-content cuando falta SUPABASE_ANON_KEY (config.js en .gitignore). Errores RPC/sesión muestran panel en la app en lugar de pantalla en blanco.', 'Corrección'],
   ['__HOY__', '__AHORA__', 'Tarjetas: otra vez con Dividendos', 'Cards vuelven a porMes (incluyen Dividendos); tabla y gráfico siguen con porMesFlujo. Criterio documentado en EXCLUSIONES_DASHBOARD.md.', 'Ajuste'],
   ['__HOY__', '__AHORA__', 'Despliegue v1.18', 'Fechas Argentina en fecha_pago y rango G/P; gráfico alineado con tabla Flujo (porMesFlujo); tarjetas con porMes (incluye Dividendos); mensaje si falta config local; manejo errores RPC/sesión; docs EXCLUSIONES. Push a main y vercel --prod.', 'Despliegue'],
+  ['__HOY__', '__AHORA__', 'Transacciones asistencia → Supabase', 'Tabla transacciones_asistencia (sql/), import Excel Sheet1 desde dashboard (Importar asistencia, permiso upload_base). Normaliza Cramer/Cabildo/Migueletes. Docs TRANSACCIONES_ASISTENCIA.md.', 'Feature'],
 ];
 
 const datosLogParaExcel = aplicarHoyAhora(datosLog);
@@ -56,9 +57,10 @@ const funcionalidades = [
   ['Volcado Excel → Supabase', 'Script scripts/volcar_excel_a_supabase.py lee el Excel e inserta en base_everfit. Requiere .env con SUPABASE_URL y SUPABASE_SERVICE_ROLE_KEY.'],
   ['Tipos de cambio (ARS/USD)', 'Consumo por API desde proyecto Sistema-Contable-Nuevo (tabla tipos_cambio_global). Opcional: sync local con scripts/sync_tipo_de_cambio_desde_origen.py.'],
   ['Estructura del repo', 'Carpetas sql/, scripts/, docs/, Base/. Reglas en .cursor/rules (estructura-proyecto, reglas-everfit, bitácora, preguntas-solo-respuesta).'],
-  ['Dashboard Everfit', 'Una página (dashboard.html): flujo por mes y gráfico G/P excluyen Dividendos (porMesFlujo); tarjetas totales incluyen todo salvo Saldo Inicial (porMes). Fechas en America/Argentina/Buenos_Aires. Login por email; Seguridad; actualizar base desde el navegador. Carga paginada de base_everfit y tipos de cambio.'],
+  ['Dashboard Everfit', 'Una página (dashboard.html): flujo por mes y gráfico G/P excluyen Dividendos (porMesFlujo); tarjetas totales incluyen todo salvo Saldo Inicial (porMes). Importar asistencia (Excel Transacciones por sucursal → transacciones_asistencia). Fechas en America/Argentina/Buenos_Aires. Login; Seguridad; actualizar base; carga paginada base_everfit y tipos de cambio.'],
   ['Proyección Flujo por mes', 'Meses proyectados en tabla (permiso ver_proyeccion). Config: método (promedio/mediana/promedio recortado), meses de historia, meses a proyectar, recorte %. Ventana móvil. Total columna incluye proyectados; tarjetas siempre reales. Encabezado y celdas proyectadas con fondo distintivo.'],
   ['Seguridad – Permisos por rol', 'En Seguridad (Admin): cada rol (Admin, Encargado, Visor) con icono y lista de permisos con toggle on/off editable. RPC get_roles_permissions_for_admin y set_role_permission. Ejecutar sql/supabase_seguridad_permisos_editable.sql.'],
+  ['Transacciones de asistencia', 'Excel export Transacciones por sucursal (docs de referencia). Tabla transacciones_asistencia; botón Importar asistencia en dashboard (reemplazo por sucursal). Ver docs/TRANSACCIONES_ASISTENCIA.md y sql/supabase_transacciones_asistencia.sql.'],
 ];
 
 const wsResumen = XLSX.utils.aoa_to_sheet(funcionalidades);

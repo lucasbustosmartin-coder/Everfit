@@ -8,11 +8,15 @@ alwaysApply: true
 ## Contexto del proyecto
 
 - **Datos de origen:** un único archivo Excel en `Base/Base_Everfit.xlsx`. La hoja principal de datos es **"Base"** (columnas: Beneficiario, Concepto, Centro de Costos, Detalle, Medio, Fechas, Importe, Observaciones, Sucursal, Ingresos-Egresos, Mes de Pago, etc.).
-- **Backend:** Supabase (PostgreSQL). Tablas: `base_everfit` (datos del Excel), `tipo_de_cambio` (para ARS/USD; se sincroniza desde otro proyecto con `scripts/sync_tipo_de_cambio_desde_origen.py`).
+- **Backend:** Supabase (PostgreSQL). Tablas: `base_everfit` (datos del Excel), `tipo_de_cambio` (para ARS/USD; se sincroniza desde otro proyecto con `scripts/sync_tipo_de_cambio_desde_origen.py`), `transacciones_asistencia` (import Excel Transacciones por sucursal desde el dashboard; ver `docs/TRANSACCIONES_ASISTENCIA.md`).
 - **Script de volcado:** `scripts/volcar_excel_a_supabase.py` lee `Base/Base_Everfit.xlsx`, hoja "Base", y inserta en `base_everfit`. Requiere `.env` con `SUPABASE_URL` y `SUPABASE_SERVICE_ROLE_KEY`.
 - **Dashboard:** `dashboard.html` en la raíz: solapa Flujo por mes (Mes-Año, Ingresos, Egresos, G/P) desde `base_everfit`. Ver `docs/DASHBOARD.md`.
 - **Límite PostgREST (~1000 filas por request):** al cargar datos, el dashboard pagina `base_everfit` y la tabla de tipos de cambio (`tipos_cambio_global` vía API origen o `tipo_de_cambio` local) en bloques de 1000 hasta agotar filas, para que Flujo por mes y conversiones ARS/USD no queden truncados.
 - **Estructura del repo:** `sql/` (DDL y scripts SQL), `scripts/` (Python/Node), `docs/` (guías), `Base/` (Excel). Ver regla **estructura-proyecto**.
+
+## Fechas de negocio (regla estricta — no omitir)
+
+- Cualquier cambio que toque **día contable**, **filtros por fecha**, **defaults en SQL**, **agrupación por mes** o **día desde timestamp** debe cumplir la regla **fechas-argentina-negocio** (`.cursor/rules/fechas-argentina-negocio.mdc`). **No puede omitirse.** Referencia: `docs/FECHAS_ARGENTINA.md`.
 
 ## Al modificar el Excel o el esquema
 
@@ -33,4 +37,4 @@ alwaysApply: true
 - Tipo de cambio (ARS/USD) desde otro proyecto: `docs/TIPO_DE_CAMBIO_DESDE_OTRO_PROYECTO.md`.
 - Git y Vercel (repo, push, deploy): `docs/GIT_Y_VERCEL.md`.
 - Dashboard (config, RLS, uso): `docs/DASHBOARD.md`.
-- Fechas en Argentina (timezone para todo el manejo de fechas): `docs/FECHAS_ARGENTINA.md`.
+- Fechas en Argentina (**regla estricta no omitible**): `docs/FECHAS_ARGENTINA.md` y regla **fechas-argentina-negocio**.

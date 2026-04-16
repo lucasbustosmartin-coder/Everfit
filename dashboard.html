@@ -81,6 +81,11 @@
     .btn-actualizar-base { display: inline-flex; align-items: center; gap: 0.45rem; padding: 0.5rem 1rem; border: 1px solid #0d7d3d; background: #0d7d3d; color: #fff; border-radius: 6px; cursor: pointer; font-size: 0.9rem; font-family: inherit; }
     .btn-actualizar-base:hover { background: #0a5c2e; border-color: #0a5c2e; }
     .btn-actualizar-base:disabled, .btn-actualizar-base[disabled] { opacity: 0.55; cursor: not-allowed; }
+    .btn-importar-asistencia { display: inline-flex; align-items: center; gap: 0.45rem; padding: 0.5rem 1rem; border: 1px solid #0369a1; background: #0369a1; color: #fff; border-radius: 6px; cursor: pointer; font-size: 0.9rem; font-family: inherit; }
+    .btn-importar-asistencia:hover { background: #075985; border-color: #075985; }
+    .btn-importar-asistencia:disabled, .btn-importar-asistencia[disabled] { opacity: 0.55; cursor: not-allowed; }
+    .btn-importar-asistencia .btn-upload-icon { width: 18px; height: 18px; }
+    .btn-importar-asistencia .btn-upload-icon svg { width: 100%; height: 100%; stroke: currentColor; }
     .btn-actualizar-base .btn-upload-icon { width: 18px; height: 18px; }
     .btn-actualizar-base .btn-upload-icon svg { width: 100%; height: 100%; stroke: currentColor; }
     .modal-upload .upload-zone { border: 2px dashed #ccc; border-radius: 8px; padding: 1.5rem; text-align: center; margin: 0.75rem 0; background: #fafafa; }
@@ -255,7 +260,7 @@
       .filtros label { flex-wrap: wrap; }
       .toggle-moneda button { min-height: 44px; padding: 0.55rem 1rem; }
       .filtro-sucursal .btn-sucursal { min-height: 44px; padding: 0.5rem 0.75rem; }
-      .btn-actualizar-base, .btn-config-proyeccion { min-height: 44px; }
+      .btn-actualizar-base, .btn-importar-asistencia, .btn-config-proyeccion { min-height: 44px; }
       .resumen { gap: 0.75rem; margin-bottom: 0.75rem; }
       .resumen .card { min-width: 0; flex: 1 1 100%; }
       .resumen .valor { font-size: 1.35rem; }
@@ -413,6 +418,10 @@
           <button type="button" id="btn-actualizar-base" class="btn-actualizar-base" aria-label="Actualizar base de datos">
             <span class="btn-upload-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></span>
             Actualizar base
+          </button>
+          <button type="button" id="btn-importar-asistencia" class="btn-importar-asistencia" aria-label="Importar Excel de transacciones de asistencia" style="display:none;">
+            <span class="btn-upload-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></span>
+            Importar asistencia
           </button>
         </div>
       </div>
@@ -578,6 +587,40 @@
         <div class="form-actions">
           <button type="button" id="upload-btn-confirm" class="btn-actualizar-base" disabled>Continuar y actualizar</button>
           <button type="button" id="upload-btn-cancel" style="padding:0.5rem 1rem; border:1px solid #999; background:#fff; border-radius:6px; cursor:pointer; font-size:0.9rem;">Cancelar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="modal-upload-trans-backdrop" class="modal-backdrop oculto">
+    <div class="modal modal-upload" id="modal-upload-trans" style="max-width:520px;">
+      <div class="modal-header">
+        <h2>Importar transacciones de asistencia</h2>
+        <button type="button" class="modal-close" id="modal-upload-trans-close" aria-label="Cerrar"><span class="icon-close"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg></span></button>
+      </div>
+      <div class="modal-body">
+        <p style="margin:0 0 0.75rem 0; font-size:0.95rem; color:#555;">Excel export tipo <strong>Transacciones</strong> (hoja <code>Sheet1</code>): cabecera en fila con <em>Nombre</em>, <em>Apellido</em>, <em>ID</em>, <em>Fecha</em>, <em>Tiempo</em>. Cabildo incluye columnas extra; se normalizan en la misma tabla.</p>
+        <p style="margin:0 0 0.75rem 0; font-size:0.9rem; color:#b45309;">Se <strong>eliminan todas las filas</strong> de la sucursal elegida y se insertan las del archivo. No modifica <code>base_everfit</code>.</p>
+        <div class="form-group" style="margin-bottom:0.75rem;">
+          <label for="upload-trans-sucursal" style="display:block; margin-bottom:0.35rem; font-size:0.9rem;">Sucursal</label>
+          <select id="upload-trans-sucursal" style="width:100%; max-width:100%; padding:0.5rem; border-radius:6px; border:1px solid #ccc; font-size:1rem;">
+            <option value="">Detectar por nombre de archivo o elegir…</option>
+            <option value="Cramer">Cramer</option>
+            <option value="Cabildo">Cabildo</option>
+            <option value="Migueletes">Migueletes</option>
+          </select>
+        </div>
+        <div class="upload-zone" id="upload-trans-zone">
+          <input type="file" id="upload-trans-file" accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" style="margin-bottom:0.5rem;" />
+          <p id="upload-trans-file-name" style="margin:0; font-size:0.9rem; color:#666;"></p>
+        </div>
+        <div class="upload-progress" id="upload-trans-progress">Esperando archivo…</div>
+        <div class="upload-progressbar-wrap" aria-hidden="true"><div id="upload-trans-progressbar-fill" class="upload-progressbar-fill"></div></div>
+        <div id="upload-trans-error" class="upload-error"></div>
+        <div id="upload-trans-ok" class="upload-ok"></div>
+        <div class="form-actions">
+          <button type="button" id="upload-trans-btn-confirm" class="btn-importar-asistencia" disabled><span class="btn-upload-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></span>Importar</button>
+          <button type="button" id="upload-trans-btn-cancel" style="padding:0.5rem 1rem; border:1px solid #999; background:#fff; border-radius:6px; cursor:pointer; font-size:0.9rem;">Cancelar</button>
         </div>
       </div>
     </div>
@@ -1902,6 +1945,307 @@
         });
       })();
 
+      (function() {
+        var btnOpenTrans = document.getElementById('btn-importar-asistencia');
+        var backdropTrans = document.getElementById('modal-upload-trans-backdrop');
+        var btnCloseTrans = document.getElementById('modal-upload-trans-close');
+        var btnCancelTrans = document.getElementById('upload-trans-btn-cancel');
+        var fileInputTrans = document.getElementById('upload-trans-file');
+        var fileNameTrans = document.getElementById('upload-trans-file-name');
+        var btnConfirmTrans = document.getElementById('upload-trans-btn-confirm');
+        var progressTrans = document.getElementById('upload-trans-progress');
+        var progressBarTrans = document.getElementById('upload-trans-progressbar-fill');
+        var errorTrans = document.getElementById('upload-trans-error');
+        var okTrans = document.getElementById('upload-trans-ok');
+        var selSucursalTrans = document.getElementById('upload-trans-sucursal');
+        if (!btnOpenTrans || !backdropTrans) return;
+
+        var transUploadBusy = false;
+        var transPreviewRows = null;
+        var transPreviewSucursal = '';
+        var transPreviewFileName = '';
+
+        function normHeaderTrans(s) {
+          return String(s || '').trim().toLowerCase().replace(/\s+/g, ' ').normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+        }
+        var MAP_HEADERS_TRANS = {
+          'nombre': 'nombre', 'apellido': 'apellido', 'id': 'empleado_id', 'departamento': 'departamento', 'fecha': 'fecha',
+          'semana': 'semana', 'tiempo': 'tiempo', 'temperatura en la superficie de la piel': 'temperatura_superficie_piel',
+          'estado de la temperatura': 'estado_temperatura', 'tipo de pase de tarjeta': 'tipo_pase_tarjeta',
+          'metodo de verificacion': 'metodo_verificacion', 'punto de control de asistencia': 'punto_control_asistencia',
+          'nombre personalizado': 'nombre_personalizado', 'fuente de datos': 'fuente_datos', 'tipo de gestion': 'tipo_gestion',
+          'comentario': 'comentario'
+        };
+        function buildHeaderIndexTrans(headerRow) {
+          var idx = {};
+          for (var c = 0; c < headerRow.length; c++) {
+            var nh = normHeaderTrans(headerRow[c]);
+            for (var ah in MAP_HEADERS_TRANS) {
+              if (normHeaderTrans(ah) === nh) {
+                idx[MAP_HEADERS_TRANS[ah]] = c;
+                break;
+              }
+            }
+          }
+          return idx;
+        }
+        function findTransaccionesHeaderRow(data) {
+          for (var i = 0; i < Math.min(data.length, 50); i++) {
+            var row = data[i] || [];
+            if (normHeaderTrans(row[0]) === 'nombre' && normHeaderTrans(row[1]) === 'apellido') return i;
+          }
+          return -1;
+        }
+        function parseMetaTrans(data, hdrIdx) {
+          var out = { export_hora: null, export_operador: null, export_periodo: null };
+          if (hdrIdx < 4) return out;
+          function cell(r) {
+            return data[r] && data[r][0] != null ? String(data[r][0]).trim() : '';
+          }
+          var e0 = cell(hdrIdx - 4);
+          if (e0.indexOf('exportación') >= 0 || e0.indexOf('exportacion') >= 0) out.export_hora = e0;
+          var e1 = cell(hdrIdx - 3);
+          if (e1.indexOf('Operador') >= 0) out.export_operador = e1;
+          var e2 = cell(hdrIdx - 2);
+          if (e2.indexOf('Periodo') >= 0 || e2.indexOf('Período') >= 0) out.export_periodo = e2;
+          return out;
+        }
+        function inferSucursalFromFileName(name) {
+          var n = (name || '').toLowerCase();
+          if (n.indexOf('cramer') >= 0) return 'Cramer';
+          if (n.indexOf('cabildo') >= 0) return 'Cabildo';
+          if (n.indexOf('miguelete') >= 0) return 'Migueletes';
+          return '';
+        }
+        function parseFechaTrans(val) {
+          if (val === undefined || val === null) return null;
+          if (typeof val === 'number' && !isNaN(val) && val >= 1 && val <= 500000) {
+            var d = new Date((val - 25569) * 86400 * 1000);
+            if (!isNaN(d.getTime())) return d.toISOString().slice(0, 10);
+          }
+          if (typeof val === 'string') {
+            var s = val.trim();
+            if (!s || s === '-') return null;
+            if (/^\d{4}-\d{2}-\d{2}/.test(s)) return s.slice(0, 10);
+            var d2 = new Date(s);
+            if (!isNaN(d2.getTime())) return d2.toISOString().slice(0, 10);
+          }
+          return null;
+        }
+        function trimCell(v) {
+          if (v === undefined || v === null) return null;
+          if (typeof v === 'number' && (v !== v || (v === 0 && 1 / v < 0))) return null;
+          var s = typeof v === 'string' ? v.trim().replace(/\t/g, '') : String(v).trim();
+          if (s === '' || s === '-') return null;
+          return s;
+        }
+        function excelTransaccionesARegistros(wb, nombreArchivo, sucursalForzada) {
+          var sheet = wb.Sheets[wb.SheetNames[0]];
+          if (!sheet) return { error: 'Sin hojas en el Excel.', rows: [] };
+          var data = window.XLSX.utils.sheet_to_json(sheet, { header: 1, raw: true, defval: null });
+          if (!data || data.length < 8) return { error: 'Archivo demasiado corto.', rows: [] };
+          var hdrIdx = findTransaccionesHeaderRow(data);
+          if (hdrIdx < 0) return { error: 'No se encontró la fila de encabezados (Nombre, Apellido, …).', rows: [] };
+          var headerRow = data[hdrIdx] || [];
+          var hIdx = buildHeaderIndexTrans(headerRow);
+          if (hIdx.empleado_id === undefined || hIdx.fecha === undefined) return { error: 'Faltan columnas obligatorias (ID, Fecha).', rows: [] };
+          var meta = parseMetaTrans(data, hdrIdx);
+          var suc = sucursalForzada || inferSucursalFromFileName(nombreArchivo);
+          if (!suc) return { error: 'Elegí la sucursal o usá un nombre de archivo que contenga Cramer, Cabildo o Migueletes.', rows: [] };
+          var rows = [];
+          for (var r = hdrIdx + 1; r < data.length; r++) {
+            var row = data[r];
+            if (!row || row.length === 0) continue;
+            var idv = hIdx.empleado_id >= 0 ? trimCell(row[hIdx.empleado_id]) : null;
+            var fech = hIdx.fecha >= 0 ? parseFechaTrans(row[hIdx.fecha]) : null;
+            if (!idv && !fech) {
+              var allEmpty = true;
+              for (var k = 0; k < row.length; k++) {
+                if (trimCell(row[k])) { allEmpty = false; break; }
+              }
+              if (allEmpty) continue;
+            }
+            if (!fech) continue;
+            var rec = {
+              sucursal: suc,
+              nombre: hIdx.nombre >= 0 ? trimCell(row[hIdx.nombre]) : null,
+              apellido: hIdx.apellido >= 0 ? trimCell(row[hIdx.apellido]) : null,
+              empleado_id: idv,
+              fecha: fech,
+              tiempo: hIdx.tiempo >= 0 ? trimCell(row[hIdx.tiempo]) : null,
+              departamento: hIdx.departamento >= 0 ? trimCell(row[hIdx.departamento]) : null,
+              semana: hIdx.semana >= 0 ? trimCell(row[hIdx.semana]) : null,
+              temperatura_superficie_piel: hIdx.temperatura_superficie_piel >= 0 ? trimCell(row[hIdx.temperatura_superficie_piel]) : null,
+              estado_temperatura: hIdx.estado_temperatura >= 0 ? trimCell(row[hIdx.estado_temperatura]) : null,
+              tipo_pase_tarjeta: hIdx.tipo_pase_tarjeta >= 0 ? trimCell(row[hIdx.tipo_pase_tarjeta]) : null,
+              metodo_verificacion: hIdx.metodo_verificacion >= 0 ? trimCell(row[hIdx.metodo_verificacion]) : null,
+              punto_control_asistencia: hIdx.punto_control_asistencia >= 0 ? trimCell(row[hIdx.punto_control_asistencia]) : null,
+              nombre_personalizado: hIdx.nombre_personalizado >= 0 ? trimCell(row[hIdx.nombre_personalizado]) : null,
+              fuente_datos: hIdx.fuente_datos >= 0 ? trimCell(row[hIdx.fuente_datos]) : null,
+              tipo_gestion: hIdx.tipo_gestion >= 0 ? trimCell(row[hIdx.tipo_gestion]) : null,
+              comentario: hIdx.comentario >= 0 ? trimCell(row[hIdx.comentario]) : null,
+              export_hora: meta.export_hora,
+              export_operador: meta.export_operador,
+              export_periodo: meta.export_periodo,
+              origen_archivo: nombreArchivo
+            };
+            rows.push(rec);
+          }
+          if (rows.length === 0) return { error: 'No hay filas de datos válidas (con Fecha).', rows: [] };
+          return { error: null, rows: rows, sucursal: suc };
+        }
+
+        function setTransProgress(text, pct) {
+          if (progressTrans) progressTrans.textContent = text || '';
+          if (progressBarTrans) progressBarTrans.style.width = Math.max(0, Math.min(100, Number(pct) || 0)) + '%';
+        }
+        function resetTransModal() {
+          if (fileInputTrans) fileInputTrans.value = '';
+          if (fileNameTrans) fileNameTrans.textContent = '';
+          if (selSucursalTrans) selSucursalTrans.value = '';
+          setTransProgress('Esperando archivo…', 0);
+          if (errorTrans) errorTrans.textContent = '';
+          if (okTrans) okTrans.textContent = '';
+          if (btnConfirmTrans) btnConfirmTrans.disabled = true;
+          transPreviewRows = null;
+          transPreviewSucursal = '';
+          transPreviewFileName = '';
+        }
+        function setTransBusy(isBusy) {
+          transUploadBusy = !!isBusy;
+          if (btnOpenTrans) btnOpenTrans.disabled = transUploadBusy;
+          if (btnCloseTrans) btnCloseTrans.disabled = transUploadBusy;
+          if (btnCancelTrans) btnCancelTrans.disabled = transUploadBusy;
+          if (fileInputTrans) fileInputTrans.disabled = transUploadBusy;
+          if (selSucursalTrans) selSucursalTrans.disabled = transUploadBusy;
+          if (transUploadBusy && btnConfirmTrans) btnConfirmTrans.disabled = true;
+        }
+
+        btnOpenTrans.addEventListener('click', function() {
+          resetTransModal();
+          backdropTrans.classList.remove('oculto');
+        });
+        if (btnCloseTrans) btnCloseTrans.addEventListener('click', function() { if (!transUploadBusy) backdropTrans.classList.add('oculto'); });
+        if (btnCancelTrans) btnCancelTrans.addEventListener('click', function() { if (!transUploadBusy) backdropTrans.classList.add('oculto'); });
+        setupBackdropCloseOnlyOnRealClick(backdropTrans, function() { if (!transUploadBusy) backdropTrans.classList.add('oculto'); });
+
+        function refreshTransPreview() {
+          var f = fileInputTrans && fileInputTrans.files && fileInputTrans.files[0];
+          var sucManual = selSucursalTrans && selSucursalTrans.value ? selSucursalTrans.value : '';
+          if (!f) {
+            if (btnConfirmTrans) btnConfirmTrans.disabled = true;
+            transPreviewRows = null;
+            setTransProgress('Esperando archivo…', 0);
+            return;
+          }
+          var reader = new FileReader();
+          reader.onload = function(e) {
+            try {
+              var wb = window.XLSX.read(e.target.result, { type: 'array' });
+              var parsed = excelTransaccionesARegistros(wb, f.name, sucManual);
+              if (parsed.error) {
+                transPreviewRows = null;
+                if (errorTrans) errorTrans.textContent = parsed.error;
+                if (btnConfirmTrans) btnConfirmTrans.disabled = true;
+                setTransProgress('Revisá el archivo o la sucursal.', 0);
+                return;
+              }
+              if (errorTrans) errorTrans.textContent = '';
+              transPreviewRows = parsed.rows;
+              transPreviewSucursal = parsed.sucursal;
+              transPreviewFileName = f.name;
+              if (btnConfirmTrans) btnConfirmTrans.disabled = false;
+              setTransProgress('Listo: ' + parsed.rows.length + ' filas → sucursal «' + parsed.sucursal + '».', 15);
+            } catch (err) {
+              transPreviewRows = null;
+              if (errorTrans) errorTrans.textContent = err.message || String(err);
+              if (btnConfirmTrans) btnConfirmTrans.disabled = true;
+            }
+          };
+          reader.readAsArrayBuffer(f);
+        }
+
+        if (fileInputTrans) fileInputTrans.addEventListener('change', function() {
+          var f = fileInputTrans.files && fileInputTrans.files[0];
+          if (fileNameTrans) fileNameTrans.textContent = f ? f.name : '';
+          if (okTrans) okTrans.textContent = '';
+          if (!f) {
+            if (btnConfirmTrans) btnConfirmTrans.disabled = true;
+            transPreviewRows = null;
+            setTransProgress('Esperando archivo…', 0);
+            return;
+          }
+          var inferred = inferSucursalFromFileName(f.name);
+          if (inferred && selSucursalTrans) selSucursalTrans.value = inferred;
+          refreshTransPreview();
+        });
+        if (selSucursalTrans) selSucursalTrans.addEventListener('change', function() {
+          if (fileInputTrans && fileInputTrans.files && fileInputTrans.files[0]) refreshTransPreview();
+        });
+
+        if (btnConfirmTrans) btnConfirmTrans.addEventListener('click', function() {
+          if (!transPreviewRows || !transPreviewSucursal) return;
+          var writeClient = client;
+          var BATCH = 200;
+          setTransBusy(true);
+          if (errorTrans) errorTrans.textContent = '';
+          if (okTrans) okTrans.textContent = '';
+          setTransProgress('Eliminando datos previos de la sucursal…', 5);
+
+          function deleteLoop(deleted) {
+            return writeClient.from('transacciones_asistencia').select('id').eq('sucursal', transPreviewSucursal).limit(500)
+              .then(function(res) {
+                if (res.error) throw res.error;
+                var list = res.data || [];
+                if (list.length === 0) return Promise.resolve(deleted);
+                var ids = list.map(function(x) { return x.id; });
+                return writeClient.from('transacciones_asistencia').delete().in('id', ids).then(function(dr) {
+                  if (dr.error) throw dr.error;
+                  var nd = deleted + ids.length;
+                  setTransProgress('Eliminando… ' + nd, 5 + Math.min(25, Math.floor(nd / 2000)));
+                  if (list.length < 500) return Promise.resolve(nd);
+                  return deleteLoop(nd);
+                });
+              });
+          }
+
+          deleteLoop(0).then(function() {
+            setTransProgress('Insertando 0 / ' + transPreviewRows.length + '…', 30);
+            var inserted = 0;
+            function insertLoop(start) {
+              if (start >= transPreviewRows.length) return Promise.resolve();
+              var chunk = transPreviewRows.slice(start, start + BATCH);
+              return writeClient.from('transacciones_asistencia').insert(chunk).then(function(res) {
+                if (res.error) throw res.error;
+                inserted += chunk.length;
+                var pct = 30 + Math.round((inserted / Math.max(transPreviewRows.length, 1)) * 65);
+                setTransProgress('Insertadas ' + inserted + ' / ' + transPreviewRows.length + '…', pct);
+                return insertLoop(start + BATCH);
+              });
+            }
+            return insertLoop(0);
+          }).then(function() {
+            if (okTrans) okTrans.textContent = 'Importadas ' + transPreviewRows.length + ' filas en «' + transPreviewSucursal + '».';
+            setTransProgress('Completado.', 100);
+            setTimeout(function() {
+              backdropTrans.classList.add('oculto');
+              resetTransModal();
+            }, 1400);
+          }).catch(function(err) {
+            setTransProgress('', 0);
+            var msg = (err && err.message) ? err.message : String(err);
+            if (errorTrans) {
+              errorTrans.textContent = msg.indexOf('relation') >= 0 || msg.indexOf('does not exist') >= 0
+                ? 'La tabla transacciones_asistencia no existe. Ejecutá sql/supabase_transacciones_asistencia.sql en Supabase.'
+                : 'Error: ' + msg;
+            }
+            if (btnConfirmTrans) btnConfirmTrans.disabled = false;
+          }).finally(function() {
+            setTransBusy(false);
+          });
+        });
+      })();
+
       // Sidebar: estado guardado en localStorage
       var SIDEBAR_KEY = 'everfit_sidebar_expanded';
       var sidebar = document.getElementById('sidebar');
@@ -1985,6 +2329,8 @@
           var btnUpload = document.getElementById('btn-actualizar-base');
           var wrapUpload = btnUpload && btnUpload.closest('.filtros-der');
           if (wrapUpload) wrapUpload.style.display = userPermissions.indexOf('upload_base') !== -1 ? '' : 'none';
+          var btnImpAsist = document.getElementById('btn-importar-asistencia');
+          if (btnImpAsist) btnImpAsist.style.display = userPermissions.indexOf('upload_base') !== -1 ? 'inline-flex' : 'none';
           var btnProy = document.getElementById('btn-config-proyeccion');
           if (btnProy) btnProy.style.display = userPermissions.indexOf('ver_proyeccion') !== -1 ? '' : 'none';
           var menuSeg = document.getElementById('menu-seguridad');
@@ -2025,6 +2371,8 @@
           var btnUpload = document.getElementById('btn-actualizar-base');
           var wrapUpload = btnUpload && btnUpload.closest('.filtros-der');
           if (wrapUpload) wrapUpload.style.display = userPermissions.indexOf('upload_base') !== -1 ? '' : 'none';
+          var btnImpAsist2 = document.getElementById('btn-importar-asistencia');
+          if (btnImpAsist2) btnImpAsist2.style.display = userPermissions.indexOf('upload_base') !== -1 ? 'inline-flex' : 'none';
           var btnProy = document.getElementById('btn-config-proyeccion');
           if (btnProy) btnProy.style.display = userPermissions.indexOf('ver_proyeccion') !== -1 ? '' : 'none';
           var menuSeg = document.getElementById('menu-seguridad');

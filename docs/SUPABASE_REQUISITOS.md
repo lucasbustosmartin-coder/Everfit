@@ -43,6 +43,10 @@ Reemplazá por tu Project URL y tu service_role key. No subas este archivo a Git
 3. Copiá todo su contenido, pegá en el editor y ejecutá (Run).  
    Eso crea la tabla `base_everfit` con todas las columnas e índices.
 
+### 4b. (Opcional) Tabla de transacciones de asistencia
+
+Si vas a usar **Importar asistencia** en el dashboard (`docs/TRANSACCIONES_ASISTENCIA.md`), ejecutá también `sql/supabase_transacciones_asistencia.sql` en el SQL Editor (requiere `has_permission` del script de seguridad).
+
 ### 5. Instalar dependencias y ejecutar el script de volcado
 
 En la terminal: **entrá primero a la raíz del proyecto** (donde están `Base/`, `scripts/`, `sql/`) y después ejecutá:
