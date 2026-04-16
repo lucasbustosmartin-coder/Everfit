@@ -343,6 +343,23 @@
     .asistencia-freq-bucket-top td { background: #ecfdf5; font-weight: 600; color: #14532d; border-bottom: 1px solid #86efac; }
     /* Permanencia: pocas filas; sin max-height para que se vea el primer tramo (p. ej. 0–1 mes) sin scroll. */
     .asistencia-multi-wrap.asistencia-permanencia-wrap { max-height: none; }
+    .asistencia-perm-detalle-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; overscroll-behavior-x: contain; margin-top: 0.75rem; max-height: 48vh; }
+    .asistencia-perm-detalle-wrap table { border-collapse: collapse; width: 100%; font-size: 0.88rem; }
+    .asistencia-perm-detalle-wrap th, .asistencia-perm-detalle-wrap td { padding: 0.45rem 0.55rem; border-bottom: 1px solid #eee; text-align: left; }
+    .asistencia-perm-detalle-wrap th { position: sticky; top: 0; background: #1e293b; color: #fff; z-index: 1; white-space: nowrap; }
+    .asistencia-perm-detalle-wrap td.num { text-align: right; }
+    .btn-asistencia-perm-ver {
+      display: inline-flex; align-items: center; justify-content: center;
+      min-width: 44px; min-height: 44px; padding: 0; border: 1px solid #cbd5e1; border-radius: 8px;
+      background: #fff; color: #475569; cursor: pointer; box-sizing: border-box;
+    }
+    .btn-asistencia-perm-ver:hover { background: #f0fdfa; color: #0f766e; border-color: #5eead4; }
+    .btn-asistencia-perm-ver svg { width: 18px; height: 18px; display: block; }
+    #modal-asistencia-permanencia-cliente-body .asistencia-perm-modal-stats { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 0.65rem; margin-bottom: 0.75rem; }
+    #modal-asistencia-permanencia-cliente-body .asistencia-perm-stat { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 0.5rem 0.65rem; }
+    #modal-asistencia-permanencia-cliente-body .asistencia-perm-stat .lab { font-size: 0.75rem; color: #64748b; margin-bottom: 0.2rem; }
+    #modal-asistencia-permanencia-cliente-body .asistencia-perm-stat .val { font-weight: 700; color: #0f172a; font-size: 1rem; }
+    #asistencia-perm-modal-fechas-wrap.oculto { display: none !important; }
     .asistencia-cargando { color: #64748b; padding: 0.65rem 0.75rem; margin-bottom: 0.75rem; border-radius: 8px; background: #f8fafc; border: 1px solid #e2e8f0; }
     .asistencia-cargando.asistencia-estado-error { color: #991b1b; background: #fef2f2; border-color: #fecaca; }
     #modal-asistencia-carga-backdrop { z-index: 150; pointer-events: auto; }
@@ -414,6 +431,7 @@
       .asistencia-filtros .filtro-sucursal .btn-sucursal { min-height: 44px; }
       #modal-asistencia-carga-backdrop .modal-asistencia-carga-card { padding: 1.5rem 1.25rem; min-width: min(280px, 94vw); }
       .asistencia-carga-msg { font-size: 1rem; }
+      #modal-asistencia-permanencia-cliente-body .asistencia-perm-modal-stats { grid-template-columns: 1fr 1fr; }
     }
   </style>
 </head>
@@ -437,7 +455,7 @@
         <span class="menu-label">Seguridad</span>
       </a>
     </nav>
-    <div class="sidebar-version" id="sidebar-version" aria-label="Versión">v1.21</div>
+    <div class="sidebar-version" id="sidebar-version" aria-label="Versión">v1.22</div>
   </aside>
 
   <main class="main-content">
@@ -627,7 +645,7 @@
           <p class="asistencia-metodo"><strong>Metodología:</strong> cada registro es un <strong>ingreso</strong>; se asume estancia de <strong>1 hora</strong>. La celda muestra cuántas personas estarían simultáneamente dentro del club en esa franja horaria (solape de intervalos [ingreso, ingreso+1h) con la franja). Podés combinar sucursales con los botones (igual que en Home: Total o varias activas).</p>
           <div id="asistencia-help-wrap" class="help-exclusiones-wrap" style="display:inline-flex;">
             <button type="button" class="help-exclusiones" id="help-asistencia" title="Ayuda vista asistencia" aria-label="Ayuda"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></button>
-            <div class="help-exclusiones-popover" id="help-asistencia-popover"><strong>Mapa:</strong> columnas = horas. Filas = calendario (día/mes) o <strong>Lun–Dom</strong> (promedio por día de la semana en el período). Vista <strong>año completo</strong> en calendario: filas = meses, valor = promedio diario en esa hora. <strong>Frecuencia:</strong> días distintos con visita ÷ <em>semanas en que hubo al menos un ingreso</em> (no todo el año si solo vino un mes). Sin franja horaria del mapa. Fila verde = rango modal. <strong>Permanencia:</strong> primera–última visita <em>solo dentro del rango Año/Mes del reporte</em> (no usa historial fuera de lo cargado); el techo en meses coincide con la duración de ese rango. Rangos mensuales y cola dinámica (tope 60 meses). <strong>Multi-sede:</strong> con «Total» o varias sedes, ≥2 sedes; con <strong>una</strong> sede, quienes pasaron por ella y por otra. Ámbar = sede con más visitas.</div>
+            <div class="help-exclusiones-popover" id="help-asistencia-popover"><strong>Mapa:</strong> columnas = horas. Filas = calendario (día/mes) o <strong>Lun–Dom</strong> (promedio por día de la semana en el período). Vista <strong>año completo</strong> en calendario: filas = meses, valor = promedio diario en esa hora. <strong>Frecuencia:</strong> días distintos con visita ÷ <em>semanas en que hubo al menos un ingreso</em> (no todo el año si solo vino un mes). Sin franja horaria del mapa. Fila verde = rango modal. <strong>Permanencia:</strong> primera–última visita <em>solo dentro del rango Año/Mes del reporte</em> (no usa historial fuera de lo cargado); el techo en meses coincide con la duración de ese rango. Rangos mensuales y cola dinámica (tope 60 meses). En la tabla de rangos, columna <strong>Acción</strong> (ojo): abre solo los clientes de ese rango; desde ahí, otro ojo por cliente abre el resumen y un segundo ojo muestra u oculta las asistencias por fecha. <strong>Multi-sede:</strong> con «Total» o varias sedes, ≥2 sedes; con <strong>una</strong> sede, quienes pasaron por ella y por otra. Ámbar = sede con más visitas.</div>
           </div>
         </div>
         <div class="card" style="margin-bottom:1rem;">
@@ -651,7 +669,7 @@
         </div>
         <div class="card">
           <h2 style="margin:0 0 0.5rem 0; font-size:1.1rem;">Permanencia (tiempo activo)</h2>
-          <p style="margin:0 0 0.5rem 0; font-size:0.88rem; color:#666;">Mismo <strong>período y sucursales</strong> que arriba. La permanencia es <strong>solo entre fechas cargadas en este reporte</strong> (Año/Mes de arriba): meses entre la primera y la última visita de cada cliente <em>dentro de ese rango</em> (días inclusivos ÷ 30,44). Por eso el «techo» de meses no puede superar la duración del período elegido; con <strong>un solo mes</strong> casi nadie pasará de ~1 mes. Para ver años de actividad en Migueletes usá <strong>Todos los meses</strong> (o el año completo). Un solo día cuenta como &lt;1 mes. Tabla con clientes, % y fila verde modal; cola dinámica si hay carreras largas (tope 60 meses).</p>
+          <p style="margin:0 0 0.5rem 0; font-size:0.88rem; color:#666;">Mismo <strong>período y sucursales</strong> que arriba. La permanencia es <strong>solo entre fechas cargadas en este reporte</strong> (Año/Mes de arriba): meses entre la primera y la última visita de cada cliente <em>dentro de ese rango</em> (días inclusivos ÷ 30,44). Por eso el «techo» de meses no puede superar la duración del período elegido; con <strong>un solo mes</strong> casi nadie pasará de ~1 mes. Para ver años de actividad en Migueletes usá <strong>Todos los meses</strong> (o el año completo). Un solo día cuenta como &lt;1 mes. Tabla con clientes, %, columna <strong>Acción</strong> (ojo por rango) y fila verde modal; cola dinámica si hay carreras largas (tope 60 meses).</p>
           <div id="asistencia-permanencia-wrap" class="asistencia-multi-wrap asistencia-permanencia-wrap"></div>
         </div>
         <div class="card">
@@ -682,6 +700,16 @@
             <button type="button" class="btn-everfit-release-secondary" id="everfit-nueva-version-despues">Después</button>
             <button type="button" class="btn-everfit-release-primary" id="everfit-nueva-version-recargar">Recargar</button>
           </div>
+        </div>
+      </div>
+
+      <div id="modal-asistencia-permanencia-cliente-backdrop" class="modal-backdrop oculto" aria-hidden="true">
+        <div class="modal" style="max-width:560px;" role="dialog" aria-modal="true" aria-labelledby="modal-asistencia-permanencia-cliente-titulo">
+          <div class="modal-header">
+            <h2 id="modal-asistencia-permanencia-cliente-titulo" style="margin:0; font-size:1.1rem;">Permanencia</h2>
+            <button type="button" class="modal-close" id="modal-asistencia-permanencia-cliente-close" aria-label="Cerrar"><span class="icon-close"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg></span></button>
+          </div>
+          <div class="modal-body" id="modal-asistencia-permanencia-cliente-body"></div>
         </div>
       </div>
 
@@ -1730,8 +1758,10 @@
         return buckets.length - 1;
       }
 
-      function renderPermanenciaDistribucionHtml() {
-        var info = semanasPeriodoAsistenciaActual();
+      var ASIST_SVG_OJO_PERM = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>';
+
+      /** Mapa persona → fechas min/max, visitas del período (filtradas), métricas derivadas. */
+      function getAsistenciaPermanenciaClienteMap() {
         var rows = getAsistenciaRowsFiltered();
         var map = {};
         for (var i = 0; i < rows.length; i++) {
@@ -1740,17 +1770,210 @@
           var f = asistenciaFechaISO(r);
           if (!f || !/^\d{4}-\d{2}-\d{2}$/.test(f)) continue;
           if (!map[key]) {
-            map[key] = { fechaMin: f, fechaMax: f };
+            map[key] = {
+              _key: key,
+              fechaMin: f,
+              fechaMax: f,
+              nombre: r.nombre,
+              apellido: r.apellido,
+              empleado_id: r.empleado_id,
+              visitas: []
+            };
           } else {
             if (f < map[key].fechaMin) map[key].fechaMin = f;
             if (f > map[key].fechaMax) map[key].fechaMax = f;
           }
+          map[key].visitas.push({ fecha: f, sucursal: (r.sucursal || '').trim(), tiempo: r.tiempo });
         }
+        for (var k in map) {
+          var o = map[k];
+          o.visitas.sort(function(a, b) {
+            var c = a.fecha.localeCompare(b.fecha);
+            if (c !== 0) return c;
+            return String(a.tiempo || '').localeCompare(String(b.tiempo || ''));
+          });
+          var diasU = {};
+          for (var v = 0; v < o.visitas.length; v++) diasU[o.visitas[v].fecha] = true;
+          o.diasDistintos = Object.keys(diasU).length;
+          o.totalIngresos = o.visitas.length;
+          o.mesesPermanencia = asistenciaMesesPermanenciaDesdeMinMax(o.fechaMin, o.fechaMax);
+          o.diasCarrera = diasEnRangoInclusiveYYYYMMDD(o.fechaMin, o.fechaMax);
+        }
+        return map;
+      }
+
+      function asistenciaPersonaPlainLabelPerm(o) {
+        if (!o) return '';
+        if ((o.empleado_id || '').trim()) return ('ID ' + String(o.empleado_id).trim()).toLowerCase();
+        return ((o.nombre || '') + ' ' + (o.apellido || '')).trim().toLowerCase() || String(o._key || '');
+      }
+
+      function asistenciaPersonaHtmlLabelPerm(o) {
+        if (!o) return '–';
+        if ((o.empleado_id || '').trim()) return 'ID ' + esc(String(o.empleado_id).trim());
+        var t = ((o.nombre || '') + ' ' + (o.apellido || '')).trim();
+        return t ? esc(t) : esc(String(o._key || ''));
+      }
+
+      function asistenciaCerrarModalPermanenciaCliente() {
+        var bd = document.getElementById('modal-asistencia-permanencia-cliente-backdrop');
+        if (bd) {
+          bd.classList.add('oculto');
+          bd.classList.remove('permanencia-modal-rango');
+          bd.setAttribute('aria-hidden', 'true');
+        }
+        var modalInner = document.querySelector('#modal-asistencia-permanencia-cliente-backdrop > .modal');
+        if (modalInner) modalInner.style.maxWidth = '';
+      }
+
+      function asistenciaAbrirModalPermanenciaRango(bucketIdx) {
+        var map = getAsistenciaPermanenciaClienteMap();
+        var mesesList = [];
+        var maxMes = 0;
+        for (var k in map) {
+          var mm = map[k].mesesPermanencia;
+          mesesList.push(mm);
+          if (mm > maxMes) maxMes = mm;
+        }
+        if (mesesList.length === 0) return;
+        var buckets = asistenciaBuildBucketsPermanencia(maxMes);
+        if (bucketIdx < 0 || bucketIdx >= buckets.length) return;
+        var inBucket = [];
+        for (var k2 in map) {
+          var ob = map[k2];
+          if (asistenciaBucketIndexPermanencia(ob.mesesPermanencia, buckets) === bucketIdx) inBucket.push(ob);
+        }
+        inBucket.sort(function(a, b) {
+          if (b.mesesPermanencia !== a.mesesPermanencia) return b.mesesPermanencia - a.mesesPermanencia;
+          return asistenciaPersonaPlainLabelPerm(a).localeCompare(asistenciaPersonaPlainLabelPerm(b));
+        });
+        var tit = document.getElementById('modal-asistencia-permanencia-cliente-titulo');
+        var body = document.getElementById('modal-asistencia-permanencia-cliente-body');
+        var bd = document.getElementById('modal-asistencia-permanencia-cliente-backdrop');
+        if (!body || !bd) return;
+        var modalInner = bd.querySelector('.modal');
+        if (modalInner) modalInner.style.maxWidth = 'min(92vw, 880px)';
+        bd.classList.add('permanencia-modal-rango');
+        var rangoLabel = buckets[bucketIdx].label;
+        if (tit) tit.textContent = 'Clientes — ' + (rangoLabel.length > 48 ? rangoLabel.slice(0, 45) + '…' : rangoLabel);
+        if (inBucket.length === 0) {
+          body.innerHTML = '<p style="margin:0;color:#64748b;">No hay clientes en este rango con las sucursales y fechas actuales.</p>';
+        } else {
+          var tbl =
+            '<p style="margin:0 0 0.65rem;font-size:0.88rem;color:#64748b;">' +
+            inBucket.length +
+            ' cliente' +
+            (inBucket.length === 1 ? '' : 's') +
+            ' en <strong>' +
+            esc(rangoLabel) +
+            '</strong>. El ícono abre el detalle de cada uno.</p>' +
+            '<div class="asistencia-perm-detalle-wrap" style="margin-top:0;max-height:min(60vh,520px);"><table><thead><tr><th>Cliente</th><th class="num">Meses perm.</th><th class="num">Días distintos</th><th class="num">Ingresos</th><th>Primera</th><th>Última</th><th style="text-align:center;width:4.5rem;">Acción</th></tr></thead><tbody>';
+          for (var ri = 0; ri < inBucket.length; ri++) {
+            var row = inBucket[ri];
+            var enc = encodeURIComponent(row._key);
+            tbl +=
+              '<tr><td>' +
+              asistenciaPersonaHtmlLabelPerm(row) +
+              '</td><td class="num">' +
+              asistenciaFormat1Decimal(row.mesesPermanencia) +
+              '</td><td class="num">' +
+              row.diasDistintos +
+              '</td><td class="num">' +
+              row.totalIngresos +
+              '</td><td>' +
+              esc(row.fechaMin) +
+              '</td><td>' +
+              esc(row.fechaMax) +
+              '</td><td style="text-align:center;">' +
+              '<button type="button" class="btn-asistencia-perm-ver btn-asistencia-perm-ver-detalle" data-asist-persona="' +
+              enc +
+              '" data-asist-volver-bucket="' +
+              String(bucketIdx) +
+              '" title="Ver detalle de permanencia y asistencias" aria-label="Ver detalle de permanencia">' +
+              '<span class="btn-icon" style="display:inline-flex;">' +
+              ASIST_SVG_OJO_PERM +
+              '</span></button></td></tr>';
+          }
+          tbl += '</tbody></table></div>';
+          body.innerHTML = tbl;
+        }
+        bd.classList.remove('oculto');
+        bd.setAttribute('aria-hidden', 'false');
+      }
+
+      function asistenciaAbrirModalPermanenciaCliente(personaKey, optVolverBucketIdx) {
+        var map = getAsistenciaPermanenciaClienteMap();
+        var o = map[personaKey];
+        if (!o) return;
+        var tit = document.getElementById('modal-asistencia-permanencia-cliente-titulo');
+        var body = document.getElementById('modal-asistencia-permanencia-cliente-body');
+        var bd = document.getElementById('modal-asistencia-permanencia-cliente-backdrop');
+        if (!body || !bd) return;
+        bd.classList.remove('permanencia-modal-rango');
+        var modalInner = bd.querySelector('.modal');
+        if (modalInner) modalInner.style.maxWidth = '560px';
+        var volverIdx = optVolverBucketIdx != null && optVolverBucketIdx !== '' && !isNaN(Number(optVolverBucketIdx)) ? Number(optVolverBucketIdx) : null;
+        var displayTit = (o.empleado_id || '').trim() ? 'ID ' + String(o.empleado_id).trim() : (((o.nombre || '') + ' ' + (o.apellido || '')).trim() || String(o._key || ''));
+        if (tit) tit.textContent = 'Permanencia — ' + (displayTit.length > 52 ? displayTit.slice(0, 49) + '…' : displayTit);
+        var horasEst = o.totalIngresos;
+        var tblVisitas = '<div class="asistencia-perm-detalle-wrap"><table><thead><tr><th>Fecha</th><th>Sucursal</th><th>Hora</th></tr></thead><tbody>';
+        for (var vi = 0; vi < o.visitas.length; vi++) {
+          var vis = o.visitas[vi];
+          tblVisitas += '<tr><td>' + esc(vis.fecha) + '</td><td>' + esc(vis.sucursal || '–') + '</td><td>' + esc(vis.tiempo != null && vis.tiempo !== '' ? String(vis.tiempo) : '–') + '</td></tr>';
+        }
+        tblVisitas += '</tbody></table></div>';
+        var volverBar =
+          volverIdx != null
+            ? '<div style="margin:0 0 0.65rem;"><button type="button" class="btn-asistencia-perm-volver-rango" data-asist-volver-bucket="' +
+              String(volverIdx) +
+              '" style="font-size:0.88rem;padding:0.45rem 0.75rem;border-radius:8px;border:1px solid #cbd5e1;background:#f8fafc;color:#334155;cursor:pointer;">← Volver al listado del rango</button></div>'
+            : '';
+        body.innerHTML =
+          volverBar +
+          '<p style="margin:0 0 0.65rem;font-size:0.88rem;color:#64748b;">Misma regla que el mapa: <strong>1 h</strong> por ingreso. Tiempo en club ≈ <strong>' +
+          horasEst +
+          ' h</strong> sumando todas las visitas del período.</p>' +
+          '<div class="asistencia-perm-modal-stats">' +
+          '<div class="asistencia-perm-stat"><div class="lab">Permanencia (primera–última)</div><div class="val">' + asistenciaFormat1Decimal(o.mesesPermanencia) + ' meses</div></div>' +
+          '<div class="asistencia-perm-stat"><div class="lab">Días de carrera</div><div class="val">' + o.diasCarrera + '</div></div>' +
+          '<div class="asistencia-perm-stat"><div class="lab">Días distintos con visita</div><div class="val">' + o.diasDistintos + '</div></div>' +
+          '<div class="asistencia-perm-stat"><div class="lab">Ingresos en el período</div><div class="val">' + o.totalIngresos + '</div></div>' +
+          '<div class="asistencia-perm-stat"><div class="lab">Primera fecha</div><div class="val" style="font-size:0.9rem;">' + esc(o.fechaMin) + '</div></div>' +
+          '<div class="asistencia-perm-stat"><div class="lab">Última fecha</div><div class="val" style="font-size:0.9rem;">' + esc(o.fechaMax) + '</div></div>' +
+          '</div>' +
+          '<div style="display:flex;align-items:center;justify-content:space-between;gap:0.75rem;flex-wrap:wrap;margin-top:0.5rem;padding-top:0.65rem;border-top:1px solid #e5e7eb;">' +
+          '<h3 style="margin:0;font-size:0.95rem;color:#334155;">Asistencias por fecha</h3>' +
+          '<button type="button" class="btn-asistencia-perm-ver" id="modal-asistencia-perm-toggle-lista" title="Mostrar u ocultar listado por fecha" aria-label="Mostrar u ocultar asistencias por fecha" aria-expanded="false">' +
+          '<span class="btn-icon" style="display:inline-flex;">' + ASIST_SVG_OJO_PERM + '</span></button></div>' +
+          '<div id="asistencia-perm-modal-fechas-wrap" class="oculto">' +
+          tblVisitas +
+          '</div>';
+        var wrapLista = document.getElementById('asistencia-perm-modal-fechas-wrap');
+        var btnTog = document.getElementById('modal-asistencia-perm-toggle-lista');
+        if (btnTog && wrapLista) {
+          btnTog.onclick = function() {
+            var hidden = wrapLista.classList.contains('oculto');
+            if (hidden) {
+              wrapLista.classList.remove('oculto');
+              btnTog.setAttribute('aria-expanded', 'true');
+            } else {
+              wrapLista.classList.add('oculto');
+              btnTog.setAttribute('aria-expanded', 'false');
+            }
+          };
+        }
+        bd.classList.remove('oculto');
+        bd.setAttribute('aria-hidden', 'false');
+      }
+
+      function renderPermanenciaDistribucionHtml() {
+        var info = semanasPeriodoAsistenciaActual();
+        var map = getAsistenciaPermanenciaClienteMap();
         var mesesList = [];
         var maxMes = 0;
         for (var k in map) {
           var o = map[k];
-          var mes = asistenciaMesesPermanenciaDesdeMinMax(o.fechaMin, o.fechaMax);
+          var mes = o.mesesPermanencia;
           mesesList.push(mes);
           if (mes > maxMes) maxMes = mes;
         }
@@ -1773,13 +1996,21 @@
         var promMes = sumMes / totalClientes;
         var techoMesesReporte = info.dias / ASIST_DIAS_POR_MES;
         var sub = '<p style="margin:0 0 0.6rem 0;font-size:0.82rem;color:#64748b;">Período del reporte: <strong>' + esc(info.desde) + '</strong> a <strong>' + esc(info.hasta) + '</strong> (<strong>' + info.dias + '</strong> días → techo ~<strong>' + asistenciaFormat1Decimal(techoMesesReporte) + '</strong> meses de carrera posible por cliente). Clientes: <strong>' + totalClientes + '</strong>. <strong>Permanencia promedio:</strong> ' + asistenciaFormat1Decimal(promMes) + ' meses.</p>';
-        var html = sub + '<table><thead><tr><th>Rango de permanencia</th><th class="num">Clientes</th><th class="num">% del total</th></tr></thead><tbody>';
+        var html = sub + '<table><thead><tr><th>Rango de permanencia</th><th class="num">Clientes</th><th class="num">% del total</th><th style="text-align:center;width:4.5rem;">Acción</th></tr></thead><tbody>';
         for (var rj = 0; rj < buckets.length; rj++) {
           var n = counts[rj];
           var pct = (100 * n) / totalClientes;
           var pctStr = (Math.round(pct * 10) / 10).toLocaleString('es-AR', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
           var trCls = maxC > 0 && n === maxC ? ' class="asistencia-freq-bucket-top"' : '';
-          html += '<tr' + trCls + '><td>' + esc(buckets[rj].label) + '</td><td class="num">' + n + '</td><td class="num">' + pctStr + '%</td></tr>';
+          var accCell =
+            n > 0
+              ? '<td style="text-align:center;"><button type="button" class="btn-asistencia-perm-ver btn-asistencia-perm-ver-rango" data-asist-bucket-idx="' +
+                rj +
+                '" title="Ver clientes de este rango" aria-label="Ver clientes de este rango de permanencia"><span class="btn-icon" style="display:inline-flex;">' +
+                ASIST_SVG_OJO_PERM +
+                '</span></button></td>'
+              : '<td style="text-align:center;color:#94a3b8;">—</td>';
+          html += '<tr' + trCls + '><td>' + esc(buckets[rj].label) + '</td><td class="num">' + n + '</td><td class="num">' + pctStr + '%</td>' + accCell + '</tr>';
         }
         html += '</tbody></table>';
         var topLabels = [];
@@ -4033,6 +4264,55 @@
       })();
 
       function setupSeguridad() {}
+
+      (function setupModalAsistenciaPermanenciaCliente() {
+        var bd = document.getElementById('modal-asistencia-permanencia-cliente-backdrop');
+        var btnClose = document.getElementById('modal-asistencia-permanencia-cliente-close');
+        if (bd && btnClose) {
+          btnClose.addEventListener('click', function() { asistenciaCerrarModalPermanenciaCliente(); });
+          setupBackdropCloseOnlyOnRealClick(bd, function() { asistenciaCerrarModalPermanenciaCliente(); });
+        }
+        if (!document.documentElement.dataset.asistPermClicksBound) {
+          document.documentElement.dataset.asistPermClicksBound = '1';
+          document.addEventListener(
+            'click',
+            function(ev) {
+              var va = document.getElementById('vista-asistencia');
+              var permBd = document.getElementById('modal-asistencia-permanencia-cliente-backdrop');
+              var rangoBtn = ev.target.closest('.btn-asistencia-perm-ver-rango');
+              if (rangoBtn) {
+                if (!(va && va.contains(rangoBtn))) return;
+                var idx = parseInt(rangoBtn.getAttribute('data-asist-bucket-idx'), 10);
+                if (isNaN(idx)) return;
+                ev.preventDefault();
+                asistenciaAbrirModalPermanenciaRango(idx);
+                return;
+              }
+              var volverBtn = ev.target.closest('.btn-asistencia-perm-volver-rango');
+              if (volverBtn && permBd && permBd.contains(volverBtn)) {
+                ev.preventDefault();
+                var vb0 = volverBtn.getAttribute('data-asist-volver-bucket');
+                var n0 = vb0 != null && vb0 !== '' ? parseInt(vb0, 10) : NaN;
+                if (!isNaN(n0)) asistenciaAbrirModalPermanenciaRango(n0);
+                return;
+              }
+              var det = ev.target.closest('.btn-asistencia-perm-ver-detalle');
+              if (!det) return;
+              if (!((va && va.contains(det)) || (permBd && permBd.contains(det)))) return;
+              var enc = det.getAttribute('data-asist-persona');
+              if (!enc) return;
+              ev.preventDefault();
+              var vb = det.getAttribute('data-asist-volver-bucket');
+              var volverB = vb != null && vb !== '' ? parseInt(vb, 10) : NaN;
+              try {
+                var key = decodeURIComponent(enc);
+                asistenciaAbrirModalPermanenciaCliente(key, isNaN(volverB) ? undefined : volverB);
+              } catch (err) { /* ignore */ }
+            },
+            false
+          );
+        }
+      })();
 
       // Inicio: verificar sesión
       client.auth.getSession().then(function(_ref) {
