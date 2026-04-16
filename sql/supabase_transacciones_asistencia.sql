@@ -80,3 +80,4 @@ $$;
 GRANT EXECUTE ON FUNCTION public.get_anios_transacciones_asistencia() TO authenticated;
 
 -- Rendimiento lectura por rango (opcional, índice covering): sql/supabase_transacciones_asistencia_index_covering.sql
+-- Huella liviana para cache del dashboard (opcional): sql/supabase_asistencia_dataset_version.sql

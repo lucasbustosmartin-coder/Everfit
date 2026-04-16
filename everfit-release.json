@@ -1,8 +1,9 @@
 {
-  "versionLabel": "v1.23",
+  "versionLabel": "v1.24",
   "lines": [
-    "Se incorpora el apellido y nombre del cliente en el detalle de permanencia por cliente.",
-    "Cuando hay una nueva versión del dashboard, te mostramos un resumen de novedades para que elijas recargar ahora o más tarde.",
-    "Si el informe de asistencia tarda mucho, probá filtrar por un año o mes más acotado."
+    "Asistencia: si ya cargaste un rango amplio (p. ej. todos los años), al elegir un año o mes más chico se usa lo que está en memoria sin volver a descargar todo.",
+    "Actualizar permisos (icono de recarga) ya no vacía el cache de asistencia; se respeta la huella de datos cuando aplica.",
+    "Modal de clientes por rango de permanencia: ancho más compacto y columna cliente con nombre cuando hay datos.",
+    "Cuando hay una nueva versión del dashboard, te mostramos un resumen de novedades para que elijas recargar ahora o más tarde."
   ]
 }

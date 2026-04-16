@@ -292,6 +292,10 @@
       .panel-seguridad table { font-size: 0.9rem; }
       .modal-body .modal-tabs button { min-height: 44px; }
       .tabla-ratios th, .tabla-ratios td, #tbody-ratios td { padding: 0.4rem 0.5rem; font-size: 0.875rem; }
+      #modal-asistencia-permanencia-cliente-backdrop.permanencia-modal-rango > .modal {
+        width: 100%;
+        max-width: 100%;
+      }
     }
 
     @media (max-width: 480px) {
@@ -361,6 +365,41 @@
     #modal-asistencia-permanencia-cliente-body .asistencia-perm-stat .val { font-weight: 700; color: #0f172a; font-size: 1rem; }
     #asistencia-perm-modal-fechas-wrap.oculto { display: none !important; }
     #modal-asistencia-permanencia-cliente-titulo.modal-asistencia-perm-titulo { white-space: normal; word-break: break-word; line-height: 1.25; padding-right: 0.35rem; max-width: 100%; }
+    /* Modal listado por rango de permanencia: ancho acorde al contenido (tabla no width:100%). */
+    #modal-asistencia-permanencia-cliente-backdrop.permanencia-modal-rango > .modal {
+      width: fit-content;
+      max-width: min(96vw, 56rem);
+    }
+    #modal-asistencia-permanencia-cliente-backdrop.permanencia-modal-rango .modal-body {
+      min-width: 0;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior-x: contain;
+    }
+    #modal-asistencia-permanencia-cliente-backdrop.permanencia-modal-rango .permanencia-rango-tabla {
+      margin-top: 0;
+      max-height: min(60vh, 520px);
+    }
+    #modal-asistencia-permanencia-cliente-backdrop.permanencia-modal-rango .permanencia-rango-tabla table {
+      width: auto;
+      max-width: 100%;
+      table-layout: auto;
+    }
+    #modal-asistencia-permanencia-cliente-backdrop.permanencia-modal-rango .permanencia-rango-tabla th:first-child,
+    #modal-asistencia-permanencia-cliente-backdrop.permanencia-modal-rango .permanencia-rango-tabla td:first-child {
+      white-space: normal;
+      word-break: break-word;
+      max-width: min(48vw, 22rem);
+    }
+    #modal-asistencia-permanencia-cliente-backdrop.permanencia-modal-rango .permanencia-rango-tabla th:not(:first-child),
+    #modal-asistencia-permanencia-cliente-backdrop.permanencia-modal-rango .permanencia-rango-tabla td:not(:first-child) {
+      white-space: nowrap;
+    }
+    #modal-asistencia-permanencia-cliente-backdrop.permanencia-modal-rango .permanencia-rango-tabla th:last-child,
+    #modal-asistencia-permanencia-cliente-backdrop.permanencia-modal-rango .permanencia-rango-tabla td:last-child {
+      width: 1%;
+      text-align: center;
+    }
     .asistencia-cargando { color: #64748b; padding: 0.65rem 0.75rem; margin-bottom: 0.75rem; border-radius: 8px; background: #f8fafc; border: 1px solid #e2e8f0; }
     .asistencia-cargando.asistencia-estado-error { color: #991b1b; background: #fef2f2; border-color: #fecaca; }
     #modal-asistencia-carga-backdrop { z-index: 150; pointer-events: auto; }
@@ -456,7 +495,7 @@
         <span class="menu-label">Seguridad</span>
       </a>
     </nav>
-    <div class="sidebar-version" id="sidebar-version" aria-label="Versión">v1.23</div>
+    <div class="sidebar-version" id="sidebar-version" aria-label="Versión">v1.24</div>
   </aside>
 
   <main class="main-content">
@@ -1189,10 +1228,12 @@
         return list;
       }
 
-      /** Cache transacciones_asistencia por rango cargado (paginado). */
+      /** Cache transacciones_asistencia: rango [asistenciaCacheDesde..asistenciaCacheHasta] descargado de Supabase (puede ser «todos los años»). El combo Año/Mes aplica un sub-rango en memoria sin re-descargar si el UI está contenido en ese rectángulo. */
       var cacheTransaccionesAsistencia = null;
       var asistenciaCacheDesde = '';
       var asistenciaCacheHasta = '';
+      /** Huella devuelta por RPC get_asistencia_dataset_version(desde,hasta) al último fetch exitoso de ese rango. */
+      var asistenciaCacheDataVersion = '';
       var asistenciaSucursalFilterSet = [];
       var asistenciaUiInicializado = false;
       /** Mapa fecha → intervalos de visita; se invalida con el cache de transacciones. */
@@ -1227,6 +1268,7 @@
         cacheTransaccionesAsistencia = null;
         asistenciaCacheDesde = '';
         asistenciaCacheHasta = '';
+        asistenciaCacheDataVersion = '';
         asistenciaByFechaCacheKey = '';
         asistenciaByFechaMap = null;
         asistenciaAniosDisponibles = [];
@@ -1337,8 +1379,36 @@
           });
       }
 
+      /** RPC opcional: huella del subconjunto en [desde,hasta]. Si falla (no desplegada), devuelve Promise.reject. */
+      function obtenerVersionAsistenciaDataset(desde, hasta) {
+        return client.rpc('get_asistencia_dataset_version', { p_desde: desde, p_hasta: hasta }).then(function(ref) {
+          if (ref.error) throw ref.error;
+          var d = ref.data;
+          if (d == null || d === '') return null;
+          return String(d);
+        });
+      }
+
       function asistenciaFechaISO(r) {
         return fechaStr(r.fecha) || (typeof r.fecha === 'string' ? r.fecha.slice(0, 10) : '');
+      }
+
+      /** Fecha de la fila dentro de [desde, hasta] ISO (inclusive). */
+      function asistenciaFechaFilaEnRango(r, desde, hasta) {
+        var f = asistenciaFechaISO(r);
+        if (!f || !/^\d{4}-\d{2}-\d{2}$/.test(f)) return false;
+        return f >= desde && f <= hasta;
+      }
+
+      /** El rango del UI (Año/Mes) está incluido en lo ya descargado en memoria. */
+      function asistenciaUiRangoCubiertoPorCache(rango) {
+        if (cacheTransaccionesAsistencia == null) return false;
+        if (!asistenciaCacheDesde || !asistenciaCacheHasta) return false;
+        return rango.desde >= asistenciaCacheDesde && rango.hasta <= asistenciaCacheHasta;
+      }
+
+      function asistenciaUiRangoIgualCache(rango) {
+        return rango.desde === asistenciaCacheDesde && rango.hasta === asistenciaCacheHasta;
       }
 
       /** Ingreso en ms (epoch); hora del día en UTC−3 (Argentina). */
@@ -1410,8 +1480,10 @@
       }
 
       function getAsistenciaRowsFiltered() {
+        var rgUi = getAsistenciaRangoUi();
         var rows = cacheTransaccionesAsistencia || [];
         return rows.filter(function(r) {
+          if (!asistenciaFechaFilaEnRango(r, rgUi.desde, rgUi.hasta)) return false;
           var s = (r.sucursal || '').trim();
           if (myAllowedSucursales && myAllowedSucursales.length && myAllowedSucursales.indexOf(s) === -1) return false;
           if (asistenciaSucursalFilterSet.length > 0 && asistenciaSucursalFilterSet.indexOf(s) === -1) return false;
@@ -1421,8 +1493,10 @@
 
       /** Todas las filas del período cargado respetando solo sucursales permitidas al usuario (sin filtro de sucursal de la vista). Sirve para detectar multi-sede aunque el filtro sea una sola sede. */
       function getAsistenciaRowsSinFiltroSucursalVista() {
+        var rgUi = getAsistenciaRangoUi();
         var rows = cacheTransaccionesAsistencia || [];
         return rows.filter(function(r) {
+          if (!asistenciaFechaFilaEnRango(r, rgUi.desde, rgUi.hasta)) return false;
           var s = (r.sucursal || '').trim();
           if (myAllowedSucursales && myAllowedSucursales.length && myAllowedSucursales.indexOf(s) === -1) return false;
           return true;
@@ -1445,7 +1519,9 @@
 
       function getSucursalesListaDesdeAsistenciaCache() {
         var set = {};
+        var rgUi = getAsistenciaRangoUi();
         (cacheTransaccionesAsistencia || []).forEach(function(r) {
+          if (!asistenciaFechaFilaEnRango(r, rgUi.desde, rgUi.hasta)) return;
           var s = (r.sucursal || '').trim();
           if (!s) return;
           if (myAllowedSucursales && myAllowedSucursales.length && myAllowedSucursales.indexOf(s) === -1) return;
@@ -1805,13 +1881,27 @@
 
       function asistenciaPersonaPlainLabelPerm(o) {
         if (!o) return '';
-        if ((o.empleado_id || '').trim()) return ('ID ' + String(o.empleado_id).trim()).toLowerCase();
+        var id = (o.empleado_id || '').trim();
+        var ap = (o.apellido || '').trim();
+        var nm = (o.nombre || '').trim();
+        var nomPart = ap && nm ? ap + ', ' + nm : (ap + ' ' + nm).trim();
+        if (id) return (nomPart ? nomPart + ' ' : '') + 'id ' + id;
         return ((o.nombre || '') + ' ' + (o.apellido || '')).trim().toLowerCase() || String(o._key || '');
       }
 
+      /** Celda «Cliente» en tablas de permanencia: ID + apellido/nombre si vienen en los datos (misma lógica que el título del modal de detalle). */
       function asistenciaPersonaHtmlLabelPerm(o) {
         if (!o) return '–';
-        if ((o.empleado_id || '').trim()) return 'ID ' + esc(String(o.empleado_id).trim());
+        var id = (o.empleado_id || '').trim();
+        var ap = (o.apellido || '').trim();
+        var nm = (o.nombre || '').trim();
+        var nomPart = '';
+        if (ap && nm) nomPart = ap + ', ' + nm;
+        else nomPart = (ap + ' ' + nm).trim();
+        if (id) {
+          if (nomPart) return 'ID ' + esc(id) + ' — ' + esc(nomPart);
+          return 'ID ' + esc(id);
+        }
         var t = ((o.nombre || '') + ' ' + (o.apellido || '')).trim();
         return t ? esc(t) : esc(String(o._key || ''));
       }
@@ -1853,7 +1943,10 @@
         var bd = document.getElementById('modal-asistencia-permanencia-cliente-backdrop');
         if (!body || !bd) return;
         var modalInner = bd.querySelector('.modal');
-        if (modalInner) modalInner.style.maxWidth = 'min(92vw, 880px)';
+        if (modalInner) {
+          modalInner.style.removeProperty('max-width');
+          modalInner.style.removeProperty('width');
+        }
         bd.classList.add('permanencia-modal-rango');
         var rangoLabel = buckets[bucketIdx].label;
         if (tit) tit.textContent = 'Clientes — ' + (rangoLabel.length > 48 ? rangoLabel.slice(0, 45) + '…' : rangoLabel);
@@ -1868,7 +1961,7 @@
             ' en <strong>' +
             esc(rangoLabel) +
             '</strong>. El ícono abre el detalle de cada uno.</p>' +
-            '<div class="asistencia-perm-detalle-wrap" style="margin-top:0;max-height:min(60vh,520px);"><table><thead><tr><th>Cliente</th><th class="num">Meses perm.</th><th class="num">Días distintos</th><th class="num">Ingresos</th><th>Primera</th><th>Última</th><th style="text-align:center;width:4.5rem;">Acción</th></tr></thead><tbody>';
+            '<div class="asistencia-perm-detalle-wrap permanencia-rango-tabla"><table><thead><tr><th>Cliente</th><th class="num">Meses perm.</th><th class="num">Días distintos</th><th class="num">Ingresos</th><th>Primera</th><th>Última</th><th>Acción</th></tr></thead><tbody>';
           for (var ri = 0; ri < inBucket.length; ri++) {
             var row = inBucket[ri];
             var enc = encodeURIComponent(row._key);
@@ -2184,7 +2277,8 @@
         var wrapMulti = document.getElementById('asistencia-multi-wrap');
         var rowsF = getAsistenciaRowsFiltered();
         var filtKey = (asistenciaSucursalFilterSet || []).slice().sort().join('\u0001');
-        var byFKey = (asistenciaCacheDesde || '') + '|' + (asistenciaCacheHasta || '') + '|' + filtKey;
+        var rgvMapa = getAsistenciaRangoUi();
+        var byFKey = (rgvMapa.desde || '') + '|' + (rgvMapa.hasta || '') + '|' + filtKey;
         if (byFKey !== asistenciaByFechaCacheKey || !asistenciaByFechaMap) {
           asistenciaByFechaMap = buildVisitIntervalsByFechaMap(rowsF);
           asistenciaByFechaCacheKey = byFKey;
@@ -2352,69 +2446,113 @@
             return;
           }
 
-          var needFetch = asistenciaCacheDesde !== rango.desde || asistenciaCacheHasta !== rango.hasta;
-          if (!needFetch) {
+          var needFetch = !asistenciaUiRangoCubiertoPorCache(rango);
+
+          function proceedFromCacheOnly() {
             setAsistenciaCargaModal(false);
             setAsistenciaBloqueDatosVisible(true);
             asistenciaRunWithLoading('Actualizando vista…', afterData);
+          }
+
+          function runFetchCompletoAsistencia() {
+            if (estado) estado.style.display = 'none';
+            setAsistenciaBloqueDatosVisible(false);
+            setAsistenciaCargaModal(true, { msg: 'Descargando transacciones…', sub: '', pct: 0, indeterminate: false });
+
+            function onFetchProgress(pct, sub) {
+              if (!asistenciaVistaMenuActiva()) return;
+              var ind = pct == null || isNaN(Number(pct));
+              setAsistenciaCargaModal(true, {
+                msg: 'Descargando transacciones…',
+                sub: sub || '',
+                pct: ind ? 0 : Number(pct),
+                indeterminate: ind
+              });
+            }
+
+            traerTransaccionesAsistenciaRango(rango.desde, rango.hasta, onFetchProgress)
+              .then(function(rows) {
+                if (!asistenciaVistaMenuActiva()) {
+                  setAsistenciaCargaModal(false);
+                  setAsistenciaBloqueDatosVisible(true);
+                  return;
+                }
+                return obtenerVersionAsistenciaDataset(rango.desde, rango.hasta)
+                  .then(function(verHuella) {
+                    if (verHuella) asistenciaCacheDataVersion = verHuella;
+                    else asistenciaCacheDataVersion = '';
+                  })
+                  .catch(function() {
+                    asistenciaCacheDataVersion = '';
+                  })
+                  .then(function() {
+                    cacheTransaccionesAsistencia = rows || [];
+                    asistenciaCacheDesde = rango.desde;
+                    asistenciaCacheHasta = rango.hasta;
+                    var n = (rows || []).length;
+                    setAsistenciaCargaModal(true, {
+                      msg: 'Armando mapa y tablas…',
+                      sub: n.toLocaleString('es-AR') + ' registros en memoria',
+                      indeterminate: true
+                    });
+                    requestAnimationFrame(function() {
+                      requestAnimationFrame(function() {
+                        try {
+                          afterData();
+                        } finally {
+                          setAsistenciaCargaModal(false);
+                          setAsistenciaBloqueDatosVisible(true);
+                        }
+                      });
+                    });
+                  });
+              })
+              .catch(function(err) {
+                setAsistenciaCargaModal(false);
+                setAsistenciaBloqueDatosVisible(true);
+                if (estado) {
+                  estado.classList.add('asistencia-estado-error');
+                  estado.style.display = 'block';
+                  estado.textContent = 'Error: ' + (err && err.message ? err.message : String(err));
+                }
+                if (wrapH) wrapH.innerHTML = '';
+                if (wrapFreq) wrapFreq.innerHTML = '';
+                if (wrapPerm) wrapPerm.innerHTML = '';
+                if (wrapMulti) wrapMulti.innerHTML = '';
+              });
+          }
+
+          if (!needFetch && cacheTransaccionesAsistencia != null) {
+            if (!asistenciaUiRangoIgualCache(rango)) {
+              proceedFromCacheOnly();
+              return;
+            }
+            obtenerVersionAsistenciaDataset(rango.desde, rango.hasta)
+              .then(function(ver) {
+                if (!asistenciaVistaMenuActiva()) {
+                  setAsistenciaCargaModal(false);
+                  setAsistenciaBloqueDatosVisible(true);
+                  return;
+                }
+                if (ver && asistenciaCacheDataVersion && ver === asistenciaCacheDataVersion) {
+                  proceedFromCacheOnly();
+                } else if (!ver) {
+                  proceedFromCacheOnly();
+                } else if (ver && !asistenciaCacheDataVersion) {
+                  asistenciaCacheDataVersion = ver;
+                  proceedFromCacheOnly();
+                } else {
+                  runFetchCompletoAsistencia();
+                }
+              })
+              .catch(function() {
+                if (!asistenciaVistaMenuActiva()) return;
+                proceedFromCacheOnly();
+              });
             return;
           }
 
-          if (estado) estado.style.display = 'none';
-          setAsistenciaBloqueDatosVisible(false);
-          setAsistenciaCargaModal(true, { msg: 'Descargando transacciones…', sub: '', pct: 0, indeterminate: false });
-
-          function onFetchProgress(pct, sub) {
-            if (!asistenciaVistaMenuActiva()) return;
-            var ind = pct == null || isNaN(Number(pct));
-            setAsistenciaCargaModal(true, {
-              msg: 'Descargando transacciones…',
-              sub: sub || '',
-              pct: ind ? 0 : Number(pct),
-              indeterminate: ind
-            });
-          }
-
-          traerTransaccionesAsistenciaRango(rango.desde, rango.hasta, onFetchProgress)
-            .then(function(rows) {
-              if (!asistenciaVistaMenuActiva()) {
-                setAsistenciaCargaModal(false);
-                setAsistenciaBloqueDatosVisible(true);
-                return;
-              }
-              cacheTransaccionesAsistencia = rows || [];
-              asistenciaCacheDesde = rango.desde;
-              asistenciaCacheHasta = rango.hasta;
-              var n = (rows || []).length;
-              setAsistenciaCargaModal(true, {
-                msg: 'Armando mapa y tablas…',
-                sub: n.toLocaleString('es-AR') + ' registros en memoria',
-                indeterminate: true
-              });
-              requestAnimationFrame(function() {
-                requestAnimationFrame(function() {
-                  try {
-                    afterData();
-                  } finally {
-                    setAsistenciaCargaModal(false);
-                    setAsistenciaBloqueDatosVisible(true);
-                  }
-                });
-              });
-            })
-            .catch(function(err) {
-              setAsistenciaCargaModal(false);
-              setAsistenciaBloqueDatosVisible(true);
-              if (estado) {
-                estado.classList.add('asistencia-estado-error');
-                estado.style.display = 'block';
-                estado.textContent = 'Error: ' + (err && err.message ? err.message : String(err));
-              }
-              if (wrapH) wrapH.innerHTML = '';
-              if (wrapFreq) wrapFreq.innerHTML = '';
-              if (wrapPerm) wrapPerm.innerHTML = '';
-              if (wrapMulti) wrapMulti.innerHTML = '';
-            });
+          runFetchCompletoAsistencia();
         }
 
         if (soloPintar) {
@@ -4024,8 +4162,13 @@
               if (va && va.style.display !== 'none') document.getElementById('menu-home').click();
             }
           }
-          invalidateAsistenciaCache();
-          cargarDatos().then(renderizar).catch(function() {});
+          // No invalidateAsistenciaCache aquí: el botón Actualizar debe respetar cache + RPC get_asistencia_dataset_version.
+          cargarDatos()
+            .then(function() {
+              renderizar();
+              if (asistenciaVistaMenuActiva()) renderVistaAsistencia(false);
+            })
+            .catch(function() {});
         });
       }
 

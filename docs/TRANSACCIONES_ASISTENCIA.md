@@ -21,9 +21,10 @@ Los textos se **normalizan** (trim, sin acentos para matchear cabeceras) y se gu
 ## Tabla en Supabase
 
 1. En **SQL Editor**, ejecutá `sql/supabase_transacciones_asistencia.sql` (o reaplicá el archivo si ya existía la tabla) para tener la función **`get_anios_transacciones_asistencia`** (combo **Año** = años con datos) y el permiso **`ver_asistencia`** (menú Asistencia y lectura de la tabla; configurable por rol en **Seguridad**).
-2. **Rendimiento (opcional):** si el volumen de filas es alto y la vista Asistencia tarda en descargar datos, ejecutá además `sql/supabase_transacciones_asistencia_index_covering.sql` (índice en `fecha` con `INCLUDE` de las columnas que pide el dashboard). Ya existen índices en `fecha` y `(fecha, sucursal)`; el covering reduce accesos al heap en rangos largos.
-3. RLS: **SELECT** solo con permiso **`ver_asistencia`**; **INSERT** y **DELETE** solo con **`upload_base`** (mismo criterio que “Actualizar base” / Importar asistencia).
-4. Si la tabla ya estaba creada con política de lectura abierta a todos, ejecutá **`sql/supabase_asistencia_ver_permiso.sql`** para registrar el permiso, los grants por rol y actualizar la política **SELECT**.
+2. **Cache del dashboard (recomendado):** ejecutá `sql/supabase_asistencia_dataset_version.sql` para crear **`get_asistencia_dataset_version(fecha_desde, fecha_hasta)`**. Devuelve una huella MD5 del subconjunto en ese rango (conteo, `max(created_at)`, `max(fecha)`); el cliente la compara antes de volver a paginar todo el rango. Si no ejecutás este script, la app sigue funcionando y reutiliza memoria por rango, pero ante mismo rango siempre intentará la descarga completa hasta que la RPC exista.
+3. **Rendimiento (opcional):** si el volumen de filas es alto y la vista Asistencia tarda en descargar datos, ejecutá además `sql/supabase_transacciones_asistencia_index_covering.sql` (índice en `fecha` con `INCLUDE` de las columnas que pide el dashboard). Ya existen índices en `fecha` y `(fecha, sucursal)`; el covering reduce accesos al heap en rangos largos.
+4. RLS: **SELECT** solo con permiso **`ver_asistencia`**; **INSERT** y **DELETE** solo con **`upload_base`** (mismo criterio que “Actualizar base” / Importar asistencia).
+5. Si la tabla ya estaba creada con política de lectura abierta a todos, ejecutá **`sql/supabase_asistencia_ver_permiso.sql`** para registrar el permiso, los grants por rol y actualizar la política **SELECT**.
 
 ## Carga desde el dashboard
 
