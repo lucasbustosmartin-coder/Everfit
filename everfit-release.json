@@ -1,8 +1,8 @@
 {
-  "versionLabel": "v1.26",
+  "versionLabel": "v1.27",
   "lines": [
-    "Se optimizó la comunicación con el servidor al cargar datos, para que en muchos casos notes tiempos de respuesta más ágiles.",
-    "Incluimos ajustes menores de rendimiento y estabilidad en el uso diario del panel.",
-    "Cuando hay una nueva versión, podés recargar ahora o seguir trabajando y actualizar más tarde."
+    "Mejoramos los tiempos de respuesta al obtener datos desde el servidor mientras usás el panel.",
+    "Esta versión incluye ajustes de rendimiento y de la experiencia al navegar reportes y vistas con mucha información.",
+    "Podés recargar ahora para pasar a la versión nueva o seguir trabajando y actualizar cuando prefieras."
   ]
 }
