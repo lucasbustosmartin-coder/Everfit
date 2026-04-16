@@ -1,7 +1,7 @@
 {
-  "versionLabel": "v1.22",
+  "versionLabel": "v1.23",
   "lines": [
-    "Permanencia (Asistencia): en la tabla de rangos, la columna Acción abre solo los clientes de ese tramo; desde ahí seguís viendo el detalle por cliente y el listado por fecha.",
+    "Se incorpora el apellido y nombre del cliente en el detalle de permanencia por cliente.",
     "Cuando hay una nueva versión del dashboard, te mostramos un resumen de novedades para que elijas recargar ahora o más tarde.",
     "Si el informe de asistencia tarda mucho, probá filtrar por un año o mes más acotado."
   ]

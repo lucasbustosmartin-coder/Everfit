@@ -360,6 +360,7 @@
     #modal-asistencia-permanencia-cliente-body .asistencia-perm-stat .lab { font-size: 0.75rem; color: #64748b; margin-bottom: 0.2rem; }
     #modal-asistencia-permanencia-cliente-body .asistencia-perm-stat .val { font-weight: 700; color: #0f172a; font-size: 1rem; }
     #asistencia-perm-modal-fechas-wrap.oculto { display: none !important; }
+    #modal-asistencia-permanencia-cliente-titulo.modal-asistencia-perm-titulo { white-space: normal; word-break: break-word; line-height: 1.25; padding-right: 0.35rem; max-width: 100%; }
     .asistencia-cargando { color: #64748b; padding: 0.65rem 0.75rem; margin-bottom: 0.75rem; border-radius: 8px; background: #f8fafc; border: 1px solid #e2e8f0; }
     .asistencia-cargando.asistencia-estado-error { color: #991b1b; background: #fef2f2; border-color: #fecaca; }
     #modal-asistencia-carga-backdrop { z-index: 150; pointer-events: auto; }
@@ -455,7 +456,7 @@
         <span class="menu-label">Seguridad</span>
       </a>
     </nav>
-    <div class="sidebar-version" id="sidebar-version" aria-label="Versión">v1.22</div>
+    <div class="sidebar-version" id="sidebar-version" aria-label="Versión">v1.23</div>
   </aside>
 
   <main class="main-content">
@@ -706,7 +707,7 @@
       <div id="modal-asistencia-permanencia-cliente-backdrop" class="modal-backdrop oculto" aria-hidden="true">
         <div class="modal" style="max-width:560px;" role="dialog" aria-modal="true" aria-labelledby="modal-asistencia-permanencia-cliente-titulo">
           <div class="modal-header">
-            <h2 id="modal-asistencia-permanencia-cliente-titulo" style="margin:0; font-size:1.1rem;">Permanencia</h2>
+            <h2 id="modal-asistencia-permanencia-cliente-titulo" class="modal-asistencia-perm-titulo" style="margin:0; font-size:1.05rem;">Permanencia</h2>
             <button type="button" class="modal-close" id="modal-asistencia-permanencia-cliente-close" aria-label="Cerrar"><span class="icon-close"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg></span></button>
           </div>
           <div class="modal-body" id="modal-asistencia-permanencia-cliente-body"></div>
@@ -1901,6 +1902,21 @@
         bd.setAttribute('aria-hidden', 'false');
       }
 
+      /** Título modal permanencia: ID si hay empleado_id + apellido y nombre cuando vienen en los datos. */
+      function asistenciaPermModalTituloCliente(o) {
+        if (!o) return '';
+        var id = (o.empleado_id || '').trim();
+        var ap = (o.apellido || '').trim();
+        var nm = (o.nombre || '').trim();
+        var porNombre = '';
+        if (ap && nm) porNombre = ap + ', ' + nm;
+        else porNombre = (ap + ' ' + nm).trim();
+        if (id) {
+          return porNombre ? 'ID ' + id + ' — ' + porNombre : 'ID ' + id;
+        }
+        return porNombre || String(o._key || '');
+      }
+
       function asistenciaAbrirModalPermanenciaCliente(personaKey, optVolverBucketIdx) {
         var map = getAsistenciaPermanenciaClienteMap();
         var o = map[personaKey];
@@ -1913,8 +1929,13 @@
         var modalInner = bd.querySelector('.modal');
         if (modalInner) modalInner.style.maxWidth = '560px';
         var volverIdx = optVolverBucketIdx != null && optVolverBucketIdx !== '' && !isNaN(Number(optVolverBucketIdx)) ? Number(optVolverBucketIdx) : null;
-        var displayTit = (o.empleado_id || '').trim() ? 'ID ' + String(o.empleado_id).trim() : (((o.nombre || '') + ' ' + (o.apellido || '')).trim() || String(o._key || ''));
-        if (tit) tit.textContent = 'Permanencia — ' + (displayTit.length > 52 ? displayTit.slice(0, 49) + '…' : displayTit);
+        var displayTit = asistenciaPermModalTituloCliente(o);
+        var fullTit = 'Permanencia — ' + displayTit;
+        if (tit) {
+          var trunc = fullTit.length > 100;
+          tit.textContent = trunc ? fullTit.slice(0, 97) + '…' : fullTit;
+          tit.setAttribute('title', trunc ? fullTit : '');
+        }
         var horasEst = o.totalIngresos;
         var tblVisitas = '<div class="asistencia-perm-detalle-wrap"><table><thead><tr><th>Fecha</th><th>Sucursal</th><th>Hora</th></tr></thead><tbody>';
         for (var vi = 0; vi < o.visitas.length; vi++) {
