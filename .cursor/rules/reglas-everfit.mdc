@@ -28,7 +28,7 @@ alwaysApply: true
 
 ## Despliegue
 
-- Cuando el usuario pida desplegar (ej. "desplegar", "ok desplegar"), aplicar **siempre** el flujo completo en este orden: 1) Incrementar versión en `dashboard.html` (id `sidebar-version`), 2) Actualizar bitácora en `scripts/crear-bitacora-excel.js` (Versiones, Log, Resumen según corresponda), 3) Regenerar Excel (`node scripts/crear-bitacora-excel.js`), 4) Commit y push a `main` con mensaje `vX.Y: descripción`, 5) `vercel --prod`. Detalle en la regla **bitacora-tareas**.
+- Cuando el usuario pida desplegar (ej. "desplegar", "ok desplegar"), aplicar **siempre** el flujo completo en este orden: 1) Incrementar versión en `dashboard.html` (id `sidebar-version`), 2) Actualizar **`everfit-release.json`** (`versionLabel` = sidebar + **`lines`**: 2–4 frases comerciales **solo** con lo que el usuario nota al recargar; sin tecnicismos de backend — mismo criterio que Pandi / regla **bitacora-tareas** «Novedades al recargar»), 3) Bitácora en `scripts/crear-bitacora-excel.js` (Versiones, Log, Resumen según corresponda), 4) Regenerar Excel (`node scripts/crear-bitacora-excel.js`), 5) Commit y push a `main` con mensaje `vX.Y: descripción` (incluir `everfit-release.json` en el commit), 6) `vercel --prod`. Detalle en **bitacora-tareas**.
 
 ## Documentación de referencia
 

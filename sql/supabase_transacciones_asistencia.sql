@@ -78,3 +78,5 @@ AS $$
 $$;
 
 GRANT EXECUTE ON FUNCTION public.get_anios_transacciones_asistencia() TO authenticated;
+
+-- Rendimiento lectura por rango (opcional, índice covering): sql/supabase_transacciones_asistencia_index_covering.sql

@@ -57,6 +57,12 @@ Cuando tengas la URL del repo y (más adelante) la de Vercel:
 4. Hacé commit de los cambios:  
    `git add scripts/crear-bitacora-excel.js Bitacora_tareas.xlsx && git commit -m "Bitácora: URLs repo y Vercel" && git push origin main`
 
+### Modal «Nueva versión» y `everfit-release.json`
+
+Mismo enfoque que **Pandi** (`/pandi-release.json`): el dashboard hace `fetch('/everfit-release.json', { cache: 'no-store' })` y, si la versión publicada no coincide con la última que el usuario ya reconoció (`localStorage`), muestra el modal **Nueva versión** con texto comercial (`lines`).
+
+En cada **ok desplegar**, el agente debe actualizar **`everfit-release.json`** en la raíz: **`versionLabel`** = mismo texto que `#sidebar-version` en `dashboard.html`, y **`lines`** = 2–4 frases cortas en español sobre lo que se nota al recargar (sin mencionar Supabase, RPC, migraciones ni Vercel en el copy del modal). Detalle en `.cursor/rules/bitacora-tareas.mdc` (paso **Novedades al recargar**).
+
 ---
 
 ## 3. Vercel: conectar el repo y desplegar

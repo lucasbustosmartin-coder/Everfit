@@ -1,0 +1,8 @@
+{
+  "versionLabel": "v1.21",
+  "lines": [
+    "Asistencia: al cargar el período ves un avance con barra de progreso y el mapa y las tablas recién cuando los datos ya están listos.",
+    "Cuando hay una nueva versión del dashboard, te mostramos un resumen de novedades para que elijas recargar ahora o más tarde.",
+    "Si el informe de asistencia tarda mucho, probá filtrar por un año o mes más acotado."
+  ]
+}

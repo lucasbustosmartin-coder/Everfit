@@ -48,18 +48,33 @@ Cuando el usuario diga que desplegar (ej. "desplegar", "listo desplegar", "OK de
 1. **Incrementar versión en el dashboard**  
    En `dashboard.html`, actualizar la versión que se muestra en el sidebar: buscar el elemento con id `sidebar-version` (ej. `<div class="sidebar-version" id="sidebar-version" ...>v1.0</div>`) y cambiar el texto al **siguiente número de versión** (ej. v1.0 → v1.1). Esa versión se muestra abajo en el sidebar.
 
-2. **Actualizar todas las solapas de la bitácora que correspondan** en `scripts/crear-bitacora-excel.js` (revisar cada una y no omitir las que apliquen):
+2. **Novedades al recargar — `everfit-release.json` (obligatorio; lo hace el agente)**  
+   Mismo criterio que el proyecto **Pandi** (LyP): modal **«Nueva versión»** con mensaje comercial; el dashboard hace `fetch('/everfit-release.json', { cache: 'no-store' })` para no depender solo del HTML en caché del navegador.
+
+   **No delegar al usuario.** En cada despliegue, el agente actualiza **`everfit-release.json`** en la **raíz del repo** (commit junto al resto). En el flujo habitual **no hace falta** que quien pide el despliegue edite ese archivo a mano.
+
+   | Qué | Cómo |
+   |-----|------|
+   | **Dónde** | Archivo **`everfit-release.json`** (JSON en la raíz; **no** generado por build en Everfit — se versiona en Git). |
+   | **`versionLabel`** | **Idéntico** al texto de `#sidebar-version` (ej. `v1.21`). |
+   | **`lines`** | **2 a 4** frases **cortas**, en **español**, tono **simple y comercial**: lo que el usuario **va a ver o notar** al recargar. Basarse en los **cambios reales** del despliegue, no en texto genérico. |
+   | **Solo lo visible** | En **`lines`** **no** mencionar Supabase, PostgreSQL, RPC, migraciones SQL, Vercel ni jerga de backend: el modal es para quien **usa** el dashboard. Si el cambio fue solo interno sin efecto en pantalla, **`lines` puede ser `[]`** y documentar en la solapa **Versiones** de la bitácora. Si hubo cambio **visible**, **`lines` no debe quedar vacío**. |
+   | **Evitar** | Nombres de RPC, "fix" sin decir qué mejora, párrafos largos. |
+
+   El **paso de commit** debe incluir **`everfit-release.json`** siempre que se haya tocado la versión del sidebar (alinear `versionLabel` y `lines`).
+
+3. **Actualizar todas las solapas de la bitácora que correspondan** en `scripts/crear-bitacora-excel.js` (revisar cada una y no omitir las que apliquen):
    - **Versiones:** siempre en despliegue. Agregar una fila en el array `versiones` con (Versión, Fecha, Descripción del despliegue). Usar la misma versión que la del sidebar (ej. 1.1 sin la "v"). **Fecha:** usar `__HOY__` (el script la reemplaza por la fecha en Argentina al generar el Excel). Incluir los cambios principales.
    - **Log:** si hubo tareas en la sesión, agregar las entradas en `datosLog` (Fecha, Hora, titulo_tarea, desc_tarea, etapa).
    - **Resumen:** si los cambios agregan o modifican funcionalidad de la app, agregar o actualizar las filas en `funcionalidades`.
 
-3. **Regenerar Excel**  
+4. **Regenerar Excel**  
    Ejecutar `node scripts/crear-bitacora-excel.js` (desde la raíz del proyecto) para actualizar `Bitacora_tareas.xlsx`.
 
-4. **Commit y push**  
-   Incluir en el commit: `dashboard.html` (con la versión del sidebar actualizada), `scripts/crear-bitacora-excel.js`, `Bitacora_tareas.xlsx` (y cualquier otro archivo modificado en la sesión). Mensaje de commit: `vX.Y: descripción breve`. Ejecutar `git add`, `git commit`, `git push origin main`. Si el push falla por credenciales, indicar al usuario que ejecute `git push origin main` en su máquina.
+5. **Commit y push**  
+   Incluir en el commit: `dashboard.html` (versión sidebar), **`everfit-release.json`**, `scripts/crear-bitacora-excel.js`, `Bitacora_tareas.xlsx` (y cualquier otro archivo modificado en la sesión). Mensaje de commit: `vX.Y: descripción breve`. Ejecutar `git add`, `git commit`, `git push origin main`. Si el push falla por credenciales, indicar al usuario que ejecute `git push origin main` en su máquina.
 
-5. **Desplegar a producción**  
+6. **Desplegar a producción**  
    Ejecutar `vercel --prod` (o el comando equivalente) para que la versión desplegada sea la de producción (p. ej. everfit.vercel.app cuando esté conectado el proyecto).
 
 No hacer push ni desplegar hasta que el usuario lo indique explícitamente.
