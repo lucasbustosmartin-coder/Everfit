@@ -340,6 +340,7 @@
     .asistencia-multi-por-sede { line-height: 1.65; }
     .asistencia-multi-sede-item { display: inline-block; margin: 0.2rem 0.4rem 0.2rem 0; padding: 0.25rem 0.5rem; border-radius: 6px; background: #f1f5f9; color: #334155; border: 1px solid #e2e8f0; font-size: 0.85rem; }
     .asistencia-multi-sede-top { background: #fef3c7; border-color: #d97706; color: #92400e; font-weight: 600; }
+    .asistencia-freq-bucket-top td { background: #ecfdf5; font-weight: 600; color: #14532d; border-bottom: 1px solid #86efac; }
     .asistencia-cargando { color: #64748b; padding: 1rem; }
     @media (max-width: 768px) {
       .asistencia-filtros select, #asistencia-modo-filas { font-size: 16px; }
@@ -367,7 +368,7 @@
         <span class="menu-label">Seguridad</span>
       </a>
     </nav>
-    <div class="sidebar-version" id="sidebar-version" aria-label="Versión">v1.19</div>
+    <div class="sidebar-version" id="sidebar-version" aria-label="Versión">v1.20</div>
   </aside>
 
   <main class="main-content">
@@ -555,7 +556,7 @@
           <p class="asistencia-metodo"><strong>Metodología:</strong> cada registro es un <strong>ingreso</strong>; se asume estancia de <strong>1 hora</strong>. La celda muestra cuántas personas estarían simultáneamente dentro del club en esa franja horaria (solape de intervalos [ingreso, ingreso+1h) con la franja). Podés combinar sucursales con los botones (igual que en Home: Total o varias activas).</p>
           <div id="asistencia-help-wrap" class="help-exclusiones-wrap" style="display:inline-flex;">
             <button type="button" class="help-exclusiones" id="help-asistencia" title="Ayuda vista asistencia" aria-label="Ayuda"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></button>
-            <div class="help-exclusiones-popover" id="help-asistencia-popover"><strong>Mapa:</strong> columnas = horas. Filas = calendario (día/mes) o <strong>Lun–Dom</strong> (promedio por día de la semana en el período). Vista <strong>año completo</strong> en calendario: filas = meses, valor = promedio diario en esa hora. <strong>Multi-sede:</strong> con «Total» o varias sedes, ≥2 sedes; con <strong>una</strong> sede, quienes pasaron por ella y por otra (conteos globales visibles). Ámbar = sede con más visitas.</div>
+            <div class="help-exclusiones-popover" id="help-asistencia-popover"><strong>Mapa:</strong> columnas = horas. Filas = calendario (día/mes) o <strong>Lun–Dom</strong> (promedio por día de la semana en el período). Vista <strong>año completo</strong> en calendario: filas = meses, valor = promedio diario en esa hora. <strong>Frecuencia:</strong> días distintos con visita ÷ <em>semanas en que hubo al menos un ingreso</em> (no todo el año si solo vino un mes). Sin franja horaria del mapa. Fila verde = rango modal. <strong>Multi-sede:</strong> con «Total» o varias sedes, ≥2 sedes; con <strong>una</strong> sede, quienes pasaron por ella y por otra. Ámbar = sede con más visitas.</div>
           </div>
         </div>
         <div id="asistencia-estado" class="asistencia-cargando" style="display:none;"></div>
@@ -574,8 +575,13 @@
           <div id="asistencia-heatmap-wrap" class="asistencia-heatmap-wrap"></div>
         </div>
         <div class="card">
+          <h2 style="margin:0 0 0.5rem 0; font-size:1.1rem;">Frecuencia de uso (distribución)</h2>
+          <p style="margin:0 0 0.5rem 0; font-size:0.88rem; color:#666;">Mismo <strong>período y sucursales</strong> que arriba. Por cliente: días de calendario distintos con visita ÷ cantidad de semanas (lun–dom) en las que hubo al menos un ingreso mientras el cliente estuvo activo. La tabla agrupa clientes y % del total; la fila verde es el rango más frecuente. La franja horaria del mapa no afecta estos conteos.</p>
+          <div id="asistencia-frecuencia-wrap" class="asistencia-multi-wrap"></div>
+        </div>
+        <div class="card">
           <h2 style="margin:0 0 0.5rem 0; font-size:1.1rem;">Clientes en más de una sucursal</h2>
-          <p style="margin:0 0 0.5rem 0; font-size:0.88rem; color:#666;">Personas con el mismo ID o nombre y apellido que tuvieron ingresos en <strong>al menos dos sedes distintas</strong> en el período (aunque el filtro de sucursal sea una sola: se listan quienes pasaron por esa sede y también por otra). Visitas por sede; en ámbar la(s) con más visitas.</p>
+          <p style="margin:0 0 0.5rem 0; font-size:0.88rem; color:#666;">Personas con el mismo ID o nombre y apellido que tuvieron ingresos en <strong>al menos dos sedes distintas</strong> en el período (aunque el filtro de sucursal sea una sola: se listan quienes pasaron por esa sede y también por otra). Visitas por sede; en ámbar la(s) con más visitas. <strong>Prom. ingr./sem. activas</strong> = total de ingresos ÷ semanas (lun–dom) con al menos un ingreso.</p>
           <div id="asistencia-multi-wrap" class="asistencia-multi-wrap"></div>
         </div>
       </div>
@@ -1230,6 +1236,130 @@
         return { desde: anio + '-' + pad(mesNum) + '-01', hasta: anio + '-' + pad(mesNum) + '-' + pad(ultimo) };
       }
 
+      function diasEnRangoInclusiveYYYYMMDD(desde, hasta) {
+        var ap = (desde || '').split('-').map(Number);
+        var bp = (hasta || '').split('-').map(Number);
+        if (ap.length < 3 || bp.length < 3 || ap.some(isNaN) || bp.some(isNaN)) return 1;
+        var d0 = new Date(ap[0], ap[1] - 1, ap[2]);
+        var d1 = new Date(bp[0], bp[1] - 1, bp[2]);
+        var ms = d1.getTime() - d0.getTime();
+        if (isNaN(ms)) return 1;
+        return Math.floor(ms / 86400000) + 1;
+      }
+
+      function semanasEquivalentesAsistencia(desde, hasta) {
+        return Math.max(diasEnRangoInclusiveYYYYMMDD(desde, hasta) / 7, 1e-9);
+      }
+
+      /** Período del combo Año/Mes: semanas = días inclusivos del rango ÷ 7 (para promedios de frecuencia). */
+      function semanasPeriodoAsistenciaActual() {
+        var selAnio = document.getElementById('asistencia-anio');
+        var selMes = document.getElementById('asistencia-mes');
+        var anio = parseInt(selAnio && selAnio.value, 10);
+        var mesNum = parseInt(selMes && selMes.value, 10) || 0;
+        if (isNaN(anio)) anio = fechaPartesAhoraArgentina().anio;
+        var rango = rangoFechasAsistencia(anio, mesNum);
+        var dias = diasEnRangoInclusiveYYYYMMDD(rango.desde, rango.hasta);
+        return { desde: rango.desde, hasta: rango.hasta, dias: dias, semanas: Math.max(dias / 7, 1e-9) };
+      }
+
+      function asistenciaFormat1Decimal(n) {
+        if (n == null || typeof n !== 'number' || isNaN(n)) return '–';
+        return (Math.round(n * 10) / 10).toLocaleString('es-AR', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+      }
+
+      /** Lunes (AAAA-MM-DD) de la semana calendario (lun–dom) que contiene la fecha; usa mes local del navegador (fechas ya son día de negocio). */
+      function asistenciaSemanaLunesId(ymd) {
+        var p = (ymd || '').split('-').map(Number);
+        if (p.length < 3 || p.some(isNaN)) return '';
+        var d = new Date(p[0], p[1] - 1, p[2]);
+        var offset = (d.getDay() + 6) % 7;
+        d.setDate(d.getDate() - offset);
+        var pad = function(n) { return String(n).padStart(2, '0'); };
+        return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate());
+      }
+
+      /** Semanas distintas (lun–dom) con ≥1 día con visita; mínimo 1 si hay fechas. */
+      function asistenciaSemanasActivasDesdeMapaDias(diasObj) {
+        var sem = {};
+        for (var f in diasObj) {
+          if (!Object.prototype.hasOwnProperty.call(diasObj, f) || !/^\d{4}-\d{2}-\d{2}$/.test(f)) continue;
+          var id = asistenciaSemanaLunesId(f);
+          if (id) sem[id] = true;
+        }
+        var n = Object.keys(sem).length;
+        return n < 1 ? 1 : n;
+      }
+
+      /** Rangos [lo, hi) en días distintos / semana activa (mínimo teórico 1; último tramo ≥5). */
+      var ASIST_FREQ_BUCKETS = [
+        { lo: 1, hi: 2, label: '1 a menos de 2 días / semana' },
+        { lo: 2, hi: 3, label: '2 a menos de 3 días / semana' },
+        { lo: 3, hi: 4, label: '3 a menos de 4 días / semana' },
+        { lo: 4, hi: 5, label: '4 a menos de 5 días / semana' },
+        { lo: 5, hi: 999, label: '5 o más días / semana' }
+      ];
+
+      function asistenciaBucketPromDiasSemana(promDias) {
+        var v = Number(promDias);
+        if (isNaN(v)) v = 1;
+        if (v < 1) return 0;
+        for (var b = 0; b < ASIST_FREQ_BUCKETS.length; b++) {
+          var bk = ASIST_FREQ_BUCKETS[b];
+          if (v >= bk.lo && v < bk.hi) return b;
+        }
+        return ASIST_FREQ_BUCKETS.length - 1;
+      }
+
+      function renderFrecuenciaClientesHtml() {
+        var info = semanasPeriodoAsistenciaActual();
+        var rows = getAsistenciaRowsFiltered();
+        var map = {};
+        for (var i = 0; i < rows.length; i++) {
+          var r = rows[i];
+          var key = personaKeyAsistencia(r);
+          if (!map[key]) map[key] = { dias: {} };
+          var f = asistenciaFechaISO(r);
+          if (f && /^\d{4}-\d{2}-\d{2}$/.test(f)) map[key].dias[f] = true;
+        }
+        var totalClientes = 0;
+        var counts = ASIST_FREQ_BUCKETS.map(function() { return 0; });
+        for (var k in map) {
+          var nd = Object.keys(map[k].dias).length;
+          if (nd < 1) continue;
+          totalClientes++;
+          var semActivas = asistenciaSemanasActivasDesdeMapaDias(map[k].dias);
+          var promDias = nd / semActivas;
+          var bi = asistenciaBucketPromDiasSemana(promDias);
+          counts[bi]++;
+        }
+        if (totalClientes === 0) {
+          return '<p style="color:#64748b;margin:0;">No hay clientes con al menos un día con visita en el período (filtros de sucursal actuales).</p>';
+        }
+        var maxC = 0;
+        for (var c = 0; c < counts.length; c++) {
+          if (counts[c] > maxC) maxC = counts[c];
+        }
+        var sub = '<p style="margin:0 0 0.6rem 0;font-size:0.82rem;color:#64748b;">Período del reporte: <strong>' + esc(info.desde) + '</strong> a <strong>' + esc(info.hasta) + '</strong>. Frecuencia = días distintos con visita ÷ <strong>semanas con al menos un ingreso</strong> (lun–dom). Clientes distintos: <strong>' + totalClientes + '</strong>.</p>';
+        var html = sub + '<table><thead><tr><th>Rango (días distintos / semana activa)</th><th class="num">Clientes</th><th class="num">% del total</th></tr></thead><tbody>';
+        for (var j = 0; j < ASIST_FREQ_BUCKETS.length; j++) {
+          var n = counts[j];
+          var pct = (100 * n) / totalClientes;
+          var pctStr = (Math.round(pct * 10) / 10).toLocaleString('es-AR', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+          var trCls = maxC > 0 && n === maxC ? ' class="asistencia-freq-bucket-top"' : '';
+          html += '<tr' + trCls + '><td>' + esc(ASIST_FREQ_BUCKETS[j].label) + '</td><td class="num">' + n + '</td><td class="num">' + pctStr + '%</td></tr>';
+        }
+        html += '</tbody></table>';
+        var topLabels = [];
+        for (var t = 0; t < ASIST_FREQ_BUCKETS.length; t++) {
+          if (counts[t] === maxC && maxC > 0) topLabels.push(ASIST_FREQ_BUCKETS[t].label);
+        }
+        if (topLabels.length) {
+          html += '<p style="margin:0.65rem 0 0 0;font-size:0.88rem;color:#166534;"><strong>Rango más frecuente:</strong> ' + esc(topLabels.join(' · ')) + ' <span style="color:#64748b;font-weight:400;">(' + maxC + ' cliente' + (maxC === 1 ? '' : 's') + ', ' + (Math.round((100 * maxC) / totalClientes * 10) / 10).toLocaleString('es-AR', { minimumFractionDigits: 1, maximumFractionDigits: 1 }) + '%)</span></p>';
+        }
+        return html;
+      }
+
       /** Mapa de calor: más concurrencia → verde; menos → rojo (respecto al máximo de la tabla). */
       function heatStyleAsistencia(val, maxVal) {
         if (val == null || val <= 0 || maxVal <= 0) return 'background:#f8fafc;color:#94a3b8;';
@@ -1254,12 +1384,14 @@
         var map = {};
         rowsGlobal.forEach(function(r) {
           var key = personaKeyAsistencia(r);
-          if (!map[key]) map[key] = { porSede: {}, nombre: r.nombre, apellido: r.apellido, empleado_id: r.empleado_id };
+          if (!map[key]) map[key] = { porSede: {}, dias: {}, nombre: r.nombre, apellido: r.apellido, empleado_id: r.empleado_id };
           var s = (r.sucursal || '').trim();
           if (s) {
             if (!map[key].porSede[s]) map[key].porSede[s] = 0;
             map[key].porSede[s]++;
           }
+          var f = asistenciaFechaISO(r);
+          if (f && /^\d{4}-\d{2}-\d{2}$/.test(f)) map[key].dias[f] = true;
         });
         var rowsOut = [];
         for (var k in map) {
@@ -1273,6 +1405,7 @@
             total += c;
             if (c > maxC) maxC = c;
           });
+          var semActivas = asistenciaSemanasActivasDesdeMapaDias(map[k].dias || {});
           rowsOut.push({
             label: map[k].empleado_id ? ('ID ' + map[k].empleado_id) : (((map[k].nombre || '') + ' ' + (map[k].apellido || '')).trim() || k),
             nombre: map[k].nombre,
@@ -1281,7 +1414,8 @@
             porSede: porSede,
             sedesOrden: sedesList.sort(),
             maxPorSede: maxC,
-            visits: total
+            visits: total,
+            promVisSem: total / semActivas
           });
         }
         rowsOut.sort(function(a, b) { return b.visits - a.visits; });
@@ -1294,7 +1428,7 @@
           }
           return '<p style="color:#64748b;margin:0;">' + msg + '</p>';
         }
-        var html = '<table><thead><tr><th>Persona / ID</th><th>Nombre</th><th>Apellido</th><th>ID empleado</th><th>Visitas por sede</th><th class="num">Total</th></tr></thead><tbody>';
+        var html = '<table><thead><tr><th>Persona / ID</th><th>Nombre</th><th>Apellido</th><th>ID empleado</th><th>Visitas por sede</th><th class="num">Total</th><th class="num" title="Ingresos por semana en que hubo al menos una visita (lun–dom)">Prom. ingr./sem. activas</th></tr></thead><tbody>';
         rowsOut.forEach(function(ro) {
           var badges = '';
           ro.sedesOrden.forEach(function(s) {
@@ -1303,7 +1437,7 @@
             var cls = isTop ? 'asistencia-multi-sede-item asistencia-multi-sede-top' : 'asistencia-multi-sede-item';
             badges += '<span class="' + cls + '">' + esc(s) + ': <strong>' + c + '</strong></span>';
           });
-          html += '<tr><td>' + esc(ro.label) + '</td><td>' + esc(ro.nombre || '–') + '</td><td>' + esc(ro.apellido || '–') + '</td><td>' + esc(ro.empleado_id || '–') + '</td><td class="asistencia-multi-por-sede">' + badges + '</td><td class="num">' + ro.visits + '</td></tr>';
+          html += '<tr><td>' + esc(ro.label) + '</td><td>' + esc(ro.nombre || '–') + '</td><td>' + esc(ro.apellido || '–') + '</td><td>' + esc(ro.empleado_id || '–') + '</td><td class="asistencia-multi-por-sede">' + badges + '</td><td class="num">' + ro.visits + '</td><td class="num">' + asistenciaFormat1Decimal(ro.promVisSem) + '</td></tr>';
         });
         return html + '</tbody></table>';
       }
@@ -1326,6 +1460,7 @@
 
       function pintarAsistenciaVista(anio, mesNum, hDesde, hHasta) {
         var wrapH = document.getElementById('asistencia-heatmap-wrap');
+        var wrapFreq = document.getElementById('asistencia-frecuencia-wrap');
         var wrapMulti = document.getElementById('asistencia-multi-wrap');
         var rowsF = getAsistenciaRowsFiltered();
         var filtKey = (asistenciaSucursalFilterSet || []).slice().sort().join('\u0001');
@@ -1419,6 +1554,7 @@
         legParts.push('Mapa de calor: <strong>verde</strong> = más concurrencia, <strong>rojo</strong> = menos (respecto al máximo de esta tabla). Sin hora parseable no entra en el cálculo.');
         html += '</tbody></table><p class="leg">' + legParts.join('') + '</p>';
         if (wrapH) wrapH.innerHTML = html;
+        if (wrapFreq) wrapFreq.innerHTML = renderFrecuenciaClientesHtml();
         if (wrapMulti) wrapMulti.innerHTML = renderMultiSedeHtml();
       }
 
@@ -1441,6 +1577,7 @@
           var selMes = document.getElementById('asistencia-mes');
           var estado = document.getElementById('asistencia-estado');
           var wrapH = document.getElementById('asistencia-heatmap-wrap');
+          var wrapFreq = document.getElementById('asistencia-frecuencia-wrap');
           var wrapMulti = document.getElementById('asistencia-multi-wrap');
           var anio = parseInt(selAnio && selAnio.value, 10);
           if (isNaN(anio)) anio = fechaPartesAhoraArgentina().anio;
@@ -1490,6 +1627,7 @@
                 estado.textContent = 'Error: ' + (err && err.message ? err.message : String(err));
               }
               if (wrapH) wrapH.innerHTML = '';
+              if (wrapFreq) wrapFreq.innerHTML = '';
               if (wrapMulti) wrapMulti.innerHTML = '';
             });
         }
