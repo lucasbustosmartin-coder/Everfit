@@ -4,15 +4,16 @@ La app usa **login por email y contraseña** (Supabase Auth). Los permisos se co
 
 ## Roles y permisos
 
-| Rol        | Ver dashboard | Actualizar base (upload) | Asignar perfiles | Proyección |
-|-----------|----------------|---------------------------|-------------------|------------|
-| **Admin** | Sí             | Sí                        | Sí                | Sí (ver y configurar) |
-| **Encargado** | Sí         | Sí                        | No                | Sí (ver y configurar) |
-| **Visor** | Sí             | No                        | No                | No                    |
+| Rol        | Ver dashboard | Actualizar base (upload) | Asignar perfiles | Proyección | Asistencia |
+|-----------|----------------|---------------------------|-------------------|------------|------------|
+| **Admin** | Sí             | Sí                        | Sí                | Sí (ver y configurar) | Sí (por defecto; configurable) |
+| **Encargado** | Sí         | Sí                        | No                | Sí (ver y configurar) | Sí (por defecto; configurable) |
+| **Visor** | Sí             | No                        | No                | No                    | Sí (por defecto; configurable) |
 
 - **Actualizar base:** truncar la tabla `base_everfit` y cargar un Excel (botón "Actualizar base" en el dashboard).
 - **Asignar perfiles:** acceder al módulo Seguridad y cambiar el rol de cualquier usuario.
 - **Ver proyección:** ver en la tabla Flujo por mes los meses proyectados (método, meses de historia, meses a proyectar, recorte) y el botón "Proyección" para configurarlos. Solo Admin y Encargado; Visor no ve la proyección ni el botón.
+- **Ver asistencia (`ver_asistencia`):** menú **Asistencia** y lectura de `transacciones_asistencia` (heatmap, multi-sede, años). El **Admin** puede activar o desactivar este permiso por rol en Seguridad (igual que Actualizar base o Proyección). **Importar asistencia** sigue requiriendo `upload_base` (no cambia). Ejecutá `sql/supabase_asistencia_ver_permiso.sql` si la tabla ya existía sin este permiso, o reaplicá `sql/supabase_transacciones_asistencia.sql` en instalaciones nuevas.
 
 ## Cómo activar el módulo
 
@@ -70,7 +71,7 @@ En el SQL actual, un usuario **puede** asignarse a sí mismo el rol `visor` una 
 
 - **Login:** en el dashboard se muestra pantalla de inicio de sesión (email + contraseña). Tras iniciar sesión se cargan los datos.
 - **Actualizar base:** el botón solo se muestra si tu rol tiene permiso `upload_base` (Admin y Encargado).
-- **Seguridad:** en el menú lateral hay un ítem "Seguridad" (solo visible para Admin). Ahí podés: **Permisos por rol:** cada rol (Admin, Encargado, Visor) se muestra con su icono y debajo cada permiso con un botón on/off editable (Actualizar base, Asignar perfiles, Proyección). Los cambios se guardan al instante. **Usuarios:** lista de usuarios con email, rol asignado y botón Guardar.
+- **Seguridad:** en el menú lateral hay un ítem "Seguridad" (solo visible para Admin). Ahí podés: **Permisos por rol:** cada rol (Admin, Encargado, Visor) se muestra con su icono y debajo cada permiso con un botón on/off editable (Actualizar base, Asignar perfiles, Proyección, **Ver asistencia**). Los cambios se guardan al instante. **Usuarios:** lista de usuarios con email, rol asignado y botón Guardar.
 
 Para que los permisos por rol sean editables desde el dashboard, ejecutá además **`sql/supabase_seguridad_permisos_editable.sql`** en el SQL Editor (después de `supabase_seguridad.sql` y, si usás proyección, de `supabase_proyeccion_permiso_y_config.sql`).
 

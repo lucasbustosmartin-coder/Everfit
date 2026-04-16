@@ -20,8 +20,9 @@ Los textos se **normalizan** (trim, sin acentos para matchear cabeceras) y se gu
 
 ## Tabla en Supabase
 
-1. En **SQL Editor**, ejecutá `sql/supabase_transacciones_asistencia.sql`.
-2. Eso crea `public.transacciones_asistencia` con RLS: **SELECT** para usuarios autenticados; **INSERT** y **DELETE** solo con permiso **`upload_base`** (mismo criterio que “Actualizar base”).
+1. En **SQL Editor**, ejecutá `sql/supabase_transacciones_asistencia.sql` (o reaplicá el archivo si ya existía la tabla) para tener la función **`get_anios_transacciones_asistencia`** (combo **Año** = años con datos) y el permiso **`ver_asistencia`** (menú Asistencia y lectura de la tabla; configurable por rol en **Seguridad**).
+2. RLS: **SELECT** solo con permiso **`ver_asistencia`**; **INSERT** y **DELETE** solo con **`upload_base`** (mismo criterio que “Actualizar base” / Importar asistencia).
+3. Si la tabla ya estaba creada con política de lectura abierta a todos, ejecutá **`sql/supabase_asistencia_ver_permiso.sql`** para registrar el permiso, los grants por rol y actualizar la política **SELECT**.
 
 ## Carga desde el dashboard
 

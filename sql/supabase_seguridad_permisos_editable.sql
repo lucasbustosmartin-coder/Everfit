@@ -1,5 +1,6 @@
 -- Permisos por rol editables desde el dashboard (solo Admin).
 -- Ejecutar después de supabase_seguridad.sql (y supabase_proyeccion_permiso_y_config.sql si usás proyección).
+-- Vista Asistencia: permiso ver_asistencia y RLS → ejecutar sql/supabase_asistencia_ver_permiso.sql (después de transacciones_asistencia).
 -- Asegura que app_permission tenga ver_proyeccion para que aparezca en la UI.
 
 INSERT INTO public.app_permission (permission, description) VALUES

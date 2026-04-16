@@ -7,3 +7,7 @@ En este proyecto **todas las fechas y horas se interpretan y muestran en Argenti
 - **Scripts y reglas:** al registrar fechas (log, versiones), usar la fecha/hora en Argentina.
 
 Constante de referencia: `ZONA_ARGENTINA = 'America/Argentina/Buenos_Aires'`.
+
+## Regla Cursor (no omitir)
+
+- `.cursor/rules/fechas-argentina-negocio.mdc` (`alwaysApply: true`). Detalle de SQL (función `fecha_hoy_argentina`, etc.): repo **Pandi**, `docs/FECHAS_ARGENTINA.md`.

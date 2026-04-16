@@ -44,6 +44,11 @@ const datosLog = [
   ['__HOY__', '__AHORA__', 'Tarjetas: otra vez con Dividendos', 'Cards vuelven a porMes (incluyen Dividendos); tabla y gráfico siguen con porMesFlujo. Criterio documentado en EXCLUSIONES_DASHBOARD.md.', 'Ajuste'],
   ['__HOY__', '__AHORA__', 'Despliegue v1.18', 'Fechas Argentina en fecha_pago y rango G/P; gráfico alineado con tabla Flujo (porMesFlujo); tarjetas con porMes (incluye Dividendos); mensaje si falta config local; manejo errores RPC/sesión; docs EXCLUSIONES. Push a main y vercel --prod.', 'Despliegue'],
   ['__HOY__', '__AHORA__', 'Transacciones asistencia → Supabase', 'Tabla transacciones_asistencia (sql/), import Excel Sheet1 desde dashboard (Importar asistencia, permiso upload_base). Normaliza Cramer/Cabildo/Migueletes. Docs TRANSACCIONES_ASISTENCIA.md.', 'Feature'],
+  ['__HOY__', '__AHORA__', 'Menú Asistencia en dashboard', 'Vista Asistencia: heatmap concurrencia por día y hora (1 h por ingreso), año y mes o todos los meses, franja horaria, filtro multi-sucursal y permisos; clientes en más de una sede; carga paginada; índice (fecha, sucursal); invalidación de caché al importar.', 'Feature'],
+  ['__HOY__', '__AHORA__', 'Combo año Asistencia desde datos', 'RPC get_anios_transacciones_asistencia: el select de año solo lista años con registros en transacciones_asistencia; fallback año actual si tabla vacía o RPC no ejecutada.', 'Ajuste'],
+  ['__HOY__', '__AHORA__', 'Tabla multi-sede Asistencia', 'Visitas por sede con conteo por cliente; resaltado ámbar la(s) sede(s) con más visitas (empate).', 'Ajuste'],
+  ['__HOY__', '__AHORA__', 'Permiso ver_asistencia', 'Menú Asistencia y SELECT transacciones_asistencia condicionados a ver_asistencia; toggles en Seguridad; sql/supabase_asistencia_ver_permiso.sql y DDL transacciones actualizado.', 'Feature'],
+  ['__HOY__', '__AHORA__', 'Despliegue v1.19', 'Vista Asistencia: heatmap verde-rojo, franja horaria, filas calendario o Lun–Dom, combo años RPC, carga y mapa por fecha optimizado, multi-sede con visitas por sede y filtro una sucursal; ver_asistencia; mensajes al filtrar. Push a main y vercel --prod.', 'Despliegue'],
 ];
 
 const datosLogParaExcel = aplicarHoyAhora(datosLog);
@@ -57,9 +62,9 @@ const funcionalidades = [
   ['Volcado Excel → Supabase', 'Script scripts/volcar_excel_a_supabase.py lee el Excel e inserta en base_everfit. Requiere .env con SUPABASE_URL y SUPABASE_SERVICE_ROLE_KEY.'],
   ['Tipos de cambio (ARS/USD)', 'Consumo por API desde proyecto Sistema-Contable-Nuevo (tabla tipos_cambio_global). Opcional: sync local con scripts/sync_tipo_de_cambio_desde_origen.py.'],
   ['Estructura del repo', 'Carpetas sql/, scripts/, docs/, Base/. Reglas en .cursor/rules (estructura-proyecto, reglas-everfit, bitácora, preguntas-solo-respuesta).'],
-  ['Dashboard Everfit', 'Una página (dashboard.html): flujo por mes y gráfico G/P excluyen Dividendos (porMesFlujo); tarjetas totales incluyen todo salvo Saldo Inicial (porMes). Importar asistencia (Excel Transacciones por sucursal → transacciones_asistencia). Fechas en America/Argentina/Buenos_Aires. Login; Seguridad; actualizar base; carga paginada base_everfit y tipos de cambio.'],
+  ['Dashboard Everfit', 'Una página (dashboard.html): flujo por mes y gráfico G/P excluyen Dividendos (porMesFlujo); tarjetas totales incluyen todo salvo Saldo Inicial (porMes). Importar asistencia (Excel → transacciones_asistencia, upload_base). Menú Asistencia (permiso ver_asistencia): heatmap por concurrencia (colores, franja horaria), filas calendario o Lun–Dom, años con datos (RPC), multi-sede y tabla por sede. Fechas en America/Argentina/Buenos_Aires. Login; Seguridad; actualizar base; carga paginada base_everfit, tipos de cambio y asistencia por rango.'],
   ['Proyección Flujo por mes', 'Meses proyectados en tabla (permiso ver_proyeccion). Config: método (promedio/mediana/promedio recortado), meses de historia, meses a proyectar, recorte %. Ventana móvil. Total columna incluye proyectados; tarjetas siempre reales. Encabezado y celdas proyectadas con fondo distintivo.'],
-  ['Seguridad – Permisos por rol', 'En Seguridad (Admin): cada rol (Admin, Encargado, Visor) con icono y lista de permisos con toggle on/off editable. RPC get_roles_permissions_for_admin y set_role_permission. Ejecutar sql/supabase_seguridad_permisos_editable.sql.'],
+  ['Seguridad – Permisos por rol', 'En Seguridad (Admin): cada rol (Admin, Encargado, Visor) con icono y lista de permisos con toggle on/off editable (incluye ver_asistencia para el menú Asistencia). RPC get_roles_permissions_for_admin y set_role_permission. Ejecutar sql/supabase_seguridad_permisos_editable.sql y sql/supabase_asistencia_ver_permiso.sql si aplica.'],
   ['Transacciones de asistencia', 'Excel export Transacciones por sucursal (docs de referencia). Tabla transacciones_asistencia; botón Importar asistencia en dashboard (reemplazo por sucursal). Ver docs/TRANSACCIONES_ASISTENCIA.md y sql/supabase_transacciones_asistencia.sql.'],
 ];
 
@@ -101,6 +106,7 @@ const versiones = [
   ['1.16', '__HOY__', 'Fechas America/Argentina/Buenos_Aires: gráfico G/P y clave mes en curso; fecha_pago ISO/timestamptz agrupada por día local (no slice UTC).'],
   ['1.17', '__HOY__', 'Gráfico G/P Mensual alineado con tabla Flujo por mes (porMesFlujo; excluye Dividendos). Documentación EXCLUSIONES_DASHBOARD.md actualizada.'],
   ['1.18', '__HOY__', 'Consolidado: fechas AR en agrupación y mes actual; gráfico=tabla Flujo; tarjetas con Dividendos; UX local sin anon key y errores sesión/RPC visibles. EXCLUSIONES_DASHBOARD.md.'],
+  ['1.19', '__HOY__', 'Asistencia: menú y permiso ver_asistencia (RLS, sql migración); heatmap por franja horaria, modo filas calendario o Lun–Dom, años vía RPC, optimización índice por fecha y caché; multi-sede con conteos por sede y lógica filtro una sede; UX carga filtros; índice (fecha,sucursal) en DDL.'],
 ];
 const versionesParaExcel = aplicarHoyAhora(versiones);
 const wsVersiones = XLSX.utils.aoa_to_sheet(versionesParaExcel);

@@ -317,6 +317,34 @@
       .modal-grafico-item .chart-container { height: 220px !important; }
       #modal-grafico-item .modal-body .chart-container { min-height: 200px; }
     }
+    .vista-asistencia { display: none; }
+    .asistencia-filtros { display: flex; flex-wrap: wrap; gap: 1rem; align-items: flex-end; margin-bottom: 1rem; }
+    .asistencia-filtros .form-group { display: flex; flex-direction: column; gap: 0.35rem; }
+    .asistencia-filtros label { font-size: 0.9rem; color: #555; }
+    .asistencia-filtros select { padding: 0.45rem 0.6rem; border-radius: 6px; border: 1px solid #ccc; font-size: 1rem; min-width: 8rem; }
+    .asistencia-metodo { font-size: 0.88rem; color: #555; margin: 0 0 0.75rem 0; padding: 0.65rem 0.75rem; background: #f0f9ff; border: 1px solid #bae6fd; border-radius: 8px; }
+    .asistencia-heatmap-wrap { overflow-x: auto; overflow-y: auto; max-height: 72vh; -webkit-overflow-scrolling: touch; overscroll-behavior-x: contain; margin-bottom: 1rem; border: 1px solid #e5e7eb; border-radius: 8px; }
+    .asistencia-heatmap { border-collapse: collapse; font-size: 0.75rem; }
+    .asistencia-heatmap th, .asistencia-heatmap td { border: 1px solid #e5e7eb; padding: 0.25rem 0.35rem; text-align: center; min-width: 2rem; }
+    .asistencia-heatmap th { position: sticky; top: 0; z-index: 3; background: #1e293b; color: #fff; font-weight: 600; }
+    .asistencia-heatmap th.row-hdr { left: 0; z-index: 4; text-align: left; min-width: 5.5rem; background: #334155; }
+    .asistencia-heatmap td.row-hdr { position: sticky; left: 0; z-index: 2; background: #f8fafc; font-weight: 600; text-align: left; white-space: nowrap; }
+    .asistencia-heatmap tbody td:not(.row-hdr) { font-weight: 700; }
+    .asistencia-heatmap .cell-0 { background: #fff; color: #94a3b8; }
+    .asistencia-heatmap .leg { margin-top: 0.5rem; font-size: 0.8rem; color: #64748b; }
+    .asistencia-multi-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; overscroll-behavior-x: contain; max-height: 50vh; }
+    .asistencia-multi-wrap table { border-collapse: collapse; width: 100%; font-size: 0.9rem; }
+    .asistencia-multi-wrap th { position: sticky; top: 0; background: #1e293b; color: #fff; z-index: 1; }
+    .asistencia-multi-wrap th, .asistencia-multi-wrap td { padding: 0.5rem 0.65rem; border-bottom: 1px solid #eee; text-align: left; }
+    .asistencia-multi-wrap td.num { text-align: right; }
+    .asistencia-multi-por-sede { line-height: 1.65; }
+    .asistencia-multi-sede-item { display: inline-block; margin: 0.2rem 0.4rem 0.2rem 0; padding: 0.25rem 0.5rem; border-radius: 6px; background: #f1f5f9; color: #334155; border: 1px solid #e2e8f0; font-size: 0.85rem; }
+    .asistencia-multi-sede-top { background: #fef3c7; border-color: #d97706; color: #92400e; font-weight: 600; }
+    .asistencia-cargando { color: #64748b; padding: 1rem; }
+    @media (max-width: 768px) {
+      .asistencia-filtros select, #asistencia-modo-filas { font-size: 16px; }
+      .asistencia-filtros .filtro-sucursal .btn-sucursal { min-height: 44px; }
+    }
   </style>
 </head>
 <body>
@@ -330,12 +358,16 @@
         <span class="menu-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><path d="M9 22V12h6v10"/></svg></span>
         <span class="menu-label">Home</span>
       </a>
+      <a href="#" class="menu-item" id="menu-asistencia" title="Asistencia" aria-label="Asistencia" style="display:none;">
+        <span class="menu-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
+        <span class="menu-label">Asistencia</span>
+      </a>
       <a href="#" class="menu-item" id="menu-seguridad" title="Seguridad" aria-label="Seguridad" style="display:none;">
         <span class="menu-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span>
         <span class="menu-label">Seguridad</span>
       </a>
     </nav>
-    <div class="sidebar-version" id="sidebar-version" aria-label="Versión">v1.18</div>
+    <div class="sidebar-version" id="sidebar-version" aria-label="Versión">v1.19</div>
   </aside>
 
   <main class="main-content">
@@ -484,6 +516,68 @@
       <div id="loading" class="card loading">Cargando datos…</div>
       <div id="error" class="card error" style="display:none;"></div>
       <div id="aviso-tc-error" class="card" style="display:none; background:#fef3c7; border:1px solid #f59e0b; color:#92400e; padding:0.75rem 1rem; margin-bottom:1rem;"></div>
+      </div>
+
+      <div id="vista-asistencia" class="vista-asistencia" style="display:none;">
+        <div class="card asistencia-filtros">
+          <div class="form-group">
+            <label for="asistencia-anio">Año</label>
+            <select id="asistencia-anio" aria-label="Año"></select>
+          </div>
+          <div class="form-group">
+            <label for="asistencia-mes">Mes</label>
+            <select id="asistencia-mes" aria-label="Mes">
+              <option value="0">Todos los meses</option>
+              <option value="1">Enero</option><option value="2">Febrero</option><option value="3">Marzo</option><option value="4">Abril</option>
+              <option value="5">Mayo</option><option value="6">Junio</option><option value="7">Julio</option><option value="8">Agosto</option>
+              <option value="9">Septiembre</option><option value="10">Octubre</option><option value="11">Noviembre</option><option value="12">Diciembre</option>
+            </select>
+          </div>
+          <div class="form-group" style="flex:1; min-width:200px;">
+            <span style="font-size:0.9rem; color:#555;">Sucursal</span>
+            <div class="filtro-sucursal" id="asistencia-filtro-sucursal"></div>
+          </div>
+          <div class="form-group">
+            <label for="asistencia-hora-desde">Franja horaria</label>
+            <div style="display:flex; gap:0.35rem; align-items:center; flex-wrap:wrap;">
+              <select id="asistencia-hora-desde" aria-label="Hora desde" style="min-width:4.5rem;">
+                <option value="6">06</option><option value="7">07</option><option value="8">08</option><option value="9">09</option>
+                <option value="0">00</option>
+              </select>
+              <span>–</span>
+              <select id="asistencia-hora-hasta" aria-label="Hora hasta" style="min-width:4.5rem;">
+                <option value="22">22</option><option value="23">23</option><option value="21">21</option><option value="20">20</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="card" style="margin-bottom:1rem;">
+          <p class="asistencia-metodo"><strong>Metodología:</strong> cada registro es un <strong>ingreso</strong>; se asume estancia de <strong>1 hora</strong>. La celda muestra cuántas personas estarían simultáneamente dentro del club en esa franja horaria (solape de intervalos [ingreso, ingreso+1h) con la franja). Podés combinar sucursales con los botones (igual que en Home: Total o varias activas).</p>
+          <div id="asistencia-help-wrap" class="help-exclusiones-wrap" style="display:inline-flex;">
+            <button type="button" class="help-exclusiones" id="help-asistencia" title="Ayuda vista asistencia" aria-label="Ayuda"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></button>
+            <div class="help-exclusiones-popover" id="help-asistencia-popover"><strong>Mapa:</strong> columnas = horas. Filas = calendario (día/mes) o <strong>Lun–Dom</strong> (promedio por día de la semana en el período). Vista <strong>año completo</strong> en calendario: filas = meses, valor = promedio diario en esa hora. <strong>Multi-sede:</strong> con «Total» o varias sedes, ≥2 sedes; con <strong>una</strong> sede, quienes pasaron por ella y por otra (conteos globales visibles). Ámbar = sede con más visitas.</div>
+          </div>
+        </div>
+        <div id="asistencia-estado" class="asistencia-cargando" style="display:none;"></div>
+        <div class="card" style="margin-bottom:1rem;">
+          <div style="display:flex; flex-wrap:wrap; align-items:center; gap:0.75rem 1rem; margin-bottom:0.45rem;">
+            <h2 style="margin:0; font-size:1.1rem;">Concurrencia por franja horaria</h2>
+            <div class="form-group" style="margin:0; display:flex; align-items:center; gap:0.4rem; flex-wrap:wrap;">
+              <label for="asistencia-modo-filas" style="font-size:0.9rem; color:#555; margin:0;">Filas</label>
+              <select id="asistencia-modo-filas" aria-label="Agrupación de filas del mapa" style="padding:0.4rem 0.55rem; border-radius:6px; border:1px solid #ccc; font-size:0.95rem;">
+                <option value="calendario" selected>Por hora — día o mes en filas</option>
+                <option value="semana">Por día de la semana (Lun–Dom)</option>
+              </select>
+            </div>
+          </div>
+          <p style="margin:0 0 0.5rem 0; font-size:0.85rem; color:#666;">Por defecto <strong>Por hora</strong> (filas = día del mes o mes del año). Las <strong>columnas</strong> son siempre las horas del rango. Podés agrupar filas por <strong>Lun–Dom</strong> (promedio por día de la semana).</p>
+          <div id="asistencia-heatmap-wrap" class="asistencia-heatmap-wrap"></div>
+        </div>
+        <div class="card">
+          <h2 style="margin:0 0 0.5rem 0; font-size:1.1rem;">Clientes en más de una sucursal</h2>
+          <p style="margin:0 0 0.5rem 0; font-size:0.88rem; color:#666;">Personas con el mismo ID o nombre y apellido que tuvieron ingresos en <strong>al menos dos sedes distintas</strong> en el período (aunque el filtro de sucursal sea una sola: se listan quienes pasaron por esa sede y también por otra). Visitas por sede; en ámbar la(s) con más visitas.</p>
+          <div id="asistencia-multi-wrap" class="asistencia-multi-wrap"></div>
+        </div>
       </div>
 
       <div id="vista-seguridad" class="card panel-seguridad" style="display:none;">
@@ -831,6 +925,599 @@
         if (myAllowedSucursales && myAllowedSucursales.length > 0)
           list = list.filter(function(s) { return myAllowedSucursales.indexOf(s) !== -1; });
         return list;
+      }
+
+      /** Cache transacciones_asistencia por rango cargado (paginado). */
+      var cacheTransaccionesAsistencia = null;
+      var asistenciaCacheDesde = '';
+      var asistenciaCacheHasta = '';
+      var asistenciaSucursalFilterSet = [];
+      var asistenciaUiInicializado = false;
+      /** Mapa fecha → intervalos de visita; se invalida con el cache de transacciones. */
+      var asistenciaByFechaCacheKey = '';
+      var asistenciaByFechaMap = null;
+      var ASISTENCIA_VISIT_MS = 3600000;
+      var MESES_CORT_ASIST = ['', 'Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+      var ASIST_DOW_LABELS = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
+
+      /** 0 = lunes … 6 = domingo (calendario local a partir de YYYY-MM-DD). */
+      function asistenciaWeekdayLun0(fechaYYYYMMDD) {
+        var p = fechaYYYYMMDD.split('-').map(Number);
+        var wd = new Date(p[0], p[1] - 1, p[2]).getDay();
+        return wd === 0 ? 6 : wd - 1;
+      }
+
+      function asistenciaIterDatesInMonth(anio, mesNum, cb) {
+        var last = new Date(anio, mesNum, 0).getDate();
+        for (var d = 1; d <= last; d++) {
+          var fd = anio + '-' + String(mesNum).padStart(2, '0') + '-' + String(d).padStart(2, '0');
+          cb(fd);
+        }
+      }
+
+      function asistenciaIterDatesInYear(anio, cb) {
+        for (var m = 1; m <= 12; m++) asistenciaIterDatesInMonth(anio, m, cb);
+      }
+
+      function invalidateAsistenciaCache() {
+        cacheTransaccionesAsistencia = null;
+        asistenciaCacheDesde = '';
+        asistenciaCacheHasta = '';
+        asistenciaByFechaCacheKey = '';
+        asistenciaByFechaMap = null;
+        var selAnio = document.getElementById('asistencia-anio');
+        if (selAnio) {
+          selAnio.removeAttribute('data-anios-cargados');
+          selAnio.innerHTML = '';
+        }
+      }
+
+      function traerTransaccionesAsistenciaRango(fechaDesde, fechaHasta) {
+        var todas = [];
+        function fetchPage(offset) {
+          return client
+            .from('transacciones_asistencia')
+            .select('sucursal, fecha, tiempo, nombre, apellido, empleado_id')
+            .gte('fecha', fechaDesde)
+            .lte('fecha', fechaHasta)
+            .order('fecha', { ascending: true })
+            .range(offset, offset + SUPABASE_PAGE_SIZE - 1)
+            .then(function(_ref) {
+              var data = _ref.data;
+              var err = _ref.error;
+              if (err) throw err;
+              todas.push.apply(todas, data || []);
+              if ((data || []).length < SUPABASE_PAGE_SIZE) return todas;
+              return fetchPage(offset + SUPABASE_PAGE_SIZE);
+            });
+        }
+        return fetchPage(0);
+      }
+
+      function asistenciaFechaISO(r) {
+        return fechaStr(r.fecha) || (typeof r.fecha === 'string' ? r.fecha.slice(0, 10) : '');
+      }
+
+      /** Ingreso en ms (epoch); hora del día en UTC−3 (Argentina). */
+      function parseIngresoMsArgentina(fechaYYYYMMDD, tiempo) {
+        if (!fechaYYYYMMDD || !/^\d{4}-\d{2}-\d{2}$/.test(fechaYYYYMMDD)) return null;
+        var parts = fechaYYYYMMDD.split('-').map(Number);
+        var y = parts[0], mo = parts[1], d = parts[2];
+        var pad = function(n) { return String(n).padStart(2, '0'); };
+        var secOfDay = 0;
+        if (tiempo != null && tiempo !== '') {
+          var s = String(tiempo).trim();
+          var m = s.match(/^(\d{1,2}):(\d{2})(?::(\d{2}))?$/);
+          if (m) {
+            var hh = parseInt(m[1], 10), mm = parseInt(m[2], 10), ss = m[3] ? parseInt(m[3], 10) : 0;
+            if (hh >= 0 && hh < 24 && mm >= 0 && mm < 60 && ss >= 0 && ss < 60) secOfDay = hh * 3600 + mm * 60 + ss;
+          } else {
+            var num = Number(s);
+            if (!isNaN(num) && num >= 0 && num < 1) secOfDay = Math.round(num * 86400) % 86400;
+          }
+        }
+        var sh = Math.floor(secOfDay / 3600), sm = Math.floor((secOfDay % 3600) / 60), scs = secOfDay % 60;
+        var iso = y + '-' + pad(mo) + '-' + pad(d) + 'T' + pad(sh) + ':' + pad(sm) + ':' + pad(scs) + '-03:00';
+        var t = new Date(iso).getTime();
+        return isNaN(t) ? null : t;
+      }
+
+      function slotBoundsMsAsistencia(fechaYYYYMMDD, hour) {
+        var parts = fechaYYYYMMDD.split('-').map(Number);
+        var pad = function(n) { return String(n).padStart(2, '0'); };
+        var y = parts[0], mo = parts[1], d = parts[2];
+        var isoStart = y + '-' + pad(mo) + '-' + pad(d) + 'T' + pad(hour) + ':00:00-03:00';
+        var start = new Date(isoStart).getTime();
+        return { start: start, end: start + ASISTENCIA_VISIT_MS };
+      }
+
+      function buildVisitIntervalsAsistencia(rows) {
+        var out = [];
+        for (var i = 0; i < rows.length; i++) {
+          var r = rows[i];
+          var f = asistenciaFechaISO(r);
+          if (!/^\d{4}-\d{2}-\d{2}$/.test(f)) continue;
+          var entry = parseIngresoMsArgentina(f, r.tiempo);
+          if (entry == null) continue;
+          out.push({ fecha: f, entry: entry, exit: entry + ASISTENCIA_VISIT_MS });
+        }
+        return out;
+      }
+
+      /** Objeto fecha → array de intervalos; evita recorrer todas las visitas en cada celda del heatmap. */
+      function buildVisitIntervalsByFechaMap(rows) {
+        var intervals = buildVisitIntervalsAsistencia(rows);
+        var byF = {};
+        for (var i = 0; i < intervals.length; i++) {
+          var v = intervals[i];
+          if (!byF[v.fecha]) byF[v.fecha] = [];
+          byF[v.fecha].push(v);
+        }
+        return byF;
+      }
+
+      function countOverlapInSlotAsistenciaByDay(dayIntervals, slotStart, slotEnd) {
+        if (!dayIntervals || dayIntervals.length === 0) return 0;
+        var n = 0;
+        for (var i = 0; i < dayIntervals.length; i++) {
+          var v = dayIntervals[i];
+          if (v.entry < slotEnd && v.exit > slotStart) n++;
+        }
+        return n;
+      }
+
+      function getAsistenciaRowsFiltered() {
+        var rows = cacheTransaccionesAsistencia || [];
+        return rows.filter(function(r) {
+          var s = (r.sucursal || '').trim();
+          if (myAllowedSucursales && myAllowedSucursales.length && myAllowedSucursales.indexOf(s) === -1) return false;
+          if (asistenciaSucursalFilterSet.length > 0 && asistenciaSucursalFilterSet.indexOf(s) === -1) return false;
+          return true;
+        });
+      }
+
+      /** Todas las filas del período cargado respetando solo sucursales permitidas al usuario (sin filtro de sucursal de la vista). Sirve para detectar multi-sede aunque el filtro sea una sola sede. */
+      function getAsistenciaRowsSinFiltroSucursalVista() {
+        var rows = cacheTransaccionesAsistencia || [];
+        return rows.filter(function(r) {
+          var s = (r.sucursal || '').trim();
+          if (myAllowedSucursales && myAllowedSucursales.length && myAllowedSucursales.indexOf(s) === -1) return false;
+          return true;
+        });
+      }
+
+      /** ¿Incluir esta persona en la tabla multi-sede? `porSede` cuenta todas las sedes del período (vista global). */
+      function incluirPersonaTablaMultiSede(porSede) {
+        var conVisita = Object.keys(porSede).filter(function(s) { return porSede[s] > 0; });
+        if (conVisita.length < 2) return false;
+        var filt = asistenciaSucursalFilterSet || [];
+        if (filt.length === 0) return true;
+        if (filt.length === 1) return (porSede[filt[0]] || 0) > 0;
+        var n = 0;
+        for (var i = 0; i < filt.length; i++) {
+          if ((porSede[filt[i]] || 0) > 0) n++;
+        }
+        return n >= 2;
+      }
+
+      function getSucursalesListaDesdeAsistenciaCache() {
+        var set = {};
+        (cacheTransaccionesAsistencia || []).forEach(function(r) {
+          var s = (r.sucursal || '').trim();
+          if (!s) return;
+          if (myAllowedSucursales && myAllowedSucursales.length && myAllowedSucursales.indexOf(s) === -1) return;
+          set[s] = true;
+        });
+        return Object.keys(set).sort();
+      }
+
+      function fillSelectHorasAsistencia() {
+        var hDesde = document.getElementById('asistencia-hora-desde');
+        var hHasta = document.getElementById('asistencia-hora-hasta');
+        if (!hDesde || !hHasta || hDesde.getAttribute('data-filled') === '1') return;
+        hDesde.innerHTML = '';
+        hHasta.innerHTML = '';
+        for (var h = 0; h < 24; h++) {
+          var o1 = document.createElement('option');
+          o1.value = String(h);
+          o1.textContent = String(h).padStart(2, '0');
+          if (h === 6) o1.selected = true;
+          hDesde.appendChild(o1);
+          var o2 = document.createElement('option');
+          o2.value = String(h);
+          o2.textContent = String(h).padStart(2, '0');
+          if (h === 22) o2.selected = true;
+          hHasta.appendChild(o2);
+        }
+        hDesde.setAttribute('data-filled', '1');
+      }
+
+      /** Rellena el combo de año solo con años que tienen filas en transacciones_asistencia (RPC). */
+      function cargarAniosAsistenciaDesdeSupabase() {
+        var sel = document.getElementById('asistencia-anio');
+        if (!sel) return Promise.resolve();
+        if (sel.getAttribute('data-anios-cargados') === '1') return Promise.resolve();
+        var fa = fechaPartesAhoraArgentina();
+        var yDefault = fa.anio;
+        function aplicarListaAnios(list) {
+          sel.innerHTML = '';
+          var sorted = list.filter(function(y) { return !isNaN(y) && y >= 1990 && y <= 2100; }).sort(function(a, b) { return b - a; });
+          if (sorted.length === 0) {
+            var o0 = document.createElement('option');
+            o0.value = String(yDefault);
+            o0.textContent = String(yDefault);
+            sel.appendChild(o0);
+          } else {
+            var ySel = sorted.indexOf(yDefault) !== -1 ? yDefault : sorted[0];
+            sorted.forEach(function(y) {
+              var o = document.createElement('option');
+              o.value = String(y);
+              o.textContent = String(y);
+              if (y === ySel) o.selected = true;
+              sel.appendChild(o);
+            });
+          }
+          sel.setAttribute('data-anios-cargados', '1');
+        }
+        return client.rpc('get_anios_transacciones_asistencia').then(function(res) {
+          if (res.error) throw res.error;
+          var raw = res.data;
+          var list = [];
+          if (Array.isArray(raw)) {
+            raw.forEach(function(x) {
+              var y = typeof x === 'number' ? x : parseInt(x, 10);
+              if (!isNaN(y)) list.push(y);
+            });
+          }
+          aplicarListaAnios(list);
+        }).catch(function() {
+          aplicarListaAnios([]);
+        });
+      }
+
+      function bindAsistenciaFiltrosOnce() {
+        if (asistenciaUiInicializado) return;
+        asistenciaUiInicializado = true;
+        fillSelectHorasAsistencia();
+        var selAnio = document.getElementById('asistencia-anio');
+        var selMes = document.getElementById('asistencia-mes');
+        var hDesde = document.getElementById('asistencia-hora-desde');
+        var hHasta = document.getElementById('asistencia-hora-hasta');
+        var selModoFilas = document.getElementById('asistencia-modo-filas');
+        function changed() { renderVistaAsistencia(false); }
+        if (selAnio) selAnio.addEventListener('change', changed);
+        if (selMes) selMes.addEventListener('change', changed);
+        if (hDesde) hDesde.addEventListener('change', changed);
+        if (hHasta) hHasta.addEventListener('change', changed);
+        if (selModoFilas) selModoFilas.addEventListener('change', function() { renderVistaAsistencia(true); });
+      }
+
+      function renderAsistenciaSucursalButtons() {
+        var contSuc = document.getElementById('asistencia-filtro-sucursal');
+        if (!contSuc) return;
+        var sucursales = getSucursalesListaDesdeAsistenciaCache();
+        asistenciaSucursalFilterSet = asistenciaSucursalFilterSet.filter(function(s) { return sucursales.indexOf(s) !== -1; });
+        contSuc.innerHTML = '<button type="button" class="btn-sucursal' + (asistenciaSucursalFilterSet.length === 0 ? ' activo' : '') + '" data-sucursal="" title="Todas">Total</button>' + sucursales.map(function(s) {
+          return '<button type="button" class="btn-sucursal' + (asistenciaSucursalFilterSet.indexOf(s) !== -1 ? ' activo' : '') + '" data-sucursal="' + String(s).replace(/"/g, '&quot;') + '">' + esc(s) + '</button>';
+        }).join('');
+        contSuc.querySelectorAll('.btn-sucursal').forEach(function(btn) {
+          btn.addEventListener('click', function() {
+            var val = (this.getAttribute('data-sucursal') || '').trim();
+            if (val === '') {
+              asistenciaSucursalFilterSet = [];
+              contSuc.querySelectorAll('.btn-sucursal').forEach(function(b) { b.classList.remove('activo'); });
+              this.classList.add('activo');
+            } else {
+              var idx = asistenciaSucursalFilterSet.indexOf(val);
+              if (idx === -1) asistenciaSucursalFilterSet.push(val); else asistenciaSucursalFilterSet.splice(idx, 1);
+              contSuc.querySelectorAll('.btn-sucursal').forEach(function(b) {
+                var s2 = (b.getAttribute('data-sucursal') || '').trim();
+                if (s2 === '') b.classList.toggle('activo', asistenciaSucursalFilterSet.length === 0);
+                else b.classList.toggle('activo', asistenciaSucursalFilterSet.indexOf(s2) !== -1);
+              });
+            }
+            renderVistaAsistencia(true);
+          });
+        });
+      }
+
+      function rangoFechasAsistencia(anio, mesNum) {
+        var pad = function(n) { return String(n).padStart(2, '0'); };
+        if (!mesNum || mesNum === 0) {
+          return { desde: anio + '-01-01', hasta: anio + '-12-31' };
+        }
+        var ultimo = new Date(anio, mesNum, 0).getDate();
+        return { desde: anio + '-' + pad(mesNum) + '-01', hasta: anio + '-' + pad(mesNum) + '-' + pad(ultimo) };
+      }
+
+      /** Mapa de calor: más concurrencia → verde; menos → rojo (respecto al máximo de la tabla). */
+      function heatStyleAsistencia(val, maxVal) {
+        if (val == null || val <= 0 || maxVal <= 0) return 'background:#f8fafc;color:#94a3b8;';
+        var t = Math.min(1, Math.max(0, val / maxVal));
+        var hue = Math.round(t * 120);
+        var sat = 58 + Math.round(t * 22);
+        var light = Math.round(76 - t * 38);
+        var textColor = light < 50 ? '#fff' : '#14532d';
+        if (t < 0.35) textColor = light < 52 ? '#fff' : '#7f1d1d';
+        return 'background:hsl(' + hue + ', ' + sat + '%, ' + light + '%);color:' + textColor + ';';
+      }
+
+      function personaKeyAsistencia(r) {
+        var id = (r.empleado_id || '').trim();
+        if (id) return 'id:' + id;
+        var n = ((r.nombre || '') + '|' + (r.apellido || '')).trim().toLowerCase().replace(/\s+/g, ' ');
+        return 'nm:' + n;
+      }
+
+      function renderMultiSedeHtml() {
+        var rowsGlobal = getAsistenciaRowsSinFiltroSucursalVista();
+        var map = {};
+        rowsGlobal.forEach(function(r) {
+          var key = personaKeyAsistencia(r);
+          if (!map[key]) map[key] = { porSede: {}, nombre: r.nombre, apellido: r.apellido, empleado_id: r.empleado_id };
+          var s = (r.sucursal || '').trim();
+          if (s) {
+            if (!map[key].porSede[s]) map[key].porSede[s] = 0;
+            map[key].porSede[s]++;
+          }
+        });
+        var rowsOut = [];
+        for (var k in map) {
+          var porSede = map[k].porSede;
+          if (!incluirPersonaTablaMultiSede(porSede)) continue;
+          var sedesList = Object.keys(porSede);
+          var total = 0;
+          var maxC = 0;
+          sedesList.forEach(function(s) {
+            var c = porSede[s];
+            total += c;
+            if (c > maxC) maxC = c;
+          });
+          rowsOut.push({
+            label: map[k].empleado_id ? ('ID ' + map[k].empleado_id) : (((map[k].nombre || '') + ' ' + (map[k].apellido || '')).trim() || k),
+            nombre: map[k].nombre,
+            apellido: map[k].apellido,
+            empleado_id: map[k].empleado_id,
+            porSede: porSede,
+            sedesOrden: sedesList.sort(),
+            maxPorSede: maxC,
+            visits: total
+          });
+        }
+        rowsOut.sort(function(a, b) { return b.visits - a.visits; });
+        if (rowsOut.length === 0) {
+          var msg = 'No hay personas con ingresos en al menos dos sucursales distintas en este período';
+          if (asistenciaSucursalFilterSet && asistenciaSucursalFilterSet.length === 1) {
+            msg = 'Nadie asistió a «' + esc(asistenciaSucursalFilterSet[0]) + '» y además a otra sede en el mismo período (entre las sucursales que podés ver).';
+          } else if (asistenciaSucursalFilterSet && asistenciaSucursalFilterSet.length > 1) {
+            msg = 'Ninguna persona tuvo visitas en dos o más de las sucursales seleccionadas a la vez (en el período).';
+          }
+          return '<p style="color:#64748b;margin:0;">' + msg + '</p>';
+        }
+        var html = '<table><thead><tr><th>Persona / ID</th><th>Nombre</th><th>Apellido</th><th>ID empleado</th><th>Visitas por sede</th><th class="num">Total</th></tr></thead><tbody>';
+        rowsOut.forEach(function(ro) {
+          var badges = '';
+          ro.sedesOrden.forEach(function(s) {
+            var c = ro.porSede[s];
+            var isTop = ro.maxPorSede > 0 && c === ro.maxPorSede;
+            var cls = isTop ? 'asistencia-multi-sede-item asistencia-multi-sede-top' : 'asistencia-multi-sede-item';
+            badges += '<span class="' + cls + '">' + esc(s) + ': <strong>' + c + '</strong></span>';
+          });
+          html += '<tr><td>' + esc(ro.label) + '</td><td>' + esc(ro.nombre || '–') + '</td><td>' + esc(ro.apellido || '–') + '</td><td>' + esc(ro.empleado_id || '–') + '</td><td class="asistencia-multi-por-sede">' + badges + '</td><td class="num">' + ro.visits + '</td></tr>';
+        });
+        return html + '</tbody></table>';
+      }
+
+      /** Muestra mensaje en #asistencia-estado y ejecuta trabajo síncrono tras un frame (para que el navegador pinte “Cargando”). */
+      function asistenciaRunWithLoading(msg, syncFn) {
+        var est = document.getElementById('asistencia-estado');
+        if (est) {
+          est.style.display = 'block';
+          est.textContent = msg || 'Actualizando…';
+        }
+        requestAnimationFrame(function() {
+          try {
+            syncFn();
+          } finally {
+            if (est) est.style.display = 'none';
+          }
+        });
+      }
+
+      function pintarAsistenciaVista(anio, mesNum, hDesde, hHasta) {
+        var wrapH = document.getElementById('asistencia-heatmap-wrap');
+        var wrapMulti = document.getElementById('asistencia-multi-wrap');
+        var rowsF = getAsistenciaRowsFiltered();
+        var filtKey = (asistenciaSucursalFilterSet || []).slice().sort().join('\u0001');
+        var byFKey = (asistenciaCacheDesde || '') + '|' + (asistenciaCacheHasta || '') + '|' + filtKey;
+        if (byFKey !== asistenciaByFechaCacheKey || !asistenciaByFechaMap) {
+          asistenciaByFechaMap = buildVisitIntervalsByFechaMap(rowsF);
+          asistenciaByFechaCacheKey = byFKey;
+        }
+        var byF = asistenciaByFechaMap;
+        var hours = [];
+        for (var hh = hDesde; hh <= hHasta; hh++) hours.push(hh);
+        var cells = [];
+        var maxVal = 0;
+        var modoFilas = (document.getElementById('asistencia-modo-filas') || {}).value || 'calendario';
+
+        if (modoFilas === 'semana') {
+          for (var w = 0; w < 7; w++) {
+            var rowValsSem = [];
+            hours.forEach(function(hour) {
+              var sumC = 0;
+              var n = 0;
+              function acumularFdSem(fd) {
+                if (asistenciaWeekdayLun0(fd) !== w) return;
+                var sl = slotBoundsMsAsistencia(fd, hour);
+                sumC += countOverlapInSlotAsistenciaByDay(byF[fd], sl.start, sl.end);
+                n++;
+              }
+              if (mesNum === 0) asistenciaIterDatesInYear(anio, acumularFdSem);
+              else asistenciaIterDatesInMonth(anio, mesNum, acumularFdSem);
+              var avgS = n ? sumC / n : 0;
+              var dispS = Math.round(avgS * 10) / 10;
+              rowValsSem.push(dispS);
+              if (dispS > maxVal) maxVal = dispS;
+            });
+            cells.push({ label: ASIST_DOW_LABELS[w], vals: rowValsSem });
+          }
+        } else if (mesNum === 0) {
+          for (var m = 1; m <= 12; m++) {
+            var diasMes = new Date(anio, m, 0).getDate();
+            var rowVals = [];
+            hours.forEach(function(hour) {
+              var sumD = 0;
+              for (var day = 1; day <= diasMes; day++) {
+                var fd = anio + '-' + String(m).padStart(2, '0') + '-' + String(day).padStart(2, '0');
+                var sl = slotBoundsMsAsistencia(fd, hour);
+                sumD += countOverlapInSlotAsistenciaByDay(byF[fd], sl.start, sl.end);
+              }
+              var avg = diasMes ? sumD / diasMes : 0;
+              var disp = Math.round(avg * 10) / 10;
+              rowVals.push(disp);
+              if (disp > maxVal) maxVal = disp;
+            });
+            cells.push({ label: MESES_CORT_ASIST[m], vals: rowVals });
+          }
+        } else {
+          var dias = new Date(anio, mesNum, 0).getDate();
+          for (var day = 1; day <= dias; day++) {
+            var fd = anio + '-' + String(mesNum).padStart(2, '0') + '-' + String(day).padStart(2, '0');
+            var rowVals = [];
+            hours.forEach(function(hour) {
+              var sl = slotBoundsMsAsistencia(fd, hour);
+              var c = countOverlapInSlotAsistenciaByDay(byF[fd], sl.start, sl.end);
+              rowVals.push(c);
+              if (c > maxVal) maxVal = c;
+            });
+            cells.push({ label: fd, vals: rowVals });
+          }
+        }
+
+        var usarDecimal = mesNum === 0 || modoFilas === 'semana';
+        var html = '<table class="asistencia-heatmap"><thead><tr><th class="row-hdr"></th>';
+        hours.forEach(function(h) { html += '<th>' + String(h).padStart(2, '0') + '</th>'; });
+        html += '</tr></thead><tbody>';
+        for (var ri = 0; ri < cells.length; ri++) {
+          html += '<tr><td class="row-hdr">' + esc(cells[ri].label) + '</td>';
+          for (var ci = 0; ci < cells[ri].vals.length; ci++) {
+            var v = cells[ri].vals[ci];
+            var show = usarDecimal ? (v > 0 ? String(v).replace('.', ',') : '') : (v > 0 ? String(v) : '');
+            html += '<td style="' + heatStyleAsistencia(v, maxVal) + '">' + show + '</td>';
+          }
+          html += '</tr>';
+        }
+        var legParts = [];
+        if (modoFilas === 'semana') {
+          legParts.push('Filas = Lun–Dom: en cada celda el <strong>promedio</strong> de concurrencia en esa franja para ese día de la semana en el período elegido. ');
+        } else if (mesNum === 0) {
+          legParts.push('Filas = meses del año: promedio de concurrencia por día calendario en ese mes y hora. ');
+        } else {
+          legParts.push('Filas = cada día del mes. ');
+        }
+        legParts.push('Mapa de calor: <strong>verde</strong> = más concurrencia, <strong>rojo</strong> = menos (respecto al máximo de esta tabla). Sin hora parseable no entra en el cálculo.');
+        html += '</tbody></table><p class="leg">' + legParts.join('') + '</p>';
+        if (wrapH) wrapH.innerHTML = html;
+        if (wrapMulti) wrapMulti.innerHTML = renderMultiSedeHtml();
+      }
+
+      function renderVistaAsistencia(optSoloPintar) {
+        var soloPintar = optSoloPintar === true;
+        var vista = document.getElementById('vista-asistencia');
+        if (!vista || vista.style.display === 'none') return;
+        bindAsistenciaFiltrosOnce();
+
+        if (!soloPintar) {
+          var estIni = document.getElementById('asistencia-estado');
+          if (estIni) {
+            estIni.style.display = 'block';
+            estIni.textContent = 'Aplicando filtros…';
+          }
+        }
+
+        function ejecutarCargaTransaccionesAsistencia() {
+          var selAnio = document.getElementById('asistencia-anio');
+          var selMes = document.getElementById('asistencia-mes');
+          var estado = document.getElementById('asistencia-estado');
+          var wrapH = document.getElementById('asistencia-heatmap-wrap');
+          var wrapMulti = document.getElementById('asistencia-multi-wrap');
+          var anio = parseInt(selAnio && selAnio.value, 10);
+          if (isNaN(anio)) anio = fechaPartesAhoraArgentina().anio;
+          var mesNum = parseInt(selMes && selMes.value, 10) || 0;
+          var rango = rangoFechasAsistencia(anio, mesNum);
+          var elHd = document.getElementById('asistencia-hora-desde');
+          var elHh = document.getElementById('asistencia-hora-hasta');
+          var hDesde = elHd ? parseInt(elHd.value, 10) : 6;
+          var hHasta = elHh ? parseInt(elHh.value, 10) : 22;
+          if (isNaN(hDesde)) hDesde = 6;
+          if (isNaN(hHasta)) hHasta = 22;
+          if (hDesde > hHasta) { var t = hDesde; hDesde = hHasta; hHasta = t; }
+
+          function afterData() {
+            renderAsistenciaSucursalButtons();
+            pintarAsistenciaVista(anio, mesNum, hDesde, hHasta);
+            if (estado) estado.style.display = 'none';
+          }
+
+          if (soloPintar) {
+            asistenciaRunWithLoading('Actualizando vista…', function() {
+              pintarAsistenciaVista(anio, mesNum, hDesde, hHasta);
+            });
+            return;
+          }
+
+          var needFetch = asistenciaCacheDesde !== rango.desde || asistenciaCacheHasta !== rango.hasta;
+          if (!needFetch) {
+            asistenciaRunWithLoading('Actualizando vista…', afterData);
+            return;
+          }
+
+          if (estado) {
+            estado.style.display = 'block';
+            estado.textContent = 'Cargando transacciones…';
+          }
+          traerTransaccionesAsistenciaRango(rango.desde, rango.hasta)
+            .then(function(rows) {
+              cacheTransaccionesAsistencia = rows || [];
+              asistenciaCacheDesde = rango.desde;
+              asistenciaCacheHasta = rango.hasta;
+              afterData();
+            })
+            .catch(function(err) {
+              if (estado) {
+                estado.style.display = 'block';
+                estado.textContent = 'Error: ' + (err && err.message ? err.message : String(err));
+              }
+              if (wrapH) wrapH.innerHTML = '';
+              if (wrapMulti) wrapMulti.innerHTML = '';
+            });
+        }
+
+        if (soloPintar) {
+          ejecutarCargaTransaccionesAsistencia();
+          return;
+        }
+
+        var selAnioCheck = document.getElementById('asistencia-anio');
+        var needAnios = selAnioCheck && selAnioCheck.getAttribute('data-anios-cargados') !== '1';
+        var estadoAnios = document.getElementById('asistencia-estado');
+        if (!needAnios) {
+          ejecutarCargaTransaccionesAsistencia();
+          return;
+        }
+        if (estadoAnios) {
+          estadoAnios.style.display = 'block';
+          estadoAnios.textContent = 'Cargando años disponibles…';
+        }
+        cargarAniosAsistenciaDesdeSupabase().then(function() {
+          if (estadoAnios) estadoAnios.style.display = 'none';
+          ejecutarCargaTransaccionesAsistencia();
+        });
+      }
+
+      function initAsistenciaUiOnce() {
+        bindAsistenciaFiltrosOnce();
       }
 
       // Si no hay tasa para la fecha (o es 0), se usa la del día anterior disponible; nunca convertir con tasa 0.
@@ -2227,6 +2914,9 @@
           }).then(function() {
             if (okTrans) okTrans.textContent = 'Importadas ' + transPreviewRows.length + ' filas en «' + transPreviewSucursal + '».';
             setTransProgress('Completado.', 100);
+            invalidateAsistenciaCache();
+            var va = document.getElementById('vista-asistencia');
+            if (va && va.style.display !== 'none') renderVistaAsistencia(false);
             setTimeout(function() {
               backdropTrans.classList.add('oculto');
               resetTransModal();
@@ -2335,6 +3025,8 @@
           if (btnProy) btnProy.style.display = userPermissions.indexOf('ver_proyeccion') !== -1 ? '' : 'none';
           var menuSeg = document.getElementById('menu-seguridad');
           if (menuSeg) menuSeg.style.display = userPermissions.indexOf('assign_roles') !== -1 ? '' : 'none';
+          var menuAsist = document.getElementById('menu-asistencia');
+          if (menuAsist) menuAsist.style.display = userPermissions.indexOf('ver_asistencia') !== -1 ? '' : 'none';
           document.getElementById('btn-cerrar-sesion').addEventListener('click', function() {
             client.auth.signOut().then(function() { showLogin(); });
           });
@@ -2377,6 +3069,16 @@
           if (btnProy) btnProy.style.display = userPermissions.indexOf('ver_proyeccion') !== -1 ? '' : 'none';
           var menuSeg = document.getElementById('menu-seguridad');
           if (menuSeg) menuSeg.style.display = userPermissions.indexOf('assign_roles') !== -1 ? '' : 'none';
+          var menuAsist2 = document.getElementById('menu-asistencia');
+          if (menuAsist2) {
+            var showAsist = userPermissions.indexOf('ver_asistencia') !== -1;
+            menuAsist2.style.display = showAsist ? '' : 'none';
+            if (!showAsist) {
+              var va = document.getElementById('vista-asistencia');
+              if (va && va.style.display !== 'none') document.getElementById('menu-home').click();
+            }
+          }
+          invalidateAsistenciaCache();
           cargarDatos().then(renderizar).catch(function() {});
         });
       }
@@ -2385,7 +3087,8 @@
         var popovers = [
           { btn: document.getElementById('help-tarjetas'), pop: document.getElementById('help-tarjetas-popover') },
           { btn: document.getElementById('help-grafico'), pop: document.getElementById('help-grafico-popover') },
-          { btn: document.getElementById('help-flujo'), pop: document.getElementById('help-flujo-popover') }
+          { btn: document.getElementById('help-flujo'), pop: document.getElementById('help-flujo-popover') },
+          { btn: document.getElementById('help-asistencia'), pop: document.getElementById('help-asistencia-popover') }
         ];
         function closeAll() {
           popovers.forEach(function(p) { if (p.pop) p.pop.classList.remove('activo'); });
@@ -2404,19 +3107,39 @@
 
       function setupVistasMenu() {
         var vistaDashboard = document.getElementById('vista-dashboard');
+        var vistaAsistencia = document.getElementById('vista-asistencia');
         var vistaSeguridad = document.getElementById('vista-seguridad');
         var pageTitle = document.getElementById('page-title');
         document.getElementById('menu-home').addEventListener('click', function(e) {
           e.preventDefault();
           vistaDashboard.style.display = 'block';
+          if (vistaAsistencia) vistaAsistencia.style.display = 'none';
           vistaSeguridad.style.display = 'none';
           pageTitle.textContent = 'Dashboard';
           document.querySelectorAll('.sidebar-nav .menu-item').forEach(function(m) { m.classList.remove('menu-item-active'); });
           document.getElementById('menu-home').classList.add('menu-item-active');
         });
+        var menuAsist = document.getElementById('menu-asistencia');
+        if (menuAsist && vistaAsistencia) {
+          menuAsist.addEventListener('click', function(e) {
+            e.preventDefault();
+            if (!userPermissions || userPermissions.indexOf('ver_asistencia') === -1) return;
+            vistaDashboard.style.display = 'none';
+            vistaAsistencia.style.display = 'block';
+            vistaSeguridad.style.display = 'none';
+            pageTitle.textContent = 'Asistencia';
+            document.querySelectorAll('.sidebar-nav .menu-item').forEach(function(m) { m.classList.remove('menu-item-active'); });
+            menuAsist.classList.add('menu-item-active');
+            var selModoEntrada = document.getElementById('asistencia-modo-filas');
+            if (selModoEntrada) selModoEntrada.value = 'calendario';
+            initAsistenciaUiOnce();
+            renderVistaAsistencia(false);
+          });
+        }
         document.getElementById('menu-seguridad').addEventListener('click', function(e) {
           e.preventDefault();
           vistaDashboard.style.display = 'none';
+          if (vistaAsistencia) vistaAsistencia.style.display = 'none';
           vistaSeguridad.style.display = 'block';
           pageTitle.textContent = 'Seguridad';
           document.querySelectorAll('.sidebar-nav .menu-item').forEach(function(m) { m.classList.remove('menu-item-active'); });

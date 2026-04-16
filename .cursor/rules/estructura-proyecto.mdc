@@ -17,6 +17,10 @@ Mantener siempre esta organización para que sea **simple y eficiente** encontra
 | **`Base/`** | Archivo(s) Excel de origen. No modificar estructura de columnas sin actualizar script y documentación. | `Base_Everfit.xlsx` |
 | **Raíz** | Config (`package.json`, `.env.example`), `.gitignore`. Los archivos generados pueden quedar en raíz si aplica. | |
 
+## Estándares LyP (todos los repos raíz)
+
+- **Tablas y móvil:** encabezados sticky y responsividad obligatoria. Ver **tablas-y-movil-lyp** en `.cursor/rules/`.
+
 ## Al agregar archivos nuevos
 
 - **Nuevo script SQL** → siempre en `sql/` (nombre descriptivo, ej. `supabase_*` si es para Supabase).

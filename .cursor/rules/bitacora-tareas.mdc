@@ -11,6 +11,7 @@ alwaysApply: true
 - **Hosting:** Vercel (cuando esté configurado). Despliegue con `vercel --prod` tras push a `main`.
 - **Repositorio:** Git/GitHub (rama `main`). Estructura: `sql/`, `scripts/`, `docs/`, `Base/` (ver regla estructura-proyecto).
 - **Bitácora:** Node.js + SheetJS (xlsx). Script `scripts/crear-bitacora-excel.js` genera `Bitacora_tareas.xlsx` (en raíz) con las solapas **Log**, **Resumen**, **Ref Git y Vercel**, **Versiones**, **Tecnología** (sin Presupuesto).
+- **Fechas (SQL / dashboard):** si el cambio toca persistencia, consultas o UI filtrada por fecha de negocio, aplicar la regla **fechas-argentina-negocio** (no omitir).
 
 ---
 

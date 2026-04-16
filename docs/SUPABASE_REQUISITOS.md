@@ -45,7 +45,7 @@ Reemplazá por tu Project URL y tu service_role key. No subas este archivo a Git
 
 ### 4b. (Opcional) Tabla de transacciones de asistencia
 
-Si vas a usar **Importar asistencia** en el dashboard (`docs/TRANSACCIONES_ASISTENCIA.md`), ejecutá también `sql/supabase_transacciones_asistencia.sql` en el SQL Editor (requiere `has_permission` del script de seguridad).
+Si vas a usar **Importar asistencia** y la vista **Asistencia** en el dashboard (`docs/TRANSACCIONES_ASISTENCIA.md`), ejecutá `sql/supabase_transacciones_asistencia.sql` en el SQL Editor (requiere `has_permission` del script de seguridad; incluye el permiso `ver_asistencia` y RLS de lectura). Si la tabla **ya existía** sin `ver_asistencia`, ejecutá además `sql/supabase_asistencia_ver_permiso.sql`.
 
 ### 5. Instalar dependencias y ejecutar el script de volcado
 
