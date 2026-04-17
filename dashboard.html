@@ -338,6 +338,8 @@
     .asistencia-heatmap th.row-hdr { left: 0; z-index: 4; text-align: left; min-width: 5.5rem; background: #334155; }
     .asistencia-heatmap td.row-hdr { position: sticky; left: 0; z-index: 2; background: #f8fafc; font-weight: 600; text-align: left; white-space: nowrap; }
     .asistencia-heatmap tbody td:not(.row-hdr) { font-weight: 700; }
+    .asistencia-heatmap-fila-promedio td.row-hdr { border-top: 2px solid #64748b; background: #e2e8f0; }
+    .asistencia-heatmap-fila-promedio td:not(.row-hdr) { border-top: 2px solid #cbd5e1; }
     .asistencia-heatmap .cell-0 { background: #fff; color: #94a3b8; }
     .asistencia-heatmap .leg { margin-top: 0.5rem; font-size: 0.8rem; color: #64748b; }
     .asistencia-multi-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; overscroll-behavior-x: contain; max-height: 50vh; }
@@ -499,7 +501,7 @@
         <span class="menu-label">Seguridad</span>
       </a>
     </nav>
-    <div class="sidebar-version" id="sidebar-version" aria-label="Versión">v1.27</div>
+    <div class="sidebar-version" id="sidebar-version" aria-label="Versión">v1.28</div>
   </aside>
 
   <main class="main-content">
@@ -2623,15 +2625,32 @@
           }
         }
 
+        if (cells.length > 0 && cells[0].vals && cells[0].vals.length === hours.length) {
+          var nFilasBase = cells.length;
+          var nHorasProm = cells[0].vals.length;
+          var valsProm = [];
+          for (var ic = 0; ic < nHorasProm; ic++) {
+            var accProm = 0;
+            for (var ir = 0; ir < nFilasBase; ir++) accProm += Number(cells[ir].vals[ic]) || 0;
+            var promCol = nFilasBase ? accProm / nFilasBase : 0;
+            var dProm = Math.round(promCol * 10) / 10;
+            valsProm.push(dProm);
+            if (dProm > maxVal) maxVal = dProm;
+          }
+          cells.push({ label: 'Promedio total', vals: valsProm, _promedioFila: true });
+        }
+
         var usarDecimal = mesNum === 0 || modoFilas === 'semana';
         var html = '<table class="asistencia-heatmap"><thead><tr><th class="row-hdr"></th>';
         hours.forEach(function(h) { html += '<th>' + String(h).padStart(2, '0') + '</th>'; });
         html += '</tr></thead><tbody>';
         for (var ri = 0; ri < cells.length; ri++) {
-          html += '<tr><td class="row-hdr">' + esc(cells[ri].label) + '</td>';
+          var trProm = cells[ri]._promedioFila ? ' class="asistencia-heatmap-fila-promedio"' : '';
+          html += '<tr' + trProm + '><td class="row-hdr">' + esc(cells[ri].label) + '</td>';
+          var decRow = usarDecimal || !!cells[ri]._promedioFila;
           for (var ci = 0; ci < cells[ri].vals.length; ci++) {
             var v = cells[ri].vals[ci];
-            var show = usarDecimal ? (v > 0 ? String(v).replace('.', ',') : '') : (v > 0 ? String(v) : '');
+            var show = decRow ? (v > 0 ? String(v).replace('.', ',') : '') : (v > 0 ? String(v) : '');
             html += '<td style="' + heatStyleAsistencia(v, maxVal) + '">' + show + '</td>';
           }
           html += '</tr>';
@@ -2646,7 +2665,7 @@
         } else {
           legParts.push('Filas = cada día del mes. ');
         }
-        legParts.push('Mapa de calor: <strong>verde</strong> = más concurrencia, <strong>rojo</strong> = menos (respecto al máximo de esta tabla). Sin hora parseable no entra en el cálculo.');
+        legParts.push('Mapa de calor: <strong>verde</strong> = más concurrencia, <strong>rojo</strong> = menos (respecto al máximo de esta tabla). Sin hora parseable no entra en el cálculo. <strong>Promedio total:</strong> última fila = promedio aritmético por hora de las filas superiores; misma escala de color.');
         if (optMultiAnioMapa) {
           legParts.push(' <strong>Rango multi-año</strong> (Todos los años + todos los meses): las tablas de frecuencia, permanencia y multi-sede usan el mismo rango completo.');
         }

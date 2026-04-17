@@ -1,8 +1,8 @@
 {
-  "versionLabel": "v1.27",
+  "versionLabel": "v1.28",
   "lines": [
-    "Mejoramos los tiempos de respuesta al obtener datos desde el servidor mientras usás el panel.",
-    "Esta versión incluye ajustes de rendimiento y de la experiencia al navegar reportes y vistas con mucha información.",
-    "Podés recargar ahora para pasar a la versión nueva o seguir trabajando y actualizar cuando prefieras."
+    "Trabajamos en que las consultas al servidor se sientan más fluidas al cargar pantallas con muchos datos.",
+    "Hay mejoras puntuales de rendimiento y de claridad en algunos reportes del panel.",
+    "Podés actualizar cuando quieras: recargá ahora o seguí usando la versión actual hasta más tarde."
   ]
 }
