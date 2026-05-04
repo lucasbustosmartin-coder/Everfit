@@ -47,7 +47,7 @@
     .help-exclusiones { display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; padding: 0; border: none; background: none; color: #666; cursor: pointer; border-radius: 50%; margin-left: 0.25rem; vertical-align: middle; }
     .help-exclusiones:hover { color: #1a1a1a; background: #eee; }
     .help-exclusiones svg { width: 18px; height: 18px; }
-    .help-exclusiones-popover { display: none; position: absolute; z-index: 50; max-width: 320px; padding: 0.6rem 0.75rem; font-size: 0.8rem; color: #333; background: #fff; border: 1px solid #ccc; border-radius: 6px; box-shadow: 0 2px 8px rgba(0,0,0,0.12); margin-top: 0.25rem; }
+    .help-exclusiones-popover { display: none; position: absolute; z-index: 50; max-width: 400px; padding: 0.65rem 0.85rem; font-size: 0.8rem; line-height: 1.4; color: #333; background: #fff; border: 1px solid #ccc; border-radius: 6px; box-shadow: 0 2px 8px rgba(0,0,0,0.12); margin-top: 0.25rem; }
     .help-exclusiones-popover.activo { display: block; }
     .help-exclusiones-wrap { position: relative; display: inline-flex; align-items: center; }
     .resumen-container { padding: 1rem; }
@@ -501,7 +501,7 @@
         <span class="menu-label">Seguridad</span>
       </a>
     </nav>
-    <div class="sidebar-version" id="sidebar-version" aria-label="Versión">v1.28</div>
+    <div class="sidebar-version" id="sidebar-version" aria-label="Versión">v1.29</div>
   </aside>
 
   <main class="main-content">
@@ -602,7 +602,7 @@
           <button type="button" class="help-exclusiones" id="help-tarjetas" title="Reglas de exclusión" aria-label="Ver reglas de exclusión">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
           </button>
-            <div class="help-exclusiones-popover" id="help-tarjetas-popover">Exclusiones: solo centro_de_costos = Saldo Inicial. Incluyen Dividendos, reales, pendientes y proyectados. Suma global (sin columnas de proyección de la tabla).</div>
+            <div class="help-exclusiones-popover" id="help-tarjetas-popover"><strong>Tarjetas (resumen):</strong> solo se excluyen filas con <strong>centro_de_costos</strong> = Saldo Inicial (sin distinguir mayúsculas). El campo <strong>concepto</strong> no se filtra aquí (Inversiones y demás entran si corresponden). Incluye reales, pendientes y proyectados. La suma no usa las columnas «Proy.» de la tabla.</div>
         </span>
       </div>
 
@@ -614,7 +614,7 @@
             <button type="button" class="help-exclusiones" id="help-grafico" title="Reglas de exclusión" aria-label="Ver reglas de exclusión">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
             </button>
-            <div class="help-exclusiones-popover" id="help-grafico-popover">Exclusiones: Saldo Inicial (centro_de_costos); mismo criterio que la tabla Flujo por mes: además beneficiario Dividendos. Se incluyen reales, pendientes y proyectados.</div>
+            <div class="help-exclusiones-popover" id="help-grafico-popover"><strong>Gráfico G/P mensual</strong> (mismo agregado que la tabla Flujo por mes): (1) excluye <strong>centro_de_costos</strong> = Saldo Inicial; (2) <strong>solo aquí</strong> excluye además filas cuyo <strong>concepto</strong> es <strong>Inversiones</strong> o <strong>Saldo Inicial</strong> (texto sin distinguir mayúsculas). Incluye reales, pendientes y proyectados. No aplica a tarjetas ni al modal Detalle.</div>
           </span>
         </div>
         <p style="margin:0 0 0.5rem 0; font-size:0.9rem; color:#666;">Desde el mes del año anterior hasta el mes actual (ej. 03-2025 a 03-2026).</p>
@@ -633,7 +633,7 @@
             <button type="button" class="help-exclusiones" id="help-flujo" title="Reglas de exclusión" aria-label="Ver reglas de exclusión">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
             </button>
-            <div class="help-exclusiones-popover" id="help-flujo-popover">Exclusiones: Saldo Inicial (centro_de_costos); en esta tabla además beneficiario Dividendos. Se incluyen reales, pendientes y proyectados.</div>
+            <div class="help-exclusiones-popover" id="help-flujo-popover"><strong>Tabla Flujo por mes</strong> (y ratios que la usan): (1) excluye <strong>centro_de_costos</strong> = Saldo Inicial; (2) <strong>solo en esta tabla y en el gráfico G/P</strong> excluye filas con <strong>concepto</strong> = Inversiones o Saldo Inicial. Incluye reales, pendientes y proyectados. Las tarjetas y el Detalle por concepto/beneficiario no filtran por concepto así.</div>
           </span>
         </div>
         <p style="color:#666; font-size:0.9rem; margin:0 0 0.5rem 0;">Hacé clic en una fila para ver el detalle por concepto o beneficiario.</p>
@@ -913,7 +913,7 @@
         <button type="button" class="modal-close" id="modal-config-proyeccion-close" aria-label="Cerrar"><span class="icon-close"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg></span></button>
       </div>
       <div class="modal-body">
-        <p style="margin:0 0 1rem 0; font-size:0.9rem; color:#555;">Parámetros para los meses proyectados en la tabla Flujo por mes. El primer mes proyectado es siempre el mes en curso (ej. 03-2026). Valor típico a partir de la historia reciente.</p>
+        <p style="margin:0 0 1rem 0; font-size:0.9rem; color:#555;">Parámetros para los meses proyectados en la tabla Flujo por mes. El primer mes proyectado es siempre el <strong>mes en curso</strong> (Argentina). La base numérica usa solo los <strong>N meses calendario</strong> estrictamente anteriores al mes en curso (importes 0 si no hay movimientos en un mes); <strong>nunca</strong> entran el mes en curso ni meses futuros, aunque tengan datos cargados (esas columnas siguen mostrando lo contable). Proy. 2 incorpora Proy. 1 y recorta un mes real al inicio de la ventana; así hasta completar la cantidad de meses proyectados. Documentación: <code>docs/PROYECCION_FLUJO.md</code>.</p>
         <div class="form-group">
           <label for="config-proyeccion-cantidad">Meses a proyectar</label>
           <select id="config-proyeccion-cantidad">
@@ -2905,7 +2905,8 @@
 
       /**
        * EXCLUSIONES DEL CÁLCULO (documentadas en docs/EXCLUSIONES_DASHBOARD.md)
-       * - Saldo Inicial: se excluyen filas con centro_de_costos === 'Saldo Inicial'. Se incluyen reales, pendientes y proyectados.
+       * - Saldo Inicial (centro_de_costos): excluido en todas las vistas que usan debeExcluirse.
+       * - Concepto Inversiones | Saldo Inicial: solo en porMesFlujo (tabla Flujo, gráfico G/P, ratios asociados).
        */
       function excluirSaldoInicial(r) {
         var centro = (r.centro_de_costos || '').trim().toLowerCase();
@@ -2916,10 +2917,10 @@
         return excluirSaldoInicial(r);
       }
 
-      /** Solo en Flujo por mes (y proyección): excluir beneficiario "Dividendos". No aplica a Detalle por concepto/beneficiario. */
-      function excluirBeneficiarioDividendosFlujo(r) {
-        var b = (r.beneficiario || '').trim().toLowerCase();
-        return b === 'dividendos';
+      /** Solo en tabla Flujo por mes, gráfico G/P y ratios que usan ese agregado: excluir por concepto. No aplica a tarjetas ni modal Detalle. */
+      function excluirConceptoFlujoYGraficoGP(r) {
+        var c = r.concepto != null && String(r.concepto).trim() !== '' ? String(r.concepto).trim().toLowerCase() : '';
+        return c === 'inversiones' || c === 'saldo inicial';
       }
 
       var configProyeccionCache = null;
@@ -2961,6 +2962,33 @@
         var anio = parts[0], mes = parts[1];
         if (mes >= 12) return (anio + 1) + '-01';
         return anio + '-' + String(mes + 1).padStart(2, '0');
+      }
+      /** Mes calendario anterior a key (anio-mes). */
+      function mesAnteriorKey(key) {
+        var parts = String(key || '').split('-').map(Number);
+        var anio = parts[0], mes = parts[1];
+        if (!anio || !mes || mes < 1 || mes > 12) return key;
+        if (mes <= 1) return (anio - 1) + '-12';
+        return anio + '-' + String(mes - 1).padStart(2, '0');
+      }
+      /**
+       * Los N meses calendario inmediatamente anteriores a primerMesProyectado (excluye ese mes y cualquier mes posterior).
+       * Orden cronológico [más viejo … más reciente]. Nunca incluye el mes en curso ni futuros: solo claves estrictamente anteriores a primerMesProyectado.
+       */
+      function nMesesCalendarioAnteriores(primerMesProyectado, n) {
+        var cant = Math.max(0, Math.floor(Number(n)) || 0);
+        if (cant === 0) return [];
+        var k = primerMesProyectado;
+        var rev = [];
+        for (var i = 0; i < cant; i++) {
+          k = mesAnteriorKey(k);
+          rev.push(k);
+        }
+        return rev.reverse();
+      }
+      /** Comparación de claves YYYY-MM: true si key es estrictamente anterior a limiteExclusivo (ej. mes en curso). */
+      function claveMesEstrictamenteAnterior(key, limiteExclusivo) {
+        return String(key) < String(limiteExclusivo);
       }
       /** Clave del mes en curso (anio-mes, ej. 2026-03). La proyección arranca desde este mes. Zona Argentina. */
       function keyMesEnCurso() {
@@ -3088,7 +3116,7 @@
         var porMesFlujo = {};
         datos.forEach(function(r) {
           if (debeExcluirse(r)) return;
-          if (excluirBeneficiarioDividendosFlujo(r)) return;
+          if (excluirConceptoFlujoYGraficoGP(r)) return;
           var f = fechaStr(r.fecha_pago);
           if (!f) return;
           var parts = f.split('-').map(Number);
@@ -3115,7 +3143,7 @@
         var sueldosPorMes = {}, alquileresPorMes = {};
         datos.forEach(function(r) {
           if (debeExcluirse(r)) return;
-          if (excluirBeneficiarioDividendosFlujo(r)) return;
+          if (excluirConceptoFlujoYGraficoGP(r)) return;
           var f = fechaStr(r.fecha_pago);
           if (!f) return;
           var parts = f.split('-').map(Number);
@@ -3167,13 +3195,23 @@
         var proySueldos = [], proyAlquileres = [], proyIng = [], proyEgr = [];
         if (userPermissions.indexOf('ver_proyeccion') !== -1 && ordenados.length > 0) {
           var configProy = getConfigProyeccion();
-          var N = Math.min(configProy.meses, ordenados.length);
+          var N = configProy.meses;
           if (N > 0 && configProy.mesesAProyectar > 0) {
             var agg = configProy.metodo === 'promedio_ponderado' ? promedioPonderado : (configProy.metodo === 'promedio' ? promedio : (configProy.metodo === 'mediana' ? mediana : function(a) { return promedioRecortado(a, (configProy.recortePct || 20) / 100); }));
-            var valoresIng = ordenados.slice(-N).map(function(k) { return (porMesFlujo[k] || {}).ingresos || 0; });
-            var valoresEgr = ordenados.slice(-N).map(function(k) { return (porMesFlujo[k] || {}).egresos || 0; });
-            var valoresSueldos = ordenados.slice(-N).map(function(k) { return sueldosPorMes[k] || 0; });
-            var valoresAlquileres = ordenados.slice(-N).map(function(k) { return alquileresPorMes[k] || 0; });
+            var primerMesProy = keyMesEnCurso();
+            var keysVentanaReal = nMesesCalendarioAnteriores(primerMesProy, N).filter(function(k) {
+              return claveMesEstrictamenteAnterior(k, primerMesProy);
+            });
+            function montoMesSoloSiAnteriorAlProyectado(getValor) {
+              return function(k) {
+                if (!claveMesEstrictamenteAnterior(k, primerMesProy)) return 0;
+                return getValor(k) || 0;
+              };
+            }
+            var valoresIng = keysVentanaReal.map(montoMesSoloSiAnteriorAlProyectado(function(k) { return (porMesFlujo[k] || {}).ingresos; }));
+            var valoresEgr = keysVentanaReal.map(montoMesSoloSiAnteriorAlProyectado(function(k) { return (porMesFlujo[k] || {}).egresos; }));
+            var valoresSueldos = keysVentanaReal.map(montoMesSoloSiAnteriorAlProyectado(function(k) { return sueldosPorMes[k]; }));
+            var valoresAlquileres = keysVentanaReal.map(montoMesSoloSiAnteriorAlProyectado(function(k) { return alquileresPorMes[k]; }));
             proyIng = proyeccionDesdeSerie(valoresIng, N, agg, configProy.mesesAProyectar);
             proyEgr = proyeccionDesdeSerie(valoresEgr, N, agg, configProy.mesesAProyectar);
             proySueldos = proyeccionDesdeSerie(valoresSueldos, N, agg, configProy.mesesAProyectar);
@@ -3191,7 +3229,7 @@
               keyProy = siguienteMesKey(keyProy);
             }
             var metodoLabel = configProy.metodo === 'promedio_ponderado' ? 'Promedio ponderado' : (configProy.metodo === 'promedio' ? 'Promedio' : (configProy.metodo === 'promedio_recortado' ? 'Promedio recortado' : 'Mediana'));
-            filasProyDisclaimer = '<tr class="disclaimer-proyeccion"><td colspan="' + (1 + ordenados.length + configProy.mesesAProyectar + 1) + '">Proyección: ' + metodoLabel + ' de los últimos ' + configProy.meses + ' meses. Desde mes en curso. Proy. 2 usa proy. 1 y un real menos; proy. 3 usa proy. 1 y 2 y dos reales menos; etc. (ventana móvil).</td></tr>';
+            filasProyDisclaimer = '<tr class="disclaimer-proyeccion"><td colspan="' + (1 + ordenados.length + configProy.mesesAProyectar + 1) + '">Proyección: ' + metodoLabel + ' sobre los <strong>' + configProy.meses + ' meses calendario</strong> estrictamente anteriores al mes en curso (0 si no hay datos en un mes). No se usa como base el mes en curso ni meses posteriores. Proy. 1 = solo esos importes; Proy. 2 = últimos ' + (configProy.meses - 1) + ' de esa base + Proy. 1; cada siguiente incorpora la proyección anterior y suelta el real más viejo, hasta ' + configProy.mesesAProyectar + ' columnas.</td></tr>';
           }
         }
         periodosLabels = periodosLabels.concat(proyLabels);
@@ -3216,7 +3254,7 @@
         tbodyHtml += '<tr class="fila-clickable" role="button" tabindex="0"><td class="col-item">' + iconoGP + '</td>' + celdasGp.join('') + '<td class="balance ' + (balanceTotalConProyFlujo >= 0 ? 'positivo' : 'negativo') + '">' + simbolo + formatearNumero(balanceTotalConProyFlujo, moneda) + '</td></tr>';
         document.getElementById('tbody-flujo').innerHTML = tbodyHtml;
 
-        var exclusionesFlujoNote = '<tr class="disclaimer-proyeccion"><td colspan="' + (1 + periodosLabels.length + 1) + '">Esta tabla y el gráfico G/P Mensual excluyen además beneficiario Dividendos (las tarjetas resumen y el detalle por concepto/beneficiario incluyen todo).</td></tr>';
+        var exclusionesFlujoNote = '<tr class="disclaimer-proyeccion"><td colspan="' + (1 + periodosLabels.length + 1) + '">Esta tabla y el gráfico G/P Mensual excluyen además —solo aquí— las filas con <strong>concepto</strong> Inversiones o Saldo Inicial (además de centro Saldo Inicial en todo el panel). Las tarjetas y el modal Detalle no aplican ese filtro por concepto.</td></tr>';
         var tfootHtml = '<tr><td class="col-item">Total</td>' + celdasTotalRow.join('') + '<td class="balance ' + (balanceTotalConProyFlujo >= 0 ? 'positivo' : 'negativo') + '">' + simbolo + formatearNumero(balanceTotalConProyFlujo, moneda) + '</td></tr>' + filasProyDisclaimer + exclusionesFlujoNote;
         document.getElementById('tfoot-flujo').innerHTML = tfootHtml;
 
@@ -3516,7 +3554,8 @@
         var benefHtml = tablaInvertida(porBeneficiarioPorMes, 'Beneficiario');
         document.getElementById('wrap-tabla-concepto').innerHTML = conceptHtml;
         document.getElementById('wrap-tabla-beneficiario').innerHTML = benefHtml;
-        document.getElementById('modal-detalle-exclusiones').textContent = 'Exclusiones: solo centro_de_costos = "Saldo Inicial". Se incluyen reales, pendientes y proyectados.';
+        document.getElementById('modal-detalle-exclusiones').textContent =
+          'Este detalle excluye solo filas con centro_de_costos = Saldo Inicial. No se filtra por concepto (Inversiones, etc. aparecen si corresponden). Incluye reales, pendientes y proyectados.';
         document.getElementById('modal-detalle-backdrop').classList.remove('oculto');
       }
 

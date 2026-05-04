@@ -36,5 +36,5 @@ alwaysApply: true
 - Volcar datos desde Excel: `docs/POBLAR_DESDE_EXCEL.md`.
 - Tipo de cambio (ARS/USD) desde otro proyecto: `docs/TIPO_DE_CAMBIO_DESDE_OTRO_PROYECTO.md`.
 - Git y Vercel (repo, push, deploy): `docs/GIT_Y_VERCEL.md`.
-- Dashboard (config, RLS, uso): `docs/DASHBOARD.md`.
+- Dashboard (config, RLS, uso): `docs/DASHBOARD.md`. Proyección Flujo: `docs/PROYECCION_FLUJO.md`.
 - Fechas en Argentina (**regla estricta no omitible**): `docs/FECHAS_ARGENTINA.md` y regla **fechas-argentina-negocio**.

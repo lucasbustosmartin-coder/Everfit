@@ -5,7 +5,7 @@ El **Dashboard** es una única página HTML (`dashboard.html`) con:
 - **Flujo por mes:** tabla con columnas Mes-Año, Ingresos, Egresos, G/P, más resumen con totales. **Hacé clic en una fila** para abrir el modal de detalle.
 - **Modal Detalle:** se abre al hacer clic en cualquier fila del Flujo por mes. Tiene dos pestañas: **Detalle por Concepto** y **Detalle por Beneficiario**. La tabla está **invertida**: **periodos en columnas**, **Item** (Ingresos, Egresos, G/P) **en filas**. La primera columna (Item) queda anclada al desplazar en horizontal; la fila de periodos (encabezado) queda anclada al desplazar en vertical.
 
-Los datos se leen de la tabla `base_everfit` en Supabase (Everfit). **Exclusiones:** no se incluyen en ningún cálculo las filas con `centro_de_costos = 'Saldo Inicial'` ni con `real_pendiente = 'proyectado'`. Detalle en **`docs/EXCLUSIONES_DASHBOARD.md`**.
+Los datos se leen de la tabla `base_everfit` en Supabase (Everfit). **Exclusiones por fila** (centro Saldo Inicial, y concepto en Flujo/G-P): ver **`docs/EXCLUSIONES_DASHBOARD.md`**. En las filas de datos se incluyen reales, pendientes y registrados como proyectados en origen; la **proyección estadística** de la tabla Flujo es independiente y no usa como base el mes en curso ni meses futuros — ver **`docs/PROYECCION_FLUJO.md`**.
 
 ## Requisitos
 
@@ -33,7 +33,11 @@ Los datos se leen de la tabla `base_everfit` en Supabase (Everfit). **Exclusione
 - **Resumen:** tres tarjetas con Total ingresos, Total egresos y G/P (ganancia/pérdida).
 - **Flujo por mes:** tabla con una fila por mes (ordenada cronológicamente), totales en el pie.
 
-Los montos se obtienen de `base_everfit`: se agrupa por mes usando `fecha_pago` y se suman `importe` según `ingresos_egresos` (Ingresos / Egresos). Podés elegir moneda ARS/USD y tipo de dólar (MEP, CCL, Oficial); en USD se convierte con la tasa de `fecha_pago` (o la anterior disponible) desde la tabla `tipo_de_cambio`. Las exclusiones (Saldo Inicial, proyectado) se aplican en resumen, flujo por mes y en el modal Detalle.
+### Proyección (columnas «Proy.»)
+
+Usuarios con permiso **`ver_proyeccion`** pueden ver columnas proyectadas y abrir **Configuración de proyección**. La lógica (meses calendario previos al mes en curso, encadenamiento Proy. 2…N, y la regla de **no usar nunca el mes en curso ni posteriores como base numérica**) está descrita en **`docs/PROYECCION_FLUJO.md`**.
+
+Los montos se obtienen de `base_everfit`: se agrupa por mes usando `fecha_pago` y se suman `importe` según `ingresos_egresos` (Ingresos / Egresos). Podés elegir moneda ARS/USD y tipo de dólar (MEP, CCL, Oficial); en USD se convierte con la tasa de `fecha_pago` (o la anterior disponible) desde la tabla `tipo_de_cambio`. Las exclusiones por fila (Saldo Inicial en centro; concepto solo en Flujo/G-P) se aplican según **`docs/EXCLUSIONES_DASHBOARD.md`**. En origen se incluyen filas reales, pendientes y con `real_pendiente` proyectado; la proyección **estadística** de columnas Proy. es otra capa (ver **`docs/PROYECCION_FLUJO.md`**).
 
 ### Actualizar base (upload)
 

@@ -1,32 +1,45 @@
 # Exclusiones del dashboard Everfit
 
-En todo el dashboard se **incluyen** reales, pendientes y **proyectados** (ya no se excluye por `real_pendiente = "proyectado"`). Una fila de `base_everfit` **no se incluye** solo si cumple las condiciones siguientes según la vista.
+En todo el dashboard se **incluyen** reales, pendientes y **proyectados** (ya no se excluye por `real_pendiente = "proyectado"`). Una fila de `base_everfit` puede quedar fuera del agregado según la vista.
 
-## 1. Saldo Inicial (todas las vistas)
+## 1. Saldo Inicial por centro de costos (casi todas las vistas)
 
 - **Campo:** `centro_de_costos`
-- **Condición:** valor igual (ignorando mayúsculas/minúsculas) a **`Saldo Inicial`**
-- **Motivo:** no es un movimiento del período; es un saldo de apertura y no debe sumarse como ingreso ni egreso.
+- **Condición:** valor igual (ignorando mayúsculas/minúsculas y espacios) a **`Saldo Inicial`**
+- **Dónde:** tarjetas resumen, tabla Flujo por mes, gráfico G/P mensual, ratios derivados del flujo, etc.
+- **Motivo:** no sumar el saldo de apertura como movimiento del período.
 
-## 2. Beneficiario Dividendos (tabla Flujo por mes y gráfico G/P mensual)
+## 2. Concepto Inversiones o Saldo Inicial (solo Flujo y gráfico G/P)
 
-- **Campo:** `beneficiario`
-- **Condición:** valor igual (ignorando mayúsculas/minúsculas) a **`Dividendos`**
-- **Dónde:** **tabla Flujo por mes** y **gráfico G/P mensual**. **No** se aplica en **tarjetas** resumen ni en el modal Detalle.
-- **Motivo:** ver el flujo operativo sin dividendos en esas vistas; las tarjetas muestran totales completos (incluyen Dividendos).
+- **Campo:** `concepto`
+- **Condición:** valor igual (ignorando mayúsculas/minúsculas) a **`Inversiones`** o **`Saldo Inicial`**
+- **Dónde:** **únicamente** el agregado `porMesFlujo`: **tabla Flujo por mes**, **gráfico G/P mensual** y los **ratios** (p. ej. Sueldos/ingresos, Alquileres/ingresos) que se calculan con los mismos datos filtrados que esa tabla.
+- **No aplica a:** **tarjetas** (totales de ingresos/egresos/G-P del resumen) ni al **modal Detalle** por concepto/beneficiario.
+- **Motivo:** ver un flujo más alineado a operación; las tarjetas y el detalle siguen mostrando el universo completo salvo el punto 1.
+
+> **Nota:** Una fila puede tener `centro_de_costos` = Saldo Inicial (excluida en todas partes por §1) o solo `concepto` = Saldo Inicial sin ese centro: en ese caso **entra en tarjetas** pero **no** en tabla Flujo ni gráfico G/P.
 
 ---
 
-## Dónde se aplica
+## Resumen por vista
 
-- **Tarjetas (Total ingresos, Total egresos, G/P Total):** solo exclusión 1 (Saldo Inicial). Incluyen Dividendos y la suma de todos los movimientos reales/pendientes/proyectados; **no** suman columnas de proyección “Proy.” de la tabla.
-- **Gráfico G/P mensual** y **tabla Flujo por mes** (celdas y filas): exclusiones 1 y 2. La columna Total de la tabla puede sumar además meses proyectados si el usuario tiene permiso de proyección.
-- **Modal Detalle** (por concepto / por beneficiario): solo exclusión 1. Incluyen reales, pendientes y proyectados (incluye Dividendos en el desglose).
+| Vista | Exclusión centro Saldo Inicial | Exclusión concepto Inversiones / Saldo Inicial |
+|--------|-------------------------------|-----------------------------------------------|
+| Tarjetas resumen | Sí | No |
+| Tabla Flujo por mes y gráfico G/P | Sí | Sí |
+| Modal Detalle | Sí (solo centro) | No |
 
-Cada sección (tarjetas, gráfico, flujo por mes) tiene un icono de ayuda (?) que muestra sus reglas de exclusión.
+---
 
 En el código (`dashboard.html`):
 
-- `excluirSaldoInicial(r)` → excluye por `centro_de_costos === 'saldo inicial'`
-- `debeExcluirse(r)` → `excluirSaldoInicial(r)` (usado en todas las vistas; ya no se excluye proyectado)
-- `excluirBeneficiarioDividendosFlujo(r)` → excluye por `beneficiario === 'dividendos'`; se usa para `porMesFlujo` (tabla Flujo por mes y gráfico G/P mensual). Las tarjetas usan `porMes` (incluyen Dividendos).
+- `excluirSaldoInicial(r)` / `debeExcluirse(r)` → `centro_de_costos === 'saldo inicial'`
+- `excluirConceptoFlujoYGraficoGP(r)` → `concepto` es `inversiones` o `saldo inicial`; se usa junto con `debeExcluirse` al armar `porMesFlujo` y los egresos por mes para ratios que comparten ese filtro.
+
+Los íconos **(?)** junto a tarjetas, gráfico y tabla Flujo resumen estas reglas.
+
+---
+
+## Proyección estadística (columnas Proy.)
+
+Las reglas anteriores definen **qué filas** entran en los agregados por mes. La **proyección** del Flujo (método configurable, ventana de N meses) está documentada en **`docs/PROYECCION_FLUJO.md`**. En particular: el cálculo **no incorpora** como base los importes del **mes en curso** ni de **meses posteriores**, aunque esos meses tengan datos y columnas en la tabla.
