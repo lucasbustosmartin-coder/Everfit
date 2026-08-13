@@ -1,9 +1,9 @@
 {
-  "versionLabel": "v1.30",
+  "versionLabel": "v1.31",
   "lines": [
-    "Nuevo menú To-Do: bandeja de tareas con filtros; por defecto ves las que vencen hoy.",
-    "Al crear una tarea podés elegir una sede, todas las sedes o nivel Empresa (una sola).",
-    "Encargado y Admin tienen la solapa Por responsable: clic en un número abre el detalle.",
-    "Confirmaciones y avisos van por la app (sin ventanas del navegador)."
+    "Nuevo menú Configuración: podés pasar las tareas de una persona a otra, o de un perfil a otro (por ejemplo Recepcionista a Profesor).",
+    "En To-Do, al entrar ves solo las tareas abiertas: pendiente, en curso y vencida.",
+    "Los filtros que están recortando el listado se marcan en verde con la leyenda «activo».",
+    "Si cerraste una tarea por error, filtrá Hecha y volvé a abrirla."
   ]
 }

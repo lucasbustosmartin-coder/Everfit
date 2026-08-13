@@ -9,7 +9,7 @@ Ejecutar en este orden (si el proyecto ya tenía seguridad):
 1. `sql/helpers_fecha_argentina.sql` — `fecha_hoy_argentina()`
 2. `sql/supabase_todo.sql` — roles, permisos, tablas, RLS y RPCs
 
-En entornos ya migrados vía MCP/agente, estos scripts reflejan el estado aplicado.
+En entornos ya migrados vía MCP/agente, estos scripts reflejan el estado aplicado. Incremental: `sql/supabase_todo_inbox_estado_abiertas.sql` (`p_estado = 'abiertas'`).
 
 ## Roles nuevos
 
@@ -63,17 +63,18 @@ Recurrencias: `ninguna`, `diaria` (con hora), `semanal`, `mensual`, `bimestral`,
 | RPC | Uso |
 |-----|-----|
 | `todo_crear_tarea(...)` | Alta (requiere `crear_todo`) |
-| `todo_list_inbox(estado, prioridad, ventana)` | Bandeja filtrada |
+| `todo_list_inbox(estado, prioridad, ventana)` | Bandeja filtrada. `estado=abiertas` = pendiente + en curso (incluye vencidas efectivas) |
 | `todo_resumen_bandeja()` | Contadores globales (legado; la UI calcula cards sobre el listado filtrado) |
 | `todo_cambiar_estado(id, estado)` | Cambio de estado |
 | `todo_editar_instancia(...)` | Editar ocurrencia (`editar_todo`) |
 | `todo_eliminar_instancia(...)` | Eliminar ocurrencia / cortar serie (`eliminar_todo`) |
-| `todo_list_usuarios()` / `todo_list_roles()` | Combos del formulario de alta |
+| `todo_list_usuarios()` / `todo_list_roles()` | Combos del formulario de alta y de Configuración |
+| `todo_list_para_reasignar(...)` / `todo_reasignar(...)` | Configuración: listar y mover tareas de un usuario o perfil a otro (`ver_configuracion`) |
 
 ## UI
 
 - Solapas: **Tareas** (bandeja) y **Por responsable** (solo Admin / Encargado).
-- Cards resumen (calculadas con los filtros activos) + filtros compartidos (estado, prioridad, vencimiento por defecto Hoy, sede, búsqueda).
+- Cards resumen (calculadas con los filtros activos) + filtros compartidos (estado por defecto **Abiertas** = pendiente / en curso / vencida; vencimiento por defecto **Hoy**; prioridad, sede, búsqueda). Los filtros que recortan el listado se resaltan (borde/fondo y leyenda «activo»). Para reabrir una tarea cerrada, filtrar **Hecha** (si el vencimiento estaba en Hoy, pasa a Todas).
 - Tabla sticky, badges, acciones de estado.
 - **Por responsable:** matriz responsable (perfil o usuario) × estado; clic en la cantidad abre modal con esas tareas.
 - **Nueva tarea** (solo `crear_todo`): responsable obligatorio.

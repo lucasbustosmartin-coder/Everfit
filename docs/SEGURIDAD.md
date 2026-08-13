@@ -17,6 +17,7 @@ La app usa **login por email y contraseña** (Supabase Auth). Los permisos se co
 - **Ver proyección:** ver en la tabla Flujo por mes los meses proyectados (método, meses de historia, meses a proyectar, recorte) y el botón "Proyección" para configurarlos. Solo Admin y Encargado; Visor no ve la proyección ni el botón.
 - **Ver asistencia (`ver_asistencia`):** menú **Asistencia** y lectura de `transacciones_asistencia` (heatmap, multi-sede, años). El **Admin** puede activar o desactivar este permiso por rol en Seguridad (igual que Actualizar base o Proyección). **Importar asistencia** sigue requiriendo `upload_base` (no cambia). Ejecutá `sql/supabase_asistencia_ver_permiso.sql` si la tabla ya existía sin este permiso, o reaplicá `sql/supabase_transacciones_asistencia.sql` en instalaciones nuevas.
 - **To-Do (`ver_todo` / `crear_todo` / `editar_todo` / `eliminar_todo` / `completar_todo`):** menú **To-Do**, bandeja y alta de tareas. Alta/editar/eliminar por defecto Admin y Encargado (cada uno configurable por rol en Seguridad). Roles nuevos: **Recepcionista** y **Profesor**. Detalle: `docs/TODO.md` y `sql/supabase_todo.sql`.
+- **Configuración (`ver_configuracion`):** menú **Configuración** (default Admin y Encargado). Reasignar una, varias o todas las tareas abiertas de un usuario a otro, o de un perfil a otro. SQL: `sql/supabase_todo_reasignar.sql`. Doc: `docs/CONFIGURACION.md`.
 - **Sedes:** menú **Sedes** (Admin) administra el catálogo usado al asignar sucursales a usuarios y al replicar tareas To-Do. Ver `docs/SEDES.md`.
 
 ## Cómo activar el módulo
@@ -75,7 +76,7 @@ En el SQL actual, un usuario **puede** asignarse a sí mismo el rol `visor` una 
 
 - **Login:** en el dashboard se muestra pantalla de inicio de sesión (email + contraseña). Tras iniciar sesión se cargan los datos.
 - **Actualizar base:** el botón solo se muestra si tu rol tiene permiso `upload_base` (Admin y Encargado).
-- **Seguridad:** en el menú lateral hay un ítem "Seguridad" (solo visible para Admin). Ahí podés: **Permisos por rol:** cada rol (Admin, Encargado, Recepcionista, Profesor, Visor) se muestra con su icono y debajo cada permiso con un botón on/off editable (Actualizar base, Asignar perfiles, Proyección, **Ver asistencia**, **To-Do**). Los cambios se guardan al instante. **Usuarios:** lista de usuarios con email, rol asignado y botón Guardar.
+- **Seguridad:** en el menú lateral hay un ítem "Seguridad" (solo visible para Admin). Ahí podés: **Permisos por rol:** cada rol (Admin, Encargado, Recepcionista, Profesor, Visor) se muestra con su icono y debajo cada permiso con un botón on/off editable (Actualizar base, Asignar perfiles, Proyección, **Ver asistencia**, **To-Do**, **Configuración**). Los cambios se guardan al instante. **Usuarios:** lista de usuarios con email, rol asignado y botón Guardar.
 
 Para que los permisos por rol sean editables desde el dashboard, ejecutá además **`sql/supabase_seguridad_permisos_editable.sql`** en el SQL Editor (después de `supabase_seguridad.sql` y, si usás proyección, de `supabase_proyeccion_permiso_y_config.sql`).
 

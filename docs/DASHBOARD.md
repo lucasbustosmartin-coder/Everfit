@@ -54,4 +54,6 @@ Botón **Importar asistencia** junto a “Actualizar base” (mismo permiso `upl
 
 El menú lateral **Asistencia** (heatmap, años, multi-sede) solo se muestra si el rol tiene el permiso **`ver_asistencia`**, configurable por el Admin en **Seguridad → Permisos por rol** (junto a Proyección y Actualizar base). La lectura en Supabase también exige ese permiso (RLS). Migración si la tabla ya existía: `sql/supabase_asistencia_ver_permiso.sql`.
 
+El menú **Configuración** (reasignar To-Do entre usuarios o perfiles) requiere **`ver_configuracion`**. Ver **`docs/CONFIGURACION.md`**.
+
 Debajo de las tarjetas de resumen (Total ingresos, Total egresos, G/P) se muestra **Última actualización** con ícono de reloj, fecha y hora en Argentina y el email de quien ejecutó "Actualizar base". Para que esto funcione, ejecutá en Supabase SQL Editor el script **`sql/supabase_log_actualizacion_base.sql`** (crea la tabla `log_actualizacion_base` y la RPC `log_actualizacion_base()`). Si no ejecutaste ese script, la leyenda no se muestra y el upload sigue funcionando igual.

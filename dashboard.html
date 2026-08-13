@@ -363,7 +363,17 @@
     .todo-filtros { display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: flex-end; }
     .todo-filtros .form-group { display: flex; flex-direction: column; gap: 0.3rem; margin: 0; }
     .todo-filtros label { font-size: 0.85rem; color: #555; }
-    .todo-filtros select, .todo-filtros input[type="search"] { padding: 0.45rem 0.6rem; border-radius: 8px; border: 1px solid #ccc; font-size: 1rem; min-height: 44px; min-width: 8rem; box-sizing: border-box; }
+    .todo-filtros select, .todo-filtros input[type="search"] { padding: 0.45rem 0.6rem; border-radius: 8px; border: 1px solid #ccc; font-size: 1rem; min-height: 44px; min-width: 8rem; box-sizing: border-box; background: #fff; }
+    .todo-filtros .form-group.filtro-activo label { color: #0f766e; font-weight: 700; }
+    .todo-filtros .form-group.filtro-activo label::after { content: ' · activo'; font-weight: 600; font-size: 0.72rem; letter-spacing: 0.01em; }
+    .todo-filtros .form-group.filtro-activo select,
+    .todo-filtros .form-group.filtro-activo input[type="search"] {
+      border-color: #0d9488;
+      background: #f0fdfa;
+      color: #134e4a;
+      font-weight: 600;
+      box-shadow: inset 0 0 0 1px #0d9488;
+    }
     .todo-acciones { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; }
     .btn-todo-nueva, .btn-todo-excel { display: inline-flex; align-items: center; gap: 0.45rem; min-height: 44px; padding: 0.5rem 1rem; border-radius: 8px; cursor: pointer; font-size: 0.9rem; font-family: inherit; box-sizing: border-box; border: 1px solid transparent; }
     .btn-todo-nueva { background: #0d7d3d; border-color: #0d7d3d; color: #fff; }
@@ -429,6 +439,28 @@
     .todo-form-grid textarea { min-height: 88px; resize: vertical; }
     .todo-form-error { color: #b91c1c; font-size: 0.9rem; margin: 0.5rem 0 0; }
     .vista-sedes { display: none; }
+    .vista-config { display: none; }
+    .config-hint { margin: 0 0 0.85rem 0; color: #555; font-size: 0.92rem; }
+    .config-toolbar { display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: flex-end; justify-content: space-between; margin-bottom: 1rem; }
+    .config-filtros { display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: flex-end; }
+    .config-filtros .form-group { display: flex; flex-direction: column; gap: 0.3rem; margin: 0; }
+    .config-filtros label { font-size: 0.85rem; color: #555; }
+    .config-filtros select { padding: 0.45rem 0.6rem; border-radius: 8px; border: 1px solid #ccc; font-size: 1rem; min-height: 44px; min-width: 12rem; box-sizing: border-box; }
+    .config-acciones { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; }
+    .btn-config { display: inline-flex; align-items: center; gap: 0.45rem; min-height: 44px; padding: 0.5rem 1rem; border-radius: 8px; cursor: pointer; font-size: 0.9rem; font-family: inherit; box-sizing: border-box; border: 1px solid transparent; }
+    .btn-config .btn-icon { display: inline-flex; width: 18px; height: 18px; }
+    .btn-config .btn-icon svg { width: 100%; height: 100%; stroke: currentColor; fill: none; }
+    .btn-config-buscar, .btn-config-reasign { background: #0d7d3d; border-color: #0d7d3d; color: #fff; }
+    .btn-config-buscar:hover, .btn-config-reasign:hover { background: #0a5c2e; }
+    .btn-config-todas { background: #fff; color: #0f172a; border-color: #cbd5e1; }
+    .btn-config-todas:hover { background: #f1f5f9; }
+    .config-tabla-wrap { overflow: auto; max-height: 55vh; -webkit-overflow-scrolling: touch; overscroll-behavior-x: contain; border: 1px solid #e5e7eb; border-radius: 10px; background: #fff; }
+    .config-tabla { width: 100%; border-collapse: collapse; font-size: 0.92rem; }
+    .config-tabla th { position: sticky; top: 0; z-index: 2; background: #1e293b; color: #fff; text-align: left; padding: 0.65rem 0.75rem; box-shadow: 0 1px 0 #0f172a; }
+    .config-tabla td { padding: 0.65rem 0.75rem; border-bottom: 1px solid #eee; vertical-align: middle; text-align: left; }
+    .config-tabla th.chk, .config-tabla td.chk { width: 2.75rem; text-align: center; }
+    .config-tabla input[type="checkbox"] { width: 1.15rem; height: 1.15rem; }
+    .config-empty { text-align: center; color: #64748b; padding: 2rem 1rem; }
     .sedes-toolbar { display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: center; justify-content: space-between; margin-bottom: 1rem; }
     .sedes-tabla-wrap { overflow: auto; max-height: 65vh; -webkit-overflow-scrolling: touch; overscroll-behavior-x: contain; border: 1px solid #e5e7eb; border-radius: 10px; background: #fff; }
     .sedes-tabla { width: 100%; border-collapse: collapse; font-size: 0.92rem; }
@@ -445,6 +477,11 @@
     @media (max-width: 768px) {
       .sedes-toolbar { flex-direction: column; align-items: stretch; }
       .sedes-tabla input[type="text"], .sedes-tabla input[type="number"] { max-width: none; font-size: 16px; }
+      .config-toolbar { flex-direction: column; align-items: stretch; }
+      .config-filtros { flex-direction: column; align-items: stretch; }
+      .config-filtros select { width: 100%; font-size: 16px; }
+      .config-acciones { width: 100%; }
+      .config-acciones .btn-config { flex: 1 1 auto; justify-content: center; }
     }
     @media (max-width: 768px) {
       .todo-resumen { grid-template-columns: 1fr 1fr; }
@@ -635,6 +672,10 @@
         <span class="menu-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg></span>
         <span class="menu-label">To-Do</span>
       </a>
+      <a href="#" class="menu-item" id="menu-config" title="Configuración" aria-label="Configuración" style="display:none;">
+        <span class="menu-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 01-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg></span>
+        <span class="menu-label">Configuración</span>
+      </a>
       <a href="#" class="menu-item" id="menu-sedes" title="Sedes" aria-label="Sedes" style="display:none;">
         <span class="menu-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M5 21V7l7-4 7 4v14"/><path d="M9 10h.01"/><path d="M15 10h.01"/><path d="M9 14h.01"/><path d="M15 14h.01"/></svg></span>
         <span class="menu-label">Sedes</span>
@@ -644,7 +685,7 @@
         <span class="menu-label">Seguridad</span>
       </a>
     </nav>
-    <div class="sidebar-version" id="sidebar-version" aria-label="Versión">v1.30</div>
+    <div class="sidebar-version" id="sidebar-version" aria-label="Versión">v1.31</div>
   </aside>
 
   <main class="main-content">
@@ -888,12 +929,13 @@
             <div class="form-group">
               <label for="todo-filtro-estado">Estado</label>
               <select id="todo-filtro-estado" aria-label="Filtrar por estado">
-                <option value="">Todos</option>
+                <option value="abiertas" selected>Abiertas</option>
                 <option value="pendiente">Pendiente</option>
                 <option value="en_curso">En curso</option>
                 <option value="vencida">Vencida</option>
                 <option value="hecha">Hecha</option>
                 <option value="cancelada">Cancelada</option>
+                <option value="">Todos</option>
               </select>
             </div>
             <div class="form-group">
@@ -1171,6 +1213,73 @@
               </div>
             </form>
           </div>
+        </div>
+      </div>
+
+      <div id="vista-config" class="vista-config" style="display:none;">
+        <p class="config-hint">Reasigná tareas abiertas (pendiente / en curso) de un usuario o perfil a otro. Sirve para bajas o ausencias: una, varias o todas. Si reasignás todas, también se mueven las plantillas recurrentes para que las próximas ocurrencias queden en el destino.</p>
+        <div class="tabs" id="config-tabs" role="tablist" aria-label="Reasignar por usuario o perfil">
+          <button type="button" class="tab activo" id="config-tab-usuario" data-config-tab="usuario" role="tab" aria-selected="true">
+            <span class="tab-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>
+            Por usuario
+          </button>
+          <button type="button" class="tab" id="config-tab-perfil" data-config-tab="perfil" role="tab" aria-selected="false">
+            <span class="tab-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg></span>
+            Por perfil
+          </button>
+        </div>
+        <div class="card config-toolbar">
+          <div class="config-filtros" id="config-filtros-usuario">
+            <div class="form-group">
+              <label for="config-from-user">Desde usuario</label>
+              <select id="config-from-user" aria-label="Usuario de origen"></select>
+            </div>
+            <div class="form-group">
+              <label for="config-to-user">Hacia usuario</label>
+              <select id="config-to-user" aria-label="Usuario de destino"></select>
+            </div>
+          </div>
+          <div class="config-filtros" id="config-filtros-perfil" style="display:none;">
+            <div class="form-group">
+              <label for="config-from-rol">Desde perfil</label>
+              <select id="config-from-rol" aria-label="Perfil de origen"></select>
+            </div>
+            <div class="form-group">
+              <label for="config-to-rol">Hacia perfil</label>
+              <select id="config-to-rol" aria-label="Perfil de destino"></select>
+            </div>
+          </div>
+          <div class="config-acciones">
+            <button type="button" class="btn-config btn-config-buscar" id="btn-config-buscar" title="Buscar tareas" aria-label="Buscar tareas">
+              <span class="btn-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg></span>
+              Buscar
+            </button>
+            <button type="button" class="btn-config btn-config-reasign" id="btn-config-seleccionadas" title="Reasignar seleccionadas" aria-label="Reasignar seleccionadas">
+              <span class="btn-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 014-4h14"/><path d="M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 01-4 4H3"/></svg></span>
+              Reasignar seleccionadas
+            </button>
+            <button type="button" class="btn-config btn-config-todas" id="btn-config-todas" title="Reasignar todas" aria-label="Reasignar todas">
+              <span class="btn-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 014-4h14"/></svg></span>
+              Reasignar todas
+            </button>
+          </div>
+        </div>
+        <div id="config-estado" class="card" style="display:none;" role="alert"></div>
+        <div class="config-tabla-wrap tabla-wrap-con-scroll">
+          <table class="config-tabla" id="config-tabla" aria-label="Tareas a reasignar">
+            <thead>
+              <tr>
+                <th class="chk"><input type="checkbox" id="config-check-all" title="Seleccionar todas" aria-label="Seleccionar todas" /></th>
+                <th>Tarea</th>
+                <th>Sede</th>
+                <th>Vencimiento</th>
+                <th>Prioridad</th>
+                <th>Estado</th>
+                <th>Recurrencia</th>
+              </tr>
+            </thead>
+            <tbody id="config-tbody"></tbody>
+          </table>
         </div>
       </div>
 
@@ -5032,6 +5141,8 @@
           if (menuAsist) menuAsist.style.display = userPermissions.indexOf('ver_asistencia') !== -1 ? '' : 'none';
           var menuTodo = document.getElementById('menu-todo');
           if (menuTodo) menuTodo.style.display = userPermissions.indexOf('ver_todo') !== -1 ? '' : 'none';
+          var menuConfig = document.getElementById('menu-config');
+          if (menuConfig) menuConfig.style.display = userPermissions.indexOf('ver_configuracion') !== -1 ? '' : 'none';
           var btnTodoNueva = document.getElementById('btn-todo-nueva');
           if (btnTodoNueva) btnTodoNueva.style.display = userPermissions.indexOf('crear_todo') !== -1 ? 'inline-flex' : 'none';
           syncTodoMatrizTabVisibility();
@@ -5045,6 +5156,7 @@
           setupSeguridad();
           setupTodoModule();
           setupSedesModule();
+          setupConfiguracionModule();
           var promConfig = (userPermissions.indexOf('ver_proyeccion') !== -1) ? loadConfigProyeccion() : Promise.resolve();
           promConfig.then(function() { return cargarDatos(); })
             .then(function() {
@@ -5115,6 +5227,15 @@
               if (vt && vt.style.display !== 'none') document.getElementById('menu-home').click();
             }
           }
+          var menuConfig2 = document.getElementById('menu-config');
+          if (menuConfig2) {
+            var showCfg = userPermissions.indexOf('ver_configuracion') !== -1;
+            menuConfig2.style.display = showCfg ? '' : 'none';
+            if (!showCfg) {
+              var vc = document.getElementById('vista-config');
+              if (vc && vc.style.display !== 'none') document.getElementById('menu-home').click();
+            }
+          }
           var btnTodoNueva2 = document.getElementById('btn-todo-nueva');
           if (btnTodoNueva2) btnTodoNueva2.style.display = userPermissions.indexOf('crear_todo') !== -1 ? 'inline-flex' : 'none';
           syncTodoMatrizTabVisibility();
@@ -5155,6 +5276,7 @@
         var vistaDashboard = document.getElementById('vista-dashboard');
         var vistaAsistencia = document.getElementById('vista-asistencia');
         var vistaTodo = document.getElementById('vista-todo');
+        var vistaConfig = document.getElementById('vista-config');
         var vistaSedes = document.getElementById('vista-sedes');
         var vistaSeguridad = document.getElementById('vista-seguridad');
         var pageTitle = document.getElementById('page-title');
@@ -5162,6 +5284,7 @@
           vistaDashboard.style.display = 'none';
           if (vistaAsistencia) vistaAsistencia.style.display = 'none';
           if (vistaTodo) vistaTodo.style.display = 'none';
+          if (vistaConfig) vistaConfig.style.display = 'none';
           if (vistaSedes) vistaSedes.style.display = 'none';
           vistaSeguridad.style.display = 'none';
         }
@@ -5202,6 +5325,19 @@
             document.querySelectorAll('.sidebar-nav .menu-item').forEach(function(m) { m.classList.remove('menu-item-active'); });
             menuTodo.classList.add('menu-item-active');
             cargarTodoBandeja();
+          });
+        }
+        var menuConfig = document.getElementById('menu-config');
+        if (menuConfig && vistaConfig) {
+          menuConfig.addEventListener('click', function(e) {
+            e.preventDefault();
+            if (!userPermissions || userPermissions.indexOf('ver_configuracion') === -1) return;
+            hideAllVistas();
+            vistaConfig.style.display = 'block';
+            pageTitle.textContent = 'Configuración';
+            document.querySelectorAll('.sidebar-nav .menu-item').forEach(function(m) { m.classList.remove('menu-item-active'); });
+            menuConfig.classList.add('menu-item-active');
+            cargarConfigReasignCombos();
           });
         }
         var menuSedes = document.getElementById('menu-sedes');
@@ -5654,10 +5790,35 @@
         });
       }
 
+      function todoFiltroEstaActivo(el) {
+        if (!el) return false;
+        var v = (el.value || '').trim();
+        if (el.id === 'todo-filtro-ventana') return v !== '' && v !== 'todas';
+        return v !== '';
+      }
+
+      function syncTodoFiltrosActivos() {
+        ['todo-filtro-estado', 'todo-filtro-prioridad', 'todo-filtro-ventana', 'todo-filtro-sede', 'todo-filtro-q'].forEach(function(id) {
+          var el = document.getElementById(id);
+          if (!el) return;
+          var group = el.closest ? el.closest('.form-group') : el.parentElement;
+          if (!group) return;
+          var on = todoFiltroEstaActivo(el);
+          group.classList.toggle('filtro-activo', on);
+          if (on) {
+            el.setAttribute('title', 'Filtro activo: el listado está recortado');
+          } else {
+            el.removeAttribute('title');
+          }
+        });
+      }
+
       function cargarTodoBandeja() {
         if (!client || userPermissions.indexOf('ver_todo') === -1) return;
+        syncTodoFiltrosActivos();
         var estadoEl = document.getElementById('todo-estado');
-        var filtroEstado = (document.getElementById('todo-filtro-estado') || {}).value || null;
+        var selEstado = document.getElementById('todo-filtro-estado');
+        var filtroEstado = selEstado ? selEstado.value : 'abiertas';
         var filtroPrio = (document.getElementById('todo-filtro-prioridad') || {}).value || null;
         var filtroVentana = (document.getElementById('todo-filtro-ventana') || {}).value || 'hoy';
         var filtroSede = (document.getElementById('todo-filtro-sede') || {}).value || null;
@@ -5680,6 +5841,7 @@
               return '<option value="' + esc(s) + '">' + esc(s) + '</option>';
             }).join('');
             if (cur) selSede.value = cur;
+            syncTodoFiltrosActivos();
           }
           if (!listRes || listRes.error) {
             if (estadoEl) {
@@ -5962,12 +6124,19 @@
         });
         ['todo-filtro-estado', 'todo-filtro-prioridad', 'todo-filtro-ventana', 'todo-filtro-sede'].forEach(function(id) {
           var el = document.getElementById(id);
-          if (el) el.addEventListener('change', function() { cargarTodoBandeja(); });
+          if (el) el.addEventListener('change', function() {
+            if (id === 'todo-filtro-estado' && (el.value === 'hecha' || el.value === 'cancelada')) {
+              var vent = document.getElementById('todo-filtro-ventana');
+              if (vent && vent.value === 'hoy') vent.value = 'todas';
+            }
+            cargarTodoBandeja();
+          });
         });
         var q = document.getElementById('todo-filtro-q');
         if (q) {
           var t = null;
           q.addEventListener('input', function() {
+            syncTodoFiltrosActivos();
             if (t) clearTimeout(t);
             t = setTimeout(function() {
               renderTodoTabla();
@@ -5976,6 +6145,7 @@
             }, 180);
           });
         }
+        syncTodoFiltrosActivos();
         var btnExcel = document.getElementById('btn-todo-excel');
         if (btnExcel) btnExcel.addEventListener('click', exportarTodoExcel);
         var btnNueva = document.getElementById('btn-todo-nueva');
@@ -6191,6 +6361,235 @@
               showToast('Sede creada.', 'success');
               cargarSedesAbm();
             });
+          });
+        }
+      }
+
+      var configModuleReady = false;
+      var CONFIG_LISTA_ACTUAL = [];
+      var CONFIG_TAB = 'usuario';
+
+      function configReasignTipo() {
+        return CONFIG_TAB === 'perfil' ? 'rol' : 'usuario';
+      }
+
+      function activarConfigTab(nombre) {
+        CONFIG_TAB = nombre === 'perfil' ? 'perfil' : 'usuario';
+        document.querySelectorAll('#config-tabs [data-config-tab]').forEach(function(btn) {
+          var on = btn.getAttribute('data-config-tab') === CONFIG_TAB;
+          btn.classList.toggle('activo', on);
+          btn.setAttribute('aria-selected', on ? 'true' : 'false');
+        });
+        var fu = document.getElementById('config-filtros-usuario');
+        var fp = document.getElementById('config-filtros-perfil');
+        if (fu) fu.style.display = CONFIG_TAB === 'usuario' ? '' : 'none';
+        if (fp) fp.style.display = CONFIG_TAB === 'perfil' ? '' : 'none';
+        CONFIG_LISTA_ACTUAL = [];
+        renderConfigReasignTabla();
+      }
+
+      function cargarConfigReasignCombos() {
+        if (!client || userPermissions.indexOf('ver_configuracion') === -1) return;
+        Promise.all([
+          client.rpc('todo_list_usuarios'),
+          client.rpc('todo_list_roles')
+        ]).then(function(results) {
+          var users = (!results[0].error && results[0].data) ? results[0].data : [];
+          var roles = (!results[1].error && results[1].data) ? results[1].data : [];
+          function fillUser(selId) {
+            var sel = document.getElementById(selId);
+            if (!sel) return;
+            var cur = sel.value;
+            sel.innerHTML = '<option value="">Elegir…</option>' + users.map(function(u) {
+              return '<option value="' + esc(u.user_id) + '">' + esc(u.email) + ' (' + esc(u.role_label || u.role) + ')</option>';
+            }).join('');
+            if (cur) sel.value = cur;
+          }
+          function fillRol(selId) {
+            var sel = document.getElementById(selId);
+            if (!sel) return;
+            var cur = sel.value;
+            sel.innerHTML = '<option value="">Elegir…</option>' + roles.map(function(r) {
+              return '<option value="' + esc(r.role) + '">' + esc(r.label || r.role) + '</option>';
+            }).join('');
+            if (cur) sel.value = cur;
+          }
+          fillUser('config-from-user');
+          fillUser('config-to-user');
+          fillRol('config-from-rol');
+          fillRol('config-to-rol');
+        });
+      }
+
+      function renderConfigReasignTabla() {
+        var tbody = document.getElementById('config-tbody');
+        var chkAll = document.getElementById('config-check-all');
+        if (!tbody) return;
+        var rows = CONFIG_LISTA_ACTUAL || [];
+        if (chkAll) chkAll.checked = false;
+        if (!rows.length) {
+          tbody.innerHTML = '<tr><td colspan="7" class="config-empty">Elegí origen y destino y tocá Buscar para ver las tareas abiertas.</td></tr>';
+          return;
+        }
+        tbody.innerHTML = rows.map(function(row) {
+          var est = row.estado_efectivo || row.estado || 'pendiente';
+          var prio = Number(row.prioridad) || 2;
+          return '<tr data-id="' + esc(row.id) + '">' +
+            '<td class="chk"><input type="checkbox" class="config-row-check" data-id="' + esc(row.id) + '" aria-label="Seleccionar tarea" /></td>' +
+            '<td><div class="todo-titulo-cell">' + esc(row.titulo) + '</div>' +
+              (row.descripcion ? '<div class="todo-desc-cell">' + esc(row.descripcion) + '</div>' : '') +
+            '</td>' +
+            '<td>' + esc(row.sede || 'Empresa') + '</td>' +
+            '<td>' + esc(formatearVencimientoTodo(row.vencimiento_at)) + '</td>' +
+            '<td><span class="todo-badge todo-badge-prio-' + prio + '">' + esc(labelPrioridadTodo(prio)) + '</span></td>' +
+            '<td><span class="todo-badge todo-badge-' + esc(est) + '">' + esc(labelEstadoTodo(est)) + '</span></td>' +
+            '<td>' + esc(labelRecurrenciaTodo(row.recurrencia)) + '</td>' +
+          '</tr>';
+        }).join('');
+      }
+
+      function buscarConfigReasign() {
+        if (!client || userPermissions.indexOf('ver_configuracion') === -1) return;
+        var tipo = configReasignTipo();
+        var estadoEl = document.getElementById('config-estado');
+        var payload = { p_tipo: tipo, p_from_user_id: null, p_from_role: null };
+        if (tipo === 'usuario') {
+          var fromU = (document.getElementById('config-from-user') || {}).value || '';
+          if (!fromU) { showToast('Elegí el usuario de origen.', 'info'); return; }
+          payload.p_from_user_id = fromU;
+        } else {
+          var fromR = (document.getElementById('config-from-rol') || {}).value || '';
+          if (!fromR) { showToast('Elegí el perfil de origen.', 'info'); return; }
+          payload.p_from_role = fromR;
+        }
+        if (estadoEl) { estadoEl.style.display = 'block'; estadoEl.textContent = 'Buscando tareas…'; }
+        client.rpc('todo_list_para_reasignar', payload).then(function(r) {
+          if (estadoEl) estadoEl.style.display = 'none';
+          if (r.error) {
+            showToast(r.error.message || 'No se pudo listar.', 'error');
+            CONFIG_LISTA_ACTUAL = [];
+            renderConfigReasignTabla();
+            return;
+          }
+          CONFIG_LISTA_ACTUAL = r.data || [];
+          renderConfigReasignTabla();
+          if (!CONFIG_LISTA_ACTUAL.length) showToast('No hay tareas abiertas para ese origen.', 'info');
+        }).catch(function(ex) {
+          if (estadoEl) estadoEl.style.display = 'none';
+          showToast(ex && ex.message ? ex.message : 'No se pudo listar.', 'error');
+        });
+      }
+
+      function idsConfigReasignSeleccionadas() {
+        var ids = [];
+        document.querySelectorAll('#config-tbody .config-row-check:checked').forEach(function(cb) {
+          var id = cb.getAttribute('data-id');
+          if (id) ids.push(id);
+        });
+        return ids;
+      }
+
+      function ejecutarConfigReasign(todas) {
+        if (userPermissions.indexOf('ver_configuracion') === -1) {
+          showToast('No tenés permiso para Configuración.', 'error');
+          return;
+        }
+        var tipo = configReasignTipo();
+        var payload = {
+          p_tipo: tipo,
+          p_from_user_id: null,
+          p_to_user_id: null,
+          p_from_role: null,
+          p_to_role: null,
+          p_instancia_ids: null,
+          p_todas: !!todas
+        };
+        var origenLabel = '';
+        var destLabel = '';
+        if (tipo === 'usuario') {
+          var fromU = document.getElementById('config-from-user');
+          var toU = document.getElementById('config-to-user');
+          payload.p_from_user_id = (fromU && fromU.value) || null;
+          payload.p_to_user_id = (toU && toU.value) || null;
+          if (!payload.p_from_user_id || !payload.p_to_user_id) {
+            showToast('Elegí usuario de origen y destino.', 'info');
+            return;
+          }
+          if (payload.p_from_user_id === payload.p_to_user_id) {
+            showToast('El destino tiene que ser otro usuario.', 'info');
+            return;
+          }
+          origenLabel = fromU.options[fromU.selectedIndex] ? fromU.options[fromU.selectedIndex].text : '';
+          destLabel = toU.options[toU.selectedIndex] ? toU.options[toU.selectedIndex].text : '';
+        } else {
+          var fromR = document.getElementById('config-from-rol');
+          var toR = document.getElementById('config-to-rol');
+          payload.p_from_role = (fromR && fromR.value) || null;
+          payload.p_to_role = (toR && toR.value) || null;
+          if (!payload.p_from_role || !payload.p_to_role) {
+            showToast('Elegí perfil de origen y destino.', 'info');
+            return;
+          }
+          if (payload.p_from_role === payload.p_to_role) {
+            showToast('El destino tiene que ser otro perfil.', 'info');
+            return;
+          }
+          origenLabel = fromR.options[fromR.selectedIndex] ? fromR.options[fromR.selectedIndex].text : '';
+          destLabel = toR.options[toR.selectedIndex] ? toR.options[toR.selectedIndex].text : '';
+        }
+        if (!todas) {
+          var ids = idsConfigReasignSeleccionadas();
+          if (!ids.length) {
+            showToast('Marcá al menos una tarea, o usá Reasignar todas.', 'info');
+            return;
+          }
+          payload.p_instancia_ids = ids;
+        }
+        var n = todas ? ((CONFIG_LISTA_ACTUAL && CONFIG_LISTA_ACTUAL.length) ? CONFIG_LISTA_ACTUAL.length : 'todas las') : idsConfigReasignSeleccionadas().length;
+        var extra = todas ? ' También se mueven las plantillas recurrentes de ese origen.' : '';
+        showConfirm(
+          '¿Reasignar ' + n + ' tarea(s) de «' + origenLabel + '» a «' + destLabel + '»?' + extra,
+          'Reasignar',
+          function() {
+            client.rpc('todo_reasignar', payload).then(function(r) {
+              if (r.error) {
+                showToast(r.error.message || 'No se pudo reasignar.', 'error');
+                return;
+              }
+              var row = Array.isArray(r.data) ? r.data[0] : r.data;
+              var ni = row && row.instancias != null ? row.instancias : 0;
+              var np = row && row.plantillas != null ? row.plantillas : 0;
+              showToast('Reasignadas ' + ni + ' tarea(s)' + (np ? ' y ' + np + ' plantilla(s)' : '') + '.', 'success');
+              buscarConfigReasign();
+            }).catch(function(ex) {
+              showToast(ex && ex.message ? ex.message : 'No se pudo reasignar.', 'error');
+            });
+          },
+          null,
+          'Cancelar',
+          'Reasignar tareas'
+        );
+      }
+
+      function setupConfiguracionModule() {
+        if (configModuleReady) return;
+        configModuleReady = true;
+        document.querySelectorAll('#config-tabs [data-config-tab]').forEach(function(btn) {
+          btn.addEventListener('click', function() {
+            activarConfigTab(btn.getAttribute('data-config-tab'));
+          });
+        });
+        var btnBuscar = document.getElementById('btn-config-buscar');
+        if (btnBuscar) btnBuscar.addEventListener('click', buscarConfigReasign);
+        var btnSel = document.getElementById('btn-config-seleccionadas');
+        if (btnSel) btnSel.addEventListener('click', function() { ejecutarConfigReasign(false); });
+        var btnTodas = document.getElementById('btn-config-todas');
+        if (btnTodas) btnTodas.addEventListener('click', function() { ejecutarConfigReasign(true); });
+        var chkAll = document.getElementById('config-check-all');
+        if (chkAll) {
+          chkAll.addEventListener('change', function() {
+            var on = !!chkAll.checked;
+            document.querySelectorAll('#config-tbody .config-row-check').forEach(function(cb) { cb.checked = on; });
           });
         }
       }
