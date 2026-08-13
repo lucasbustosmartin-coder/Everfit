@@ -1,22 +1,12 @@
 const XLSX = require('xlsx');
 const path = require('path');
+const {
+  preservarFechasHistoricasLog,
+  preservarFechasHistoricasVersiones,
+} = require('../../scripts/lib/lyp-bitacora-fechas');
 
-const ZONA_ARGENTINA = 'America/Argentina/Buenos_Aires';
-function ahoraFecha() {
-  return new Date().toLocaleDateString('es-AR', { timeZone: ZONA_ARGENTINA, day: '2-digit', month: '2-digit', year: 'numeric' });
-}
-function ahoraHora() {
-  return new Date().toLocaleTimeString('es-AR', { timeZone: ZONA_ARGENTINA, hour: '2-digit', minute: '2-digit', hour12: false });
-}
-function aplicarHoyAhora(rows) {
-  return rows.map(row => Array.isArray(row)
-    ? row.map(cell => {
-        if (cell === '__HOY__') return ahoraFecha();
-        if (cell === '__AHORA__') return ahoraHora();
-        return cell;
-      })
-    : row);
-}
+const outPath = path.join(__dirname, '..', 'Bitacora_tareas.xlsx');
+const projectRoot = path.join(__dirname, '..');
 
 // --- Hoja Log
 const datosLog = [
@@ -81,9 +71,20 @@ const datosLog = [
   ['__HOY__', '__AHORA__', 'Proyección: ventana calendario', 'Base = N meses calendario anteriores al mes en curso (no últimos N con datos); relleno 0; ventana móvil Proy. 2+ con proyecciones previas. Modal y pie de tabla aclarados.', 'Corrección'],
   ['__HOY__', '__AHORA__', 'Proyección: documentación y blindaje', 'docs/PROYECCION_FLUJO.md; EXCLUSIONES y DASHBOARD actualizados. Código: filtro y lectura de montos solo para claves estrictamente anteriores al mes en curso (nunca mezclar mes en curso o futuros en la base).', 'Documentación'],
   ['__HOY__', '__AHORA__', 'Despliegue v1.29', 'Flujo/G-P: exclusión por concepto Inversiones y Saldo Inicial; proyección con meses calendario previos al mes en curso y sin mes en curso/futuros en la base; docs PROYECCION_FLUJO, EXCLUSIONES, DASHBOARD; everfit-release.json v1.29. Push a main y vercel --prod.', 'Despliegue'],
+  ['__HOY__', '__AHORA__', 'To-Do: módulo bandeja y roles', 'Roles Recepcionista y Profesor; permisos ver_todo/crear_todo/completar_todo (alta por defecto Admin+Encargado); tablas todo_tarea/todo_instancia, RLS y RPCs; bandeja responsiva con filtros, estados, responsable obligatorio (usuario o perfil), recurrencias y export Excel. SQL helpers_fecha_argentina + supabase_todo; docs TODO/SEGURIDAD/DASHBOARD. Migración aplicada en Supabase Everfit.', 'Feature'],
+  ['__HOY__', '__AHORA__', 'Sedes ABM + To-Do sede/fecha fin', 'Menú Sedes (catálogo ABM) alimenta permisos por usuario y To-Do. Tareas: una sede o todas (réplica). Recurrentes exigen «hasta qué fecha» (máx. 366 días); se elimina la ventana fija de ~45 días. SQL supabase_sedes + supabase_todo_sede_y_fecha_fin; docs SEDES/TODO.', 'Feature'],
+  ['__HOY__', '__AHORA__', 'To-Do: fix read-only INSERT', 'todo_list_inbox ya no materializa instancias (STABLE/read-only en PostgREST). La generación va por todo_generar_instancias_todas antes del listado en el dashboard.', 'Corrección'],
+  ['__HOY__', '__AHORA__', 'To-Do: bandeja no bloquea en generar', 'cargarTodoBandeja lista de inmediato; todo_generar_instancias_todas corre en background y refresca solo si creó instancias (evita quedar en «Cargando bandeja…»).', 'Corrección'],
+  ['__HOY__', '__AHORA__', 'To-Do: editar/eliminar + vaciar prueba', 'Permisos editar_todo y eliminar_todo (default Admin/Encargado, toggles en Seguridad). Modal editar y botón eliminar en bandeja. Tablas todo_tarea/todo_instancia vaciadas para prueba. SQL supabase_todo_editar_eliminar.sql.', 'Feature'],
+  ['__HOY__', '__AHORA__', 'To-Do: recurrencias bimestral/trimestral', 'Se elimina hora_fija (igual que diaria con hora). Se agregan bimestral y trimestral. SQL constraints + todo_next_dates + UI.', 'Ajuste'],
+  ['__HOY__', '__AHORA__', 'To-Do: cards según filtros + Hoy default', 'Las cards de resumen se calculan sobre el listado filtrado (estado/prioridad/vencimiento/sede/búsqueda). Filtro de vencimiento por defecto: Hoy.', 'Ajuste'],
+  ['__HOY__', '__AHORA__', 'To-Do: celdas centradas verticalmente', 'Tabla de bandeja: vertical-align middle en td para alinear texto/badges con la fila de acciones (select + editar/eliminar).', 'Ajuste'],
+  ['__HOY__', '__AHORA__', 'To-Do: solapas Tareas + Por responsable', 'Bandeja en solapa Tareas. Nueva solapa Por responsable (solo Admin/Encargado): matriz responsable×estado con los mismos filtros; clic en cantidad abre modal con el detalle de tareas.', 'Feature'],
+  ['__HOY__', '__AHORA__', 'To-Do: fix eliminar + mensajes + Empresa', 'Eliminar ya no regenera la instancia (cancelada / desactiva plantilla). Mensajería estilo Pandi (toast + confirm). Alta con opción Empresa (una sola tarea sin sede). SQL supabase_todo_empresa_y_eliminar.sql.', 'Corrección'],
+  ['__HOY__', '__AHORA__', 'Despliegue v1.30', 'To-Do: bandeja, solapas Tareas/Por responsable, sede Empresa, eliminar sin regenerar, mensajería interna, alineación Tarea/Sede/Responsable. Menú Sedes. everfit-release.json v1.30. Push a main y vercel --prod.', 'Despliegue'],
 ];
 
-const datosLogParaExcel = aplicarHoyAhora(datosLog);
+const datosLogParaExcel = preservarFechasHistoricasLog(projectRoot, outPath, datosLog);
 const wsLog = XLSX.utils.aoa_to_sheet(datosLogParaExcel);
 wsLog['!cols'] = [{ wch: 12 }, { wch: 6 }, { wch: 45 }, { wch: 95 }, { wch: 14 }];
 
@@ -96,8 +97,10 @@ const funcionalidades = [
   ['Estructura del repo', 'Carpetas sql/, scripts/, docs/, Base/. Reglas en .cursor/rules (estructura-proyecto, reglas-everfit, bitácora, preguntas-solo-respuesta).'],
   ['Dashboard Everfit', 'Una página (dashboard.html): flujo por mes y gráfico G/P excluyen además concepto Inversiones y Saldo Inicial (porMesFlujo; no aplica a tarjetas ni Detalle); tarjetas totales incluyen todo salvo centro Saldo Inicial (porMes). Importar asistencia (Excel → transacciones_asistencia, upload_base). Menú Asistencia (permiso ver_asistencia): heatmap por concurrencia (colores, franja horaria), filas calendario o Lun–Dom, **fila final «Promedio total»** por hora (promedio de las filas superiores, misma escala de color), años con datos (RPC) y opción «Todos los años», mes «Todos los meses» por defecto al entrar o al abrir importar; filtro sucursal con delegación de clic; vista activa por ítem de menú; mapa y métricas escalonados (rAF). **Gráfico clientes activos por mes** (personas únicas con ingreso por mes calendario, eje hasta último mes cerrado AR, MA3; cada serie desde el primer mes con datos de su contexto—total, una sede o cada sede—sin ceros previos; total / varias sedes / una sede según filtro). Carga de transacciones: área bajo filtros en blanco, modal con spinner y barra de progreso (count + páginas), fase de armado del mapa; **RPC opcional get_asistencia_dataset_version**; **sub-rango del combo filtrado en memoria** si el rectángulo ya está descargado; **Actualizar permisos (barra) no invalida** el cache de asistencia; índice covering opcional en sql/. Paginación PostgREST **SUPABASE_PAGE_SIZE 15000** (coherente con Max rows del proyecto en Supabase Data API). Frecuencia (días distintos ÷ semanas activas), **permanencia**: ojo por rango, **modal listado clientes** ancho según contenido e **ID — apellido y nombre** en tabla; modal detalle con título apellido/nombre; multi-sede. Tras un despliegue: modal «Nueva versión» (**everfit-release.json**). Fechas America/Argentina/Buenos_Aires. Login; Seguridad; actualizar base; carga paginada base_everfit, tipos de cambio y asistencia por rango.'],
   ['Proyección Flujo por mes', 'Meses proyectados en tabla (permiso ver_proyeccion). Config: método (promedio/mediana/promedio recortado), meses de historia (N meses calendario estrictamente anteriores al mes en curso; nunca usa mes en curso ni futuros como base, aunque tengan datos), meses a proyectar, recorte %. Cada Proy. k usa los últimos (N−k) valores de esa ventana inicial más las k−1 proyecciones ya calculadas. Doc: docs/PROYECCION_FLUJO.md. Total columna incluye proyectados; tarjetas siempre reales. Encabezado y celdas proyectadas con fondo distintivo.'],
-  ['Seguridad – Permisos por rol', 'En Seguridad (Admin): cada rol (Admin, Encargado, Visor) con icono y lista de permisos con toggle on/off editable (incluye ver_asistencia para el menú Asistencia). RPC get_roles_permissions_for_admin y set_role_permission. Ejecutar sql/supabase_seguridad_permisos_editable.sql y sql/supabase_asistencia_ver_permiso.sql si aplica.'],
+  ['Seguridad – Permisos por rol', 'En Seguridad (Admin): cada rol (Admin, Encargado, Recepcionista, Profesor, Visor) con icono y lista de permisos con toggle on/off editable (incluye ver_asistencia y permisos To-Do). RPC get_roles_permissions_for_admin y set_role_permission. Ejecutar sql/supabase_seguridad_permisos_editable.sql, sql/supabase_asistencia_ver_permiso.sql y sql/supabase_todo.sql si aplica.'],
   ['Transacciones de asistencia', 'Excel export Transacciones por sucursal (docs de referencia). Tabla transacciones_asistencia; botón Importar asistencia en dashboard (reemplazo por sucursal). Ver docs/TRANSACCIONES_ASISTENCIA.md y sql/supabase_transacciones_asistencia.sql.'],
+  ['To-Do – bandeja de tareas', 'Menú To-Do: solapas Tareas y Por responsable (Admin/Encargado: matriz perfil/usuario × estado con clic a modal de detalle). Resumen (cards según filtros; vencimiento por defecto Hoy), filtros (estado/prioridad/vencimiento/sede/búsqueda), badges, cambio de estado, alta con responsable obligatorio (usuario o perfil), sede (una / todas / Empresa), recurrencia con fecha «hasta» obligatoria (máx. 366 días), editar/eliminar (sin regenerar), mensajería interna toast/confirm, export Excel. Permisos ver_todo/crear_todo/completar_todo/editar_todo/eliminar_todo. Roles Recepcionista y Profesor. Docs: docs/TODO.md; SQL: sql/supabase_todo.sql + supabase_todo_sede_y_fecha_fin.sql + supabase_todo_editar_eliminar.sql + supabase_todo_empresa_y_eliminar.sql.'],
+  ['Sedes – catálogo ABM', 'Menú Sedes (Admin): alta/edición/activar-desactivar. Alimenta asignación de sedes en Seguridad y opciones de sede del To-Do. SQL: sql/supabase_sedes.sql. Docs: docs/SEDES.md.'],
 ];
 
 const wsResumen = XLSX.utils.aoa_to_sheet(funcionalidades);
@@ -149,8 +152,9 @@ const versiones = [
   ['1.27', '__HOY__', 'everfit-release.json: aviso genérico de tiempos de respuesta. Gráfico activos: serie desde primer mes con datos (total, una o varias sedes); media móvil sin tratar null como cero.'],
   ['1.28', '__HOY__', 'Asistencia: fila final «Promedio total» en mapa de concurrencia (promedio por columna, misma escala de color). everfit-release.json v1.28 (mensaje genérico rendimiento).'],
   ['1.29', '__HOY__', 'Flujo/G-P exclusión concepto Inversiones y Saldo Inicial; proyección N meses calendario anteriores al mes en curso, blindaje mes en curso/futuros; docs PROYECCION_FLUJO.md y actualización EXCLUSIONES/DASHBOARD; everfit-release.json v1.29.'],
+  ['1.30', '__HOY__', 'To-Do (bandeja, filtros Hoy, solapas Tareas y Por responsable, alta Empresa/sede, eliminar sin regenerar, toast/confirm). Catálogo Sedes. Roles Recepcionista/Profesor. everfit-release.json v1.30.'],
 ];
-const versionesParaExcel = aplicarHoyAhora(versiones);
+const versionesParaExcel = preservarFechasHistoricasVersiones(projectRoot, outPath, versiones);
 const wsVersiones = XLSX.utils.aoa_to_sheet(versionesParaExcel);
 wsVersiones['!cols'] = [{ wch: 8 }, { wch: 12 }, { wch: 75 }];
 
@@ -166,7 +170,6 @@ const tecnologia = [
 const wsTecnologia = XLSX.utils.aoa_to_sheet(tecnologia);
 wsTecnologia['!cols'] = [{ wch: 18 }, { wch: 95 }];
 
-const outPath = path.join(__dirname, '..', 'Bitacora_tareas.xlsx');
 const wb = XLSX.utils.book_new();
 XLSX.utils.book_append_sheet(wb, wsLog, 'Log');
 XLSX.utils.book_append_sheet(wb, wsResumen, 'Resumen');

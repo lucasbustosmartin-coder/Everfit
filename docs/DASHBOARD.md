@@ -13,7 +13,7 @@ Los datos se leen de la tabla `base_everfit` en Supabase (Everfit). **Exclusione
    En Supabase → Project Settings → API copiá la **anon** key (public). En `config.js` definí `window.SUPABASE_ANON_KEY` con esa clave.
 
 2. **Auth y permisos (recomendado)**  
-   Para que la app pida **login por email** y controle permisos por rol (Admin, Encargado, Visor), seguí **`docs/SEGURIDAD.md`**: ejecutá `sql/supabase_seguridad.sql`. Eso habilita lectura solo para usuarios autenticados y restringe "Actualizar base" y "Asignar perfiles" por rol.
+   Para que la app pida **login por email** y controle permisos por rol (Admin, Encargado, Recepcionista, Profesor, Visor), seguí **`docs/SEGURIDAD.md`**: ejecutá `sql/supabase_seguridad.sql`. Eso habilita lectura solo para usuarios autenticados y restringe "Actualizar base" y "Asignar perfiles" por rol. El menú **To-Do** requiere `sql/supabase_todo.sql` (ver **`docs/TODO.md`**).
 
    Si **no** usás el módulo de seguridad, ejecutá solo **`sql/supabase_rls_base_everfit_anon_read.sql`** para permitir lectura anónima de `base_everfit`.
 

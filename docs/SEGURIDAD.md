@@ -4,16 +4,20 @@ La app usa **login por email y contraseña** (Supabase Auth). Los permisos se co
 
 ## Roles y permisos
 
-| Rol        | Ver dashboard | Actualizar base (upload) | Asignar perfiles | Proyección | Asistencia |
-|-----------|----------------|---------------------------|-------------------|------------|------------|
-| **Admin** | Sí             | Sí                        | Sí                | Sí (ver y configurar) | Sí (por defecto; configurable) |
-| **Encargado** | Sí         | Sí                        | No                | Sí (ver y configurar) | Sí (por defecto; configurable) |
-| **Visor** | Sí             | No                        | No                | No                    | Sí (por defecto; configurable) |
+| Rol        | Ver dashboard | Actualizar base (upload) | Asignar perfiles | Proyección | Asistencia | To-Do (ver / completar) | To-Do (crear) |
+|-----------|----------------|---------------------------|-------------------|------------|------------|-------------------------|---------------|
+| **Admin** | Sí             | Sí                        | Sí                | Sí (ver y configurar) | Sí (por defecto; configurable) | Sí | Sí |
+| **Encargado** | Sí         | Sí                        | No                | Sí (ver y configurar) | Sí (por defecto; configurable) | Sí | Sí |
+| **Recepcionista** | Sí     | No                        | No                | No                    | Sí (por defecto; configurable) | Sí | No |
+| **Profesor** | Sí          | No                        | No                | No                    | Sí (por defecto; configurable) | Sí | No |
+| **Visor** | Sí             | No                        | No                | No                    | Sí (por defecto; configurable) | Sí | No |
 
 - **Actualizar base:** truncar la tabla `base_everfit` y cargar un Excel (botón "Actualizar base" en el dashboard).
 - **Asignar perfiles:** acceder al módulo Seguridad y cambiar el rol de cualquier usuario.
 - **Ver proyección:** ver en la tabla Flujo por mes los meses proyectados (método, meses de historia, meses a proyectar, recorte) y el botón "Proyección" para configurarlos. Solo Admin y Encargado; Visor no ve la proyección ni el botón.
 - **Ver asistencia (`ver_asistencia`):** menú **Asistencia** y lectura de `transacciones_asistencia` (heatmap, multi-sede, años). El **Admin** puede activar o desactivar este permiso por rol en Seguridad (igual que Actualizar base o Proyección). **Importar asistencia** sigue requiriendo `upload_base` (no cambia). Ejecutá `sql/supabase_asistencia_ver_permiso.sql` si la tabla ya existía sin este permiso, o reaplicá `sql/supabase_transacciones_asistencia.sql` en instalaciones nuevas.
+- **To-Do (`ver_todo` / `crear_todo` / `editar_todo` / `eliminar_todo` / `completar_todo`):** menú **To-Do**, bandeja y alta de tareas. Alta/editar/eliminar por defecto Admin y Encargado (cada uno configurable por rol en Seguridad). Roles nuevos: **Recepcionista** y **Profesor**. Detalle: `docs/TODO.md` y `sql/supabase_todo.sql`.
+- **Sedes:** menú **Sedes** (Admin) administra el catálogo usado al asignar sucursales a usuarios y al replicar tareas To-Do. Ver `docs/SEDES.md`.
 
 ## Cómo activar el módulo
 
@@ -65,13 +69,13 @@ ON CONFLICT (user_id) DO UPDATE SET role = 'admin';
 - Si el trigger de `auth.users` está activo, al registrarse se crea la fila en `user_profiles`.
 - La primera vez que un usuario entra, si no tiene fila en `app_user_profile`, la app puede asignarle automáticamente el rol **Visor** (solo lectura). Si preferís que los nuevos no tengan acceso hasta que un Admin les asigne rol, podés desactivar esa auto-asignación en la app y dejar que solo Admin cree el perfil.
 
-En el SQL actual, un usuario **puede** asignarse a sí mismo el rol `visor` una sola vez si aún no tiene perfil. Así los nuevos pueden ver el dashboard sin que un Admin les asigne nada; el Admin después puede cambiarlos a Encargado si hace falta.
+En el SQL actual, un usuario **puede** asignarse a sí mismo el rol `visor` una sola vez si aún no tiene perfil. Así los nuevos pueden ver el dashboard sin que un Admin les asigne nada; el Admin después puede cambiarlos a Encargado, Recepcionista, Profesor, etc.
 
 ## Uso en la app
 
 - **Login:** en el dashboard se muestra pantalla de inicio de sesión (email + contraseña). Tras iniciar sesión se cargan los datos.
 - **Actualizar base:** el botón solo se muestra si tu rol tiene permiso `upload_base` (Admin y Encargado).
-- **Seguridad:** en el menú lateral hay un ítem "Seguridad" (solo visible para Admin). Ahí podés: **Permisos por rol:** cada rol (Admin, Encargado, Visor) se muestra con su icono y debajo cada permiso con un botón on/off editable (Actualizar base, Asignar perfiles, Proyección, **Ver asistencia**). Los cambios se guardan al instante. **Usuarios:** lista de usuarios con email, rol asignado y botón Guardar.
+- **Seguridad:** en el menú lateral hay un ítem "Seguridad" (solo visible para Admin). Ahí podés: **Permisos por rol:** cada rol (Admin, Encargado, Recepcionista, Profesor, Visor) se muestra con su icono y debajo cada permiso con un botón on/off editable (Actualizar base, Asignar perfiles, Proyección, **Ver asistencia**, **To-Do**). Los cambios se guardan al instante. **Usuarios:** lista de usuarios con email, rol asignado y botón Guardar.
 
 Para que los permisos por rol sean editables desde el dashboard, ejecutá además **`sql/supabase_seguridad_permisos_editable.sql`** en el SQL Editor (después de `supabase_seguridad.sql` y, si usás proyección, de `supabase_proyeccion_permiso_y_config.sql`).
 

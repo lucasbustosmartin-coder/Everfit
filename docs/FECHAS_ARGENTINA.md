@@ -8,6 +8,8 @@ En este proyecto **todas las fechas y horas se interpretan y muestran en Argenti
 
 Constante de referencia: `ZONA_ARGENTINA = 'America/Argentina/Buenos_Aires'`.
 
+En SQL: `public.fecha_hoy_argentina()` (`sql/helpers_fecha_argentina.sql`). El módulo To-Do usa además `todo_ts_argentina` para vencimientos con hora.
+
 ## Regla Cursor (no omitir)
 
 - `.cursor/rules/fechas-argentina-negocio.mdc` (`alwaysApply: true`). Detalle de SQL (función `fecha_hoy_argentina`, etc.): repo **Pandi**, `docs/FECHAS_ARGENTINA.md`.

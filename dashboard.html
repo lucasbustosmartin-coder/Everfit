@@ -179,6 +179,32 @@
     .tabs button.activo { background: #1a1a1a; color: #fff; border-color: #1a1a1a; }
     .modal-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center; z-index: 100; padding: 1rem; }
     .modal-backdrop.oculto { display: none; }
+    .toast-container { position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%); z-index: 1150; display: flex; flex-direction: column; gap: 0.5rem; pointer-events: none; max-width: 90vw; }
+    .toast { padding: 0.85rem 1.25rem; border-radius: 10px; box-shadow: 0 4px 20px rgba(0,0,0,0.15); font-size: 0.95rem; font-weight: 500; color: #fff; pointer-events: auto; animation: everfit-toast-in 0.3s ease; display: flex; align-items: center; gap: 0.6rem; min-width: 280px; max-width: 420px; transition: opacity 0.2s ease, transform 0.2s ease; }
+    .toast.toast-success { background: #0d7d3d; }
+    .toast.toast-info { background: #1e40af; }
+    .toast.toast-error { background: #b91c1c; }
+    .toast .toast-icon { width: 22px; height: 22px; flex-shrink: 0; display: inline-flex; }
+    .toast .toast-icon svg { width: 100%; height: 100%; stroke: currentColor; fill: none; }
+    .toast .toast-close { margin-left: auto; padding: 0.2rem 0.45rem; background: rgba(255,255,255,0.2); border: none; border-radius: 4px; cursor: pointer; color: #fff; line-height: 1; font-size: 1rem; font-family: inherit; min-height: 28px; }
+    .toast .toast-close:hover { background: rgba(255,255,255,0.35); }
+    @keyframes everfit-toast-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    #modal-confirm-backdrop { z-index: 1200; }
+    .modal.modal-confirm { width: max-content; max-width: min(95vw, 560px); min-width: 280px; }
+    .modal-confirm .modal-confirm-texto { margin: 0; color: #333; line-height: 1.5; white-space: pre-line; }
+    .modal-confirm .form-actions { margin-top: 1rem; display: flex; gap: 0.5rem; flex-wrap: wrap; }
+    .modal-confirm .btn-primary, .modal-confirm .btn-secondary, .modal-confirm .btn-danger {
+      display: inline-flex; align-items: center; gap: 0.45rem; min-height: 44px; padding: 0.5rem 1rem; border-radius: 8px;
+      cursor: pointer; font-size: 0.9rem; font-family: inherit; box-sizing: border-box;
+    }
+    .modal-confirm .btn-primary { background: #0d7d3d; color: #fff; border: 1px solid #0d7d3d; }
+    .modal-confirm .btn-primary:hover { background: #0a5c2e; }
+    .modal-confirm .btn-secondary { background: #fff; color: #333; border: 1px solid #999; }
+    .modal-confirm .btn-secondary:hover { background: #f0f0f0; }
+    .modal-confirm .btn-danger { background: #b91c1c; color: #fff; border: 1px solid #b91c1c; }
+    .modal-confirm .btn-danger:hover { background: #991b1b; }
+    .modal-confirm .btn-primary .btn-icon, .modal-confirm .btn-secondary .btn-icon, .modal-confirm .btn-danger .btn-icon { display: inline-flex; width: 18px; height: 18px; }
+    .modal-confirm .btn-primary .btn-icon svg, .modal-confirm .btn-secondary .btn-icon svg, .modal-confirm .btn-danger .btn-icon svg { width: 100%; height: 100%; stroke: currentColor; fill: none; }
     .modal { background: #fff; border-radius: 12px; max-width: 720px; width: 100%; max-height: 85vh; overflow: hidden; display: flex; flex-direction: column; box-shadow: 0 8px 32px rgba(0,0,0,0.2); }
     .modal-header { padding: 1rem 1.25rem; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
     .modal-header h2 { margin: 0; font-size: 1.25rem; }
@@ -326,6 +352,115 @@
       #modal-grafico-item .modal-body .chart-container { min-height: 200px; }
     }
     .vista-asistencia { display: none; }
+    .vista-todo { display: none; }
+    .todo-resumen { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0.75rem; margin-bottom: 1rem; }
+    .todo-resumen-card { background: #fff; border: 1px solid #e5e7eb; border-radius: 10px; padding: 0.85rem 1rem; box-shadow: 0 1px 2px rgba(0,0,0,0.04); }
+    .todo-resumen-card .todo-resumen-label { font-size: 0.8rem; color: #64748b; margin: 0 0 0.25rem 0; }
+    .todo-resumen-card .todo-resumen-valor { font-size: 1.5rem; font-weight: 700; margin: 0; color: #0f172a; }
+    .todo-resumen-card.vencidas .todo-resumen-valor { color: #b91c1c; }
+    .todo-resumen-card.hechas .todo-resumen-valor { color: #0d7d3d; }
+    .todo-toolbar { display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: flex-end; justify-content: space-between; margin-bottom: 1rem; }
+    .todo-filtros { display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: flex-end; }
+    .todo-filtros .form-group { display: flex; flex-direction: column; gap: 0.3rem; margin: 0; }
+    .todo-filtros label { font-size: 0.85rem; color: #555; }
+    .todo-filtros select, .todo-filtros input[type="search"] { padding: 0.45rem 0.6rem; border-radius: 8px; border: 1px solid #ccc; font-size: 1rem; min-height: 44px; min-width: 8rem; box-sizing: border-box; }
+    .todo-acciones { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; }
+    .btn-todo-nueva, .btn-todo-excel { display: inline-flex; align-items: center; gap: 0.45rem; min-height: 44px; padding: 0.5rem 1rem; border-radius: 8px; cursor: pointer; font-size: 0.9rem; font-family: inherit; box-sizing: border-box; border: 1px solid transparent; }
+    .btn-todo-nueva { background: #0d7d3d; border-color: #0d7d3d; color: #fff; }
+    .btn-todo-nueva:hover { background: #0a5c2e; }
+    .btn-todo-excel { background: #0d7d3d; border-color: #0d7d3d; color: #fff; }
+    .btn-todo-excel:hover { background: #0a5c2e; }
+    .btn-todo-nueva .btn-icon, .btn-todo-excel .btn-icon { display: inline-flex; width: 18px; height: 18px; }
+    .btn-todo-nueva .btn-icon svg, .btn-todo-excel .btn-icon svg { width: 100%; height: 100%; stroke: currentColor; fill: none; }
+    .todo-tabs { margin: 0 0 0.75rem 0; }
+    .todo-panel { display: none; }
+    .todo-panel.activo { display: block; }
+    .todo-tabla-wrap { overflow: auto; max-height: 65vh; -webkit-overflow-scrolling: touch; overscroll-behavior-x: contain; border: 1px solid #e5e7eb; border-radius: 10px; background: #fff; }
+    .todo-tabla { width: 100%; border-collapse: collapse; font-size: 0.92rem; }
+    .todo-tabla th { position: sticky; top: 0; z-index: 2; background: #1e293b; color: #fff; text-align: left; padding: 0.65rem 0.75rem; box-shadow: 0 1px 0 #0f172a; }
+    .todo-tabla td { padding: 0.65rem 0.75rem; border-bottom: 1px solid #eee; vertical-align: middle; }
+    /* Tarea / Sede / Responsable: forzar izquierda (el CSS global alinea td a la derecha) */
+    #todo-tabla th:nth-child(1), #todo-tabla th:nth-child(2), #todo-tabla th:nth-child(3),
+    #todo-tabla td:nth-child(1), #todo-tabla td:nth-child(2), #todo-tabla td:nth-child(3) {
+      text-align: left;
+    }
+    .todo-tabla tr:hover td { background: #f8fafc; }
+    .todo-matriz tr:hover td.sticky-col { background: #f8fafc; }
+    .todo-matriz th.num, .todo-matriz td.num { text-align: center; }
+    .todo-matriz th.sticky-col, .todo-matriz td.sticky-col {
+      position: sticky; left: 0; z-index: 1; background: #fff; box-shadow: 1px 0 0 #e5e7eb; min-width: 11rem; font-weight: 600;
+    }
+    .todo-matriz th.sticky-col { z-index: 3; background: #1e293b; }
+    .todo-matriz-count {
+      display: inline-flex; align-items: center; justify-content: center; min-width: 2.5rem; min-height: 2.25rem;
+      padding: 0.25rem 0.55rem; border-radius: 8px; border: 1px solid #cbd5e1; background: #fff;
+      color: #0f172a; font-weight: 700; font-size: 0.95rem; font-family: inherit; cursor: pointer;
+    }
+    .todo-matriz-count:hover { background: #f1f5f9; border-color: #94a3b8; }
+    .todo-matriz-count.cero { border: none; background: transparent; color: #94a3b8; font-weight: 500; cursor: default; min-height: auto; }
+    .todo-matriz-sub { font-size: 0.75rem; color: #64748b; font-weight: 500; margin-top: 0.15rem; }
+    .todo-matriz-hint { margin: 0 0 0.65rem 0; font-size: 0.88rem; color: #64748b; }
+    #modal-todo-matriz-backdrop .modal { max-width: 980px; width: 96%; }
+    #modal-todo-matriz-body .todo-tabla-wrap { max-height: min(60vh, 520px); }
+    .todo-badge { display: inline-flex; align-items: center; padding: 0.15rem 0.55rem; border-radius: 999px; font-size: 0.75rem; font-weight: 600; white-space: nowrap; }
+    .todo-badge-pendiente { background: #fef3c7; color: #92400e; }
+    .todo-badge-en_curso { background: #dbeafe; color: #1e40af; }
+    .todo-badge-hecha { background: #dcfce7; color: #166534; }
+    .todo-badge-vencida { background: #fee2e2; color: #991b1b; }
+    .todo-badge-cancelada { background: #e2e8f0; color: #475569; }
+    .todo-badge-prio-1 { background: #fee2e2; color: #991b1b; }
+    .todo-badge-prio-2 { background: #e0e7ff; color: #3730a3; }
+    .todo-badge-prio-3 { background: #f1f5f9; color: #475569; }
+    .todo-titulo-cell { font-weight: 600; color: #0f172a; }
+    .todo-desc-cell { font-size: 0.82rem; color: #64748b; margin-top: 0.2rem; }
+    .todo-row-actions { display: flex; flex-wrap: wrap; gap: 0.35rem; align-items: center; }
+    .todo-row-actions select { min-height: 40px; border-radius: 8px; border: 1px solid #cbd5e1; font-size: 0.85rem; padding: 0.25rem 0.4rem; }
+    .btn-todo-icon { display: inline-flex; align-items: center; justify-content: center; min-width: 40px; min-height: 40px; padding: 0.35rem; border-radius: 8px; border: 1px solid #cbd5e1; background: #fff; cursor: pointer; color: #334155; }
+    .btn-todo-icon:hover { background: #f1f5f9; }
+    .btn-todo-icon.danger { color: #b91c1c; border-color: #fecaca; }
+    .btn-todo-icon.danger:hover { background: #fef2f2; }
+    .btn-todo-icon .btn-icon { display: inline-flex; width: 18px; height: 18px; }
+    .btn-todo-icon .btn-icon svg { width: 100%; height: 100%; stroke: currentColor; fill: none; }
+    .todo-empty { text-align: center; color: #64748b; padding: 2rem 1rem; }
+    .todo-form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem 1rem; }
+    .todo-form-grid .form-group.full { grid-column: 1 / -1; }
+    .todo-form-grid label { display: block; font-size: 0.85rem; color: #555; margin-bottom: 0.3rem; }
+    .todo-form-grid input, .todo-form-grid select, .todo-form-grid textarea { width: 100%; padding: 0.5rem 0.65rem; border-radius: 8px; border: 1px solid #ccc; font-size: 1rem; min-height: 44px; box-sizing: border-box; font-family: inherit; }
+    .todo-form-grid textarea { min-height: 88px; resize: vertical; }
+    .todo-form-error { color: #b91c1c; font-size: 0.9rem; margin: 0.5rem 0 0; }
+    .vista-sedes { display: none; }
+    .sedes-toolbar { display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: center; justify-content: space-between; margin-bottom: 1rem; }
+    .sedes-tabla-wrap { overflow: auto; max-height: 65vh; -webkit-overflow-scrolling: touch; overscroll-behavior-x: contain; border: 1px solid #e5e7eb; border-radius: 10px; background: #fff; }
+    .sedes-tabla { width: 100%; border-collapse: collapse; font-size: 0.92rem; }
+    .sedes-tabla th { position: sticky; top: 0; z-index: 2; background: #1e293b; color: #fff; text-align: left; padding: 0.65rem 0.75rem; box-shadow: 0 1px 0 #0f172a; }
+    .sedes-tabla td { padding: 0.65rem 0.75rem; border-bottom: 1px solid #eee; }
+    .sedes-tabla input[type="text"], .sedes-tabla input[type="number"] { min-height: 40px; padding: 0.35rem 0.5rem; border-radius: 8px; border: 1px solid #ccc; font-size: 1rem; width: 100%; max-width: 220px; box-sizing: border-box; }
+    .btn-sede-nueva { display: inline-flex; align-items: center; gap: 0.45rem; min-height: 44px; padding: 0.5rem 1rem; border-radius: 8px; cursor: pointer; font-size: 0.9rem; font-family: inherit; background: #0d7d3d; border: 1px solid #0d7d3d; color: #fff; }
+    .btn-sede-nueva:hover { background: #0a5c2e; }
+    .btn-sede-nueva .btn-icon { display: inline-flex; width: 18px; height: 18px; }
+    .btn-sede-nueva .btn-icon svg { width: 100%; height: 100%; stroke: currentColor; fill: none; }
+    .sedes-badge-activa { background: #dcfce7; color: #166534; }
+    .sedes-badge-inactiva { background: #e2e8f0; color: #475569; }
+    .todo-badge { display: inline-flex; align-items: center; padding: 0.15rem 0.55rem; border-radius: 999px; font-size: 0.75rem; font-weight: 600; white-space: nowrap; }
+    @media (max-width: 768px) {
+      .sedes-toolbar { flex-direction: column; align-items: stretch; }
+      .sedes-tabla input[type="text"], .sedes-tabla input[type="number"] { max-width: none; font-size: 16px; }
+    }
+    @media (max-width: 768px) {
+      .todo-resumen { grid-template-columns: 1fr 1fr; }
+      .todo-toolbar { flex-direction: column; align-items: stretch; }
+      .todo-filtros { flex-direction: column; align-items: stretch; }
+      .todo-filtros select, .todo-filtros input[type="search"] { width: 100%; font-size: 16px; }
+      .todo-acciones { width: 100%; }
+      .todo-acciones .btn-todo-nueva, .todo-acciones .btn-todo-excel { flex: 1 1 auto; justify-content: center; }
+      .todo-form-grid { grid-template-columns: 1fr; }
+      .todo-tabla-wrap { max-height: 55vh; }
+      .todo-tabs button { width: 100%; justify-content: center; }
+      #modal-todo-matriz-backdrop .modal { width: 100%; max-width: 100%; margin: 0; border-radius: 12px 12px 0 0; }
+    }
+    @media (max-width: 480px) {
+      .todo-resumen { grid-template-columns: 1fr; }
+    }
     .asistencia-filtros { display: flex; flex-wrap: wrap; gap: 1rem; align-items: flex-end; margin-bottom: 1rem; }
     .asistencia-filtros .form-group { display: flex; flex-direction: column; gap: 0.35rem; }
     .asistencia-filtros label { font-size: 0.9rem; color: #555; }
@@ -496,12 +631,20 @@
         <span class="menu-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
         <span class="menu-label">Asistencia</span>
       </a>
+      <a href="#" class="menu-item" id="menu-todo" title="To-Do" aria-label="To-Do" style="display:none;">
+        <span class="menu-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg></span>
+        <span class="menu-label">To-Do</span>
+      </a>
+      <a href="#" class="menu-item" id="menu-sedes" title="Sedes" aria-label="Sedes" style="display:none;">
+        <span class="menu-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M5 21V7l7-4 7 4v14"/><path d="M9 10h.01"/><path d="M15 10h.01"/><path d="M9 14h.01"/><path d="M15 14h.01"/></svg></span>
+        <span class="menu-label">Sedes</span>
+      </a>
       <a href="#" class="menu-item" id="menu-seguridad" title="Seguridad" aria-label="Seguridad" style="display:none;">
         <span class="menu-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span>
         <span class="menu-label">Seguridad</span>
       </a>
     </nav>
-    <div class="sidebar-version" id="sidebar-version" aria-label="Versión">v1.29</div>
+    <div class="sidebar-version" id="sidebar-version" aria-label="Versión">v1.30</div>
   </aside>
 
   <main class="main-content">
@@ -733,6 +876,328 @@
         </div>
       </div>
 
+      <div id="vista-todo" class="vista-todo" style="display:none;">
+        <div id="todo-resumen" class="todo-resumen" aria-label="Resumen de tareas">
+          <div class="todo-resumen-card"><p class="todo-resumen-label">Pendientes</p><p class="todo-resumen-valor" id="todo-sum-pendientes">0</p></div>
+          <div class="todo-resumen-card"><p class="todo-resumen-label">En curso</p><p class="todo-resumen-valor" id="todo-sum-en-curso">0</p></div>
+          <div class="todo-resumen-card vencidas"><p class="todo-resumen-label">Vencidas</p><p class="todo-resumen-valor" id="todo-sum-vencidas">0</p></div>
+          <div class="todo-resumen-card hechas"><p class="todo-resumen-label">Hechas hoy</p><p class="todo-resumen-valor" id="todo-sum-hechas">0</p></div>
+        </div>
+        <div class="card todo-toolbar">
+          <div class="todo-filtros">
+            <div class="form-group">
+              <label for="todo-filtro-estado">Estado</label>
+              <select id="todo-filtro-estado" aria-label="Filtrar por estado">
+                <option value="">Todos</option>
+                <option value="pendiente">Pendiente</option>
+                <option value="en_curso">En curso</option>
+                <option value="vencida">Vencida</option>
+                <option value="hecha">Hecha</option>
+                <option value="cancelada">Cancelada</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="todo-filtro-prioridad">Prioridad</label>
+              <select id="todo-filtro-prioridad" aria-label="Filtrar por prioridad">
+                <option value="">Todas</option>
+                <option value="1">Alta</option>
+                <option value="2">Media</option>
+                <option value="3">Baja</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="todo-filtro-ventana">Vencimiento</label>
+              <select id="todo-filtro-ventana" aria-label="Filtrar por ventana de vencimiento">
+                <option value="hoy" selected>Hoy</option>
+                <option value="semana">Próximos 7 días</option>
+                <option value="vencidas">Solo vencidas</option>
+                <option value="todas">Todas</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="todo-filtro-sede">Sede</label>
+              <select id="todo-filtro-sede" aria-label="Filtrar por sede">
+                <option value="">Todas</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="todo-filtro-q">Buscar</label>
+              <input type="search" id="todo-filtro-q" placeholder="Título o responsable" aria-label="Buscar tareas" />
+            </div>
+          </div>
+          <div class="todo-acciones">
+            <button type="button" class="btn-todo-excel" id="btn-todo-excel" title="Exportar a Excel" aria-label="Exportar To-Do a Excel">
+              <span class="btn-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></span>
+              Excel
+            </button>
+            <button type="button" class="btn-todo-nueva" id="btn-todo-nueva" style="display:none;" title="Nueva tarea" aria-label="Nueva tarea">
+              <span class="btn-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span>
+              Nueva tarea
+            </button>
+          </div>
+        </div>
+        <div id="todo-estado" class="card" style="display:none;" role="alert"></div>
+        <div class="tabs todo-tabs" id="todo-tabs" role="tablist" aria-label="Vistas del To-Do">
+          <button type="button" class="tab activo" id="todo-tab-tareas" data-todo-tab="tareas" role="tab" aria-selected="true" aria-controls="todo-panel-tareas">
+            <span class="tab-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg></span>
+            Tareas
+          </button>
+          <button type="button" class="tab" id="todo-tab-matriz" data-todo-tab="matriz" role="tab" aria-selected="false" aria-controls="todo-panel-matriz" style="display:none;">
+            <span class="tab-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg></span>
+            Por responsable
+          </button>
+        </div>
+        <div id="todo-panel-tareas" class="todo-panel activo" role="tabpanel" aria-labelledby="todo-tab-tareas">
+          <div class="todo-tabla-wrap tabla-wrap-con-scroll">
+            <table class="todo-tabla" id="todo-tabla" aria-label="Bandeja de tareas">
+              <thead>
+                <tr>
+                  <th>Tarea</th>
+                  <th>Sede</th>
+                  <th>Responsable</th>
+                  <th>Vencimiento</th>
+                  <th>Prioridad</th>
+                  <th>Estado</th>
+                  <th>Recurrencia</th>
+                  <th>Acción</th>
+                </tr>
+              </thead>
+              <tbody id="todo-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+        <div id="todo-panel-matriz" class="todo-panel" role="tabpanel" aria-labelledby="todo-tab-matriz">
+          <p class="todo-matriz-hint">Cantidad de tareas por responsable (perfil o usuario) y estado, según los filtros de arriba. Hacé clic en un número para ver el detalle.</p>
+          <div class="todo-tabla-wrap tabla-wrap-con-scroll">
+            <table class="todo-tabla todo-matriz" id="todo-matriz" aria-label="Resumen por responsable">
+              <thead>
+                <tr>
+                  <th class="sticky-col">Responsable</th>
+                  <th class="num">Pendiente</th>
+                  <th class="num">En curso</th>
+                  <th class="num">Vencida</th>
+                  <th class="num">Hecha</th>
+                  <th class="num">Cancelada</th>
+                  <th class="num">Total</th>
+                </tr>
+              </thead>
+              <tbody id="todo-matriz-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div id="modal-todo-matriz-backdrop" class="modal-backdrop oculto" aria-hidden="true">
+        <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-todo-matriz-titulo">
+          <div class="modal-header">
+            <h2 id="modal-todo-matriz-titulo" style="margin:0; font-size:1.15rem;">Detalle</h2>
+            <button type="button" class="modal-close" id="modal-todo-matriz-close" aria-label="Cerrar"><span class="icon-close"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg></span></button>
+          </div>
+          <div class="modal-body" id="modal-todo-matriz-body">
+            <div class="todo-tabla-wrap tabla-wrap-con-scroll">
+              <table class="todo-tabla" aria-label="Tareas del responsable">
+                <thead>
+                  <tr>
+                    <th>Tarea</th>
+                    <th>Sede</th>
+                    <th>Vencimiento</th>
+                    <th>Prioridad</th>
+                    <th>Estado</th>
+                    <th>Recurrencia</th>
+                  </tr>
+                </thead>
+                <tbody id="todo-matriz-modal-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="modal-todo-nueva-backdrop" class="modal-backdrop oculto" aria-hidden="true">
+        <div class="modal" style="max-width:640px;" role="dialog" aria-modal="true" aria-labelledby="modal-todo-nueva-titulo">
+          <div class="modal-header">
+            <h2 id="modal-todo-nueva-titulo" style="margin:0; font-size:1.15rem;">Nueva tarea</h2>
+            <button type="button" class="modal-close" id="modal-todo-nueva-close" aria-label="Cerrar"><span class="icon-close"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg></span></button>
+          </div>
+          <div class="modal-body">
+            <form id="form-todo-nueva" class="todo-form-grid">
+              <div class="form-group full">
+                <label for="todo-nueva-titulo">Título *</label>
+                <input type="text" id="todo-nueva-titulo" required maxlength="200" placeholder="Ej. Revisar caja de recepción" />
+              </div>
+              <div class="form-group full">
+                <label for="todo-nueva-desc">Descripción</label>
+                <textarea id="todo-nueva-desc" maxlength="2000" placeholder="Detalle opcional"></textarea>
+              </div>
+              <div class="form-group">
+                <label for="todo-nueva-prioridad">Prioridad</label>
+                <select id="todo-nueva-prioridad">
+                  <option value="1">Alta</option>
+                  <option value="2" selected>Media</option>
+                  <option value="3">Baja</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="todo-nueva-resp-tipo">Responsable *</label>
+                <select id="todo-nueva-resp-tipo">
+                  <option value="usuario">Usuario</option>
+                  <option value="rol">Perfil / rol</option>
+                </select>
+              </div>
+              <div class="form-group full" id="todo-nueva-resp-user-wrap">
+                <label for="todo-nueva-resp-user">Usuario responsable *</label>
+                <select id="todo-nueva-resp-user" required></select>
+              </div>
+              <div class="form-group full" id="todo-nueva-resp-rol-wrap" style="display:none;">
+                <label for="todo-nueva-resp-rol">Perfil responsable *</label>
+                <select id="todo-nueva-resp-rol"></select>
+              </div>
+              <div class="form-group">
+                <label for="todo-nueva-sede-modo">Sede *</label>
+                <select id="todo-nueva-sede-modo">
+                  <option value="todas">Todas las sedes (replica)</option>
+                  <option value="una">Una sede</option>
+                  <option value="empresa">Empresa (una sola tarea)</option>
+                </select>
+              </div>
+              <div class="form-group" id="todo-nueva-sede-wrap" style="display:none;">
+                <label for="todo-nueva-sede">Sede concreta *</label>
+                <select id="todo-nueva-sede"></select>
+              </div>
+              <div class="form-group">
+                <label for="todo-nueva-recurrencia">Recurrencia</label>
+                <select id="todo-nueva-recurrencia">
+                  <option value="ninguna">Una vez (ad-hoc)</option>
+                  <option value="diaria">Diaria (con hora)</option>
+                  <option value="semanal">Semanal</option>
+                  <option value="mensual">Mensual</option>
+                  <option value="bimestral">Bimestral</option>
+                  <option value="trimestral">Trimestral</option>
+                  <option value="anual">Anual</option>
+                </select>
+              </div>
+              <div class="form-group" id="todo-nueva-fecha-wrap">
+                <label for="todo-nueva-fecha">Fecha de vencimiento</label>
+                <input type="date" id="todo-nueva-fecha" />
+              </div>
+              <div class="form-group" id="todo-nueva-fecha-fin-wrap" style="display:none;">
+                <label for="todo-nueva-fecha-fin">Replicar hasta *</label>
+                <input type="date" id="todo-nueva-fecha-fin" />
+                <small style="display:block; margin-top:0.25rem; color:#64748b; font-size:0.78rem;">Obligatorio en recurrentes. Máx. 366 días desde el inicio. Así se evita crear registros de más.</small>
+              </div>
+              <div class="form-group" id="todo-nueva-hora-wrap">
+                <label for="todo-nueva-hora">Hora (Argentina)</label>
+                <input type="time" id="todo-nueva-hora" value="18:00" />
+              </div>
+              <div class="form-group" id="todo-nueva-dia-semana-wrap" style="display:none;">
+                <label for="todo-nueva-dia-semana">Día de la semana</label>
+                <select id="todo-nueva-dia-semana">
+                  <option value="1">Lunes</option>
+                  <option value="2">Martes</option>
+                  <option value="3">Miércoles</option>
+                  <option value="4">Jueves</option>
+                  <option value="5">Viernes</option>
+                  <option value="6">Sábado</option>
+                  <option value="7">Domingo</option>
+                </select>
+              </div>
+              <div class="form-group" id="todo-nueva-dia-mes-wrap" style="display:none;">
+                <label for="todo-nueva-dia-mes">Día del mes</label>
+                <input type="number" id="todo-nueva-dia-mes" min="1" max="31" value="1" />
+              </div>
+              <p id="todo-nueva-error" class="todo-form-error full" style="display:none;"></p>
+              <div class="form-group full form-actions" style="display:flex; gap:0.5rem; flex-wrap:wrap; margin-top:0.25rem;">
+                <button type="submit" class="btn-todo-nueva" id="todo-nueva-guardar">
+                  <span class="btn-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+                  Guardar
+                </button>
+                <button type="button" id="todo-nueva-cancelar" style="min-height:44px; padding:0.5rem 1rem; border:1px solid #999; background:#fff; border-radius:8px; cursor:pointer; font-size:0.9rem;">Cancelar</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <div id="modal-todo-editar-backdrop" class="modal-backdrop oculto" aria-hidden="true">
+        <div class="modal" style="max-width:560px;" role="dialog" aria-modal="true" aria-labelledby="modal-todo-editar-titulo">
+          <div class="modal-header">
+            <h2 id="modal-todo-editar-titulo" style="margin:0; font-size:1.15rem;">Editar tarea</h2>
+            <button type="button" class="modal-close" id="modal-todo-editar-close" aria-label="Cerrar"><span class="icon-close"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg></span></button>
+          </div>
+          <div class="modal-body">
+            <form id="form-todo-editar" class="todo-form-grid">
+              <input type="hidden" id="todo-editar-id" />
+              <div class="form-group full">
+                <label for="todo-editar-titulo">Título *</label>
+                <input type="text" id="todo-editar-titulo" required maxlength="200" />
+              </div>
+              <div class="form-group full">
+                <label for="todo-editar-desc">Descripción</label>
+                <textarea id="todo-editar-desc" maxlength="2000"></textarea>
+              </div>
+              <div class="form-group">
+                <label for="todo-editar-prioridad">Prioridad</label>
+                <select id="todo-editar-prioridad">
+                  <option value="1">Alta</option>
+                  <option value="2">Media</option>
+                  <option value="3">Baja</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="todo-editar-sede">Sede</label>
+                <select id="todo-editar-sede"></select>
+              </div>
+              <div class="form-group">
+                <label for="todo-editar-fecha">Fecha vencimiento</label>
+                <input type="date" id="todo-editar-fecha" />
+              </div>
+              <div class="form-group">
+                <label for="todo-editar-hora">Hora (Argentina)</label>
+                <input type="time" id="todo-editar-hora" />
+              </div>
+              <div class="form-group full" id="todo-editar-plantilla-wrap" style="display:none;">
+                <label style="display:flex; align-items:center; gap:0.5rem; cursor:pointer;">
+                  <input type="checkbox" id="todo-editar-plantilla" />
+                  <span>También actualizar la plantilla recurrente (título, descripción, prioridad)</span>
+                </label>
+              </div>
+              <p id="todo-editar-error" class="todo-form-error full" style="display:none;"></p>
+              <div class="form-group full form-actions" style="display:flex; gap:0.5rem; flex-wrap:wrap; margin-top:0.25rem;">
+                <button type="submit" class="btn-todo-nueva" id="todo-editar-guardar">
+                  <span class="btn-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+                  Guardar cambios
+                </button>
+                <button type="button" id="todo-editar-cancelar" style="min-height:44px; padding:0.5rem 1rem; border:1px solid #999; background:#fff; border-radius:8px; cursor:pointer; font-size:0.9rem;">Cancelar</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <div id="vista-sedes" class="vista-sedes" style="display:none;">
+        <div class="card sedes-toolbar">
+          <p style="margin:0; color:#555; font-size:0.92rem; flex:1;">Administrá el catálogo de sedes. Ese listado se usa al asignar sedes a usuarios en Seguridad y al crear tareas To-Do (una sede o todas).</p>
+          <button type="button" class="btn-sede-nueva" id="btn-sede-nueva" title="Nueva sede" aria-label="Nueva sede">
+            <span class="btn-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span>
+            Nueva sede
+          </button>
+        </div>
+        <div id="sedes-estado" class="card" style="display:none;" role="alert"></div>
+        <div class="sedes-tabla-wrap">
+          <table class="sedes-tabla" id="sedes-tabla" aria-label="Catálogo de sedes">
+            <thead>
+              <tr>
+                <th>Nombre</th>
+                <th>Orden</th>
+                <th>Estado</th>
+                <th>Acción</th>
+              </tr>
+            </thead>
+            <tbody id="sedes-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+
       <div id="modal-asistencia-carga-backdrop" class="modal-backdrop oculto" aria-hidden="true" aria-busy="true">
         <div class="modal-asistencia-carga-card" role="status">
           <div class="asistencia-carga-spinner" aria-hidden="true"></div>
@@ -812,6 +1277,33 @@
       </div>
     </div>
   </main>
+
+  <div id="modal-confirm-backdrop" class="modal-backdrop oculto" aria-hidden="true">
+    <div class="modal modal-confirm" role="dialog" aria-modal="true" aria-labelledby="modal-confirm-titulo">
+      <div class="modal-header">
+        <h2 id="modal-confirm-titulo" style="margin:0; font-size:1.15rem;">Confirmar</h2>
+        <button type="button" class="modal-close" id="modal-confirm-cerrar" aria-label="Cerrar"><span class="icon-close"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg></span></button>
+      </div>
+      <div class="modal-body">
+        <div id="modal-confirm-mensaje" class="modal-confirm-texto"></div>
+        <div class="form-actions">
+          <button type="button" class="btn-primary" id="modal-confirm-aceptar">
+            <span class="btn-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+            Confirmar
+          </button>
+          <button type="button" class="btn-danger" id="modal-confirm-extra" style="display:none;">
+            <span class="btn-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></svg></span>
+            Extra
+          </button>
+          <button type="button" class="btn-secondary" id="modal-confirm-cancelar">
+            <span class="btn-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg></span>
+            Cancelar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="toast-container" class="toast-container" aria-live="polite"></div>
 
   <div id="modal-detalle-backdrop" class="modal-backdrop oculto">
     <div class="modal" id="modal-detalle" style="max-width:1100px; width:95%;">
@@ -982,6 +1474,7 @@
       var userPermissions = [];
       var currentUserEmail = '';
       var currentUserId = null;
+      var currentUserRole = null;
       /** localStorage: última versión de despliegue que el usuario ya reconoció (modal «Nueva versión»). */
       var EVERFIT_LS_RELEASE_SEEN = 'everfit_release_seen';
       var everfitNuevaVersionPromptActive = false;
@@ -3416,6 +3909,99 @@
         return String(v).replace(/</g, '&lt;').replace(/>/g, '&gt;');
       }
 
+      function escHtmlMsg(v) {
+        return String(v == null ? '' : v).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+      }
+
+      /** Toast interno (estilo Pandi). type: success | info | error */
+      function showToast(mensaje, type, duracionMs) {
+        var container = document.getElementById('toast-container');
+        if (!container) return;
+        if (duracionMs == null) duracionMs = 4500;
+        var toast = document.createElement('div');
+        var t = type === 'error' ? 'error' : (type === 'info' ? 'info' : 'success');
+        toast.className = 'toast toast-' + t;
+        var icon = t === 'error'
+          ? '<span class="toast-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></span>'
+          : '<span class="toast-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></span>';
+        toast.innerHTML = icon + '<span class="toast-text">' + escHtmlMsg(mensaje) + '</span><button type="button" class="toast-close" aria-label="Cerrar">×</button>';
+        function close() {
+          toast.style.opacity = '0';
+          toast.style.transform = 'translateY(-8px)';
+          setTimeout(function() { if (toast.parentNode) toast.parentNode.removeChild(toast); }, 200);
+        }
+        toast.querySelector('.toast-close').addEventListener('click', close);
+        if (duracionMs > 0) setTimeout(close, duracionMs);
+        container.appendChild(toast);
+      }
+
+      /**
+       * Confirmación interna (no usar confirm() del navegador).
+       * opciones.extra = { texto, onClick, danger?: true } para un tercer botón (ej. eliminar serie).
+       */
+      function showConfirm(mensaje, textoConfirmar, onConfirm, onCancel, textoCancelar, tituloModal, opciones) {
+        var backdrop = document.getElementById('modal-confirm-backdrop');
+        var titulo = document.getElementById('modal-confirm-titulo');
+        var texto = document.getElementById('modal-confirm-mensaje');
+        var btnAceptar = document.getElementById('modal-confirm-aceptar');
+        var btnCancelar = document.getElementById('modal-confirm-cancelar');
+        var btnCerrar = document.getElementById('modal-confirm-cerrar');
+        var btnExtra = document.getElementById('modal-confirm-extra');
+        if (!backdrop || !texto || !btnAceptar || !btnCancelar) return;
+        var opts = opciones && typeof opciones === 'object' ? opciones : null;
+        texto.textContent = mensaje == null ? '' : String(mensaje);
+        if (titulo) titulo.textContent = (tituloModal != null && tituloModal !== '') ? tituloModal : 'Confirmar';
+        var labelOk = textoConfirmar || 'Confirmar';
+        btnAceptar.innerHTML = '<span class="btn-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>' + escHtmlMsg(labelOk);
+        var labelCancel = (textoCancelar !== undefined && textoCancelar !== null) ? textoCancelar : 'Cancelar';
+        btnCancelar.innerHTML = '<span class="btn-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg></span>' + escHtmlMsg(labelCancel);
+        if (btnExtra) {
+          if (opts && opts.extra && opts.extra.texto) {
+            btnExtra.style.display = 'inline-flex';
+            btnExtra.className = opts.extra.danger ? 'btn-danger' : 'btn-primary';
+            btnExtra.innerHTML = '<span class="btn-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></svg></span>' + escHtmlMsg(opts.extra.texto);
+          } else {
+            btnExtra.style.display = 'none';
+            btnExtra.onclick = null;
+          }
+        }
+        backdrop.classList.remove('oculto');
+        backdrop.setAttribute('aria-hidden', 'false');
+        function cerrar(ejecutado) {
+          backdrop.classList.add('oculto');
+          backdrop.setAttribute('aria-hidden', 'true');
+          texto.textContent = '';
+          btnAceptar.onclick = null;
+          btnCancelar.onclick = null;
+          if (btnCerrar) btnCerrar.onclick = null;
+          if (btnExtra) btnExtra.onclick = null;
+          if (backdrop._confirmMousedown) backdrop.removeEventListener('mousedown', backdrop._confirmMousedown, true);
+          if (backdrop._confirmAbort) backdrop.removeEventListener('click', backdrop._confirmAbort, true);
+          backdrop._confirmMousedown = null;
+          backdrop._confirmAbort = null;
+          if (!ejecutado && typeof onCancel === 'function') onCancel();
+        }
+        btnAceptar.onclick = function() {
+          if (typeof onConfirm === 'function') onConfirm();
+          cerrar(true);
+        };
+        btnCancelar.onclick = function() { cerrar(false); };
+        if (btnCerrar) btnCerrar.onclick = function() { cerrar(false); };
+        if (btnExtra && opts && opts.extra && typeof opts.extra.onClick === 'function') {
+          btnExtra.onclick = function() {
+            opts.extra.onClick();
+            cerrar(true);
+          };
+        }
+        backdrop._confirmMousedown = function(e) { backdrop._confirmMouseOnBackdrop = (e.target === backdrop); };
+        backdrop._confirmAbort = function(e) {
+          if (e.target === backdrop && backdrop._confirmMouseOnBackdrop) cerrar(false);
+          backdrop._confirmMouseOnBackdrop = false;
+        };
+        backdrop.addEventListener('mousedown', backdrop._confirmMousedown, true);
+        backdrop.addEventListener('click', backdrop._confirmAbort, true);
+      }
+
       function buildPorMesYDesglose() {
         var moneda = getMoneda();
         var tipoDolar = getTipoDolar();
@@ -4409,7 +4995,11 @@
         currentUserEmail = session.user.email || '';
         currentUserId = session.user.id;
         ensureProfile(session).then(function() {
-          return Promise.all([ client.rpc('get_my_permissions'), client.rpc('get_my_allowed_sucursales') ]);
+          return Promise.all([
+            client.rpc('get_my_permissions'),
+            client.rpc('get_my_allowed_sucursales'),
+            client.rpc('get_my_role')
+          ]);
         }).then(function(results) {
           var res = results[0];
           if (res.error) {
@@ -4424,6 +5014,7 @@
           var sucRes = results[1];
           if (!sucRes.error && Array.isArray(sucRes.data)) myAllowedSucursales = sucRes.data.length ? sucRes.data : null;
           else myAllowedSucursales = null;
+          currentUserRole = (!results[2].error && results[2].data != null) ? String(results[2].data) : null;
           showAppContent();
           document.getElementById('user-email').textContent = currentUserEmail;
           var btnUpload = document.getElementById('btn-actualizar-base');
@@ -4435,8 +5026,15 @@
           if (btnProy) btnProy.style.display = userPermissions.indexOf('ver_proyeccion') !== -1 ? '' : 'none';
           var menuSeg = document.getElementById('menu-seguridad');
           if (menuSeg) menuSeg.style.display = userPermissions.indexOf('assign_roles') !== -1 ? '' : 'none';
+          var menuSedes = document.getElementById('menu-sedes');
+          if (menuSedes) menuSedes.style.display = userPermissions.indexOf('assign_roles') !== -1 ? '' : 'none';
           var menuAsist = document.getElementById('menu-asistencia');
           if (menuAsist) menuAsist.style.display = userPermissions.indexOf('ver_asistencia') !== -1 ? '' : 'none';
+          var menuTodo = document.getElementById('menu-todo');
+          if (menuTodo) menuTodo.style.display = userPermissions.indexOf('ver_todo') !== -1 ? '' : 'none';
+          var btnTodoNueva = document.getElementById('btn-todo-nueva');
+          if (btnTodoNueva) btnTodoNueva.style.display = userPermissions.indexOf('crear_todo') !== -1 ? 'inline-flex' : 'none';
+          syncTodoMatrizTabVisibility();
           document.getElementById('btn-cerrar-sesion').addEventListener('click', function() {
             client.auth.signOut().then(function() { showLogin(); });
           });
@@ -4445,6 +5043,8 @@
           setupVistasMenu();
           setupHelpExclusiones();
           setupSeguridad();
+          setupTodoModule();
+          setupSedesModule();
           var promConfig = (userPermissions.indexOf('ver_proyeccion') !== -1) ? loadConfigProyeccion() : Promise.resolve();
           promConfig.then(function() { return cargarDatos(); })
             .then(function() {
@@ -4467,13 +5067,18 @@
       }
 
       function refreshPermisosYVista() {
-        Promise.all([ client.rpc('get_my_permissions'), client.rpc('get_my_allowed_sucursales') ]).then(function(results) {
+        Promise.all([
+          client.rpc('get_my_permissions'),
+          client.rpc('get_my_allowed_sucursales'),
+          client.rpc('get_my_role')
+        ]).then(function(results) {
           var res = results[0];
           if (res.error) return;
           userPermissions = res.data || [];
           var sucRes = results[1];
           if (!sucRes.error && Array.isArray(sucRes.data)) myAllowedSucursales = sucRes.data.length ? sucRes.data : null;
           else myAllowedSucursales = null;
+          currentUserRole = (!results[2].error && results[2].data != null) ? String(results[2].data) : null;
           var btnUpload = document.getElementById('btn-actualizar-base');
           var wrapUpload = btnUpload && btnUpload.closest('.filtros-der');
           if (wrapUpload) wrapUpload.style.display = userPermissions.indexOf('upload_base') !== -1 ? '' : 'none';
@@ -4483,6 +5088,15 @@
           if (btnProy) btnProy.style.display = userPermissions.indexOf('ver_proyeccion') !== -1 ? '' : 'none';
           var menuSeg = document.getElementById('menu-seguridad');
           if (menuSeg) menuSeg.style.display = userPermissions.indexOf('assign_roles') !== -1 ? '' : 'none';
+          var menuSedes2 = document.getElementById('menu-sedes');
+          if (menuSedes2) {
+            var showSedes = userPermissions.indexOf('assign_roles') !== -1;
+            menuSedes2.style.display = showSedes ? '' : 'none';
+            if (!showSedes) {
+              var vs = document.getElementById('vista-sedes');
+              if (vs && vs.style.display !== 'none') document.getElementById('menu-home').click();
+            }
+          }
           var menuAsist2 = document.getElementById('menu-asistencia');
           if (menuAsist2) {
             var showAsist = userPermissions.indexOf('ver_asistencia') !== -1;
@@ -4492,11 +5106,24 @@
               if (va && va.style.display !== 'none') document.getElementById('menu-home').click();
             }
           }
+          var menuTodo2 = document.getElementById('menu-todo');
+          if (menuTodo2) {
+            var showTodo = userPermissions.indexOf('ver_todo') !== -1;
+            menuTodo2.style.display = showTodo ? '' : 'none';
+            if (!showTodo) {
+              var vt = document.getElementById('vista-todo');
+              if (vt && vt.style.display !== 'none') document.getElementById('menu-home').click();
+            }
+          }
+          var btnTodoNueva2 = document.getElementById('btn-todo-nueva');
+          if (btnTodoNueva2) btnTodoNueva2.style.display = userPermissions.indexOf('crear_todo') !== -1 ? 'inline-flex' : 'none';
+          syncTodoMatrizTabVisibility();
           // No invalidateAsistenciaCache aquí: el botón Actualizar debe respetar cache + RPC get_asistencia_dataset_version.
           cargarDatos()
             .then(function() {
               renderizar();
               if (asistenciaVistaMenuActiva()) renderVistaAsistencia(false);
+              if (todoVistaMenuActiva()) cargarTodoBandeja();
             })
             .catch(function() {});
         });
@@ -4527,13 +5154,21 @@
       function setupVistasMenu() {
         var vistaDashboard = document.getElementById('vista-dashboard');
         var vistaAsistencia = document.getElementById('vista-asistencia');
+        var vistaTodo = document.getElementById('vista-todo');
+        var vistaSedes = document.getElementById('vista-sedes');
         var vistaSeguridad = document.getElementById('vista-seguridad');
         var pageTitle = document.getElementById('page-title');
+        function hideAllVistas() {
+          vistaDashboard.style.display = 'none';
+          if (vistaAsistencia) vistaAsistencia.style.display = 'none';
+          if (vistaTodo) vistaTodo.style.display = 'none';
+          if (vistaSedes) vistaSedes.style.display = 'none';
+          vistaSeguridad.style.display = 'none';
+        }
         document.getElementById('menu-home').addEventListener('click', function(e) {
           e.preventDefault();
+          hideAllVistas();
           vistaDashboard.style.display = 'block';
-          if (vistaAsistencia) vistaAsistencia.style.display = 'none';
-          vistaSeguridad.style.display = 'none';
           pageTitle.textContent = 'Dashboard';
           document.querySelectorAll('.sidebar-nav .menu-item').forEach(function(m) { m.classList.remove('menu-item-active'); });
           document.getElementById('menu-home').classList.add('menu-item-active');
@@ -4543,9 +5178,8 @@
           menuAsist.addEventListener('click', function(e) {
             e.preventDefault();
             if (!userPermissions || userPermissions.indexOf('ver_asistencia') === -1) return;
-            vistaDashboard.style.display = 'none';
+            hideAllVistas();
             vistaAsistencia.style.display = 'block';
-            vistaSeguridad.style.display = 'none';
             pageTitle.textContent = 'Asistencia';
             document.querySelectorAll('.sidebar-nav .menu-item').forEach(function(m) { m.classList.remove('menu-item-active'); });
             menuAsist.classList.add('menu-item-active');
@@ -4557,10 +5191,35 @@
             renderVistaAsistencia(false);
           });
         }
+        var menuTodo = document.getElementById('menu-todo');
+        if (menuTodo && vistaTodo) {
+          menuTodo.addEventListener('click', function(e) {
+            e.preventDefault();
+            if (!userPermissions || userPermissions.indexOf('ver_todo') === -1) return;
+            hideAllVistas();
+            vistaTodo.style.display = 'block';
+            pageTitle.textContent = 'To-Do';
+            document.querySelectorAll('.sidebar-nav .menu-item').forEach(function(m) { m.classList.remove('menu-item-active'); });
+            menuTodo.classList.add('menu-item-active');
+            cargarTodoBandeja();
+          });
+        }
+        var menuSedes = document.getElementById('menu-sedes');
+        if (menuSedes && vistaSedes) {
+          menuSedes.addEventListener('click', function(e) {
+            e.preventDefault();
+            if (!userPermissions || userPermissions.indexOf('assign_roles') === -1) return;
+            hideAllVistas();
+            vistaSedes.style.display = 'block';
+            pageTitle.textContent = 'Sedes';
+            document.querySelectorAll('.sidebar-nav .menu-item').forEach(function(m) { m.classList.remove('menu-item-active'); });
+            menuSedes.classList.add('menu-item-active');
+            cargarSedesAbm();
+          });
+        }
         document.getElementById('menu-seguridad').addEventListener('click', function(e) {
           e.preventDefault();
-          vistaDashboard.style.display = 'none';
-          if (vistaAsistencia) vistaAsistencia.style.display = 'none';
+          hideAllVistas();
           vistaSeguridad.style.display = 'block';
           pageTitle.textContent = 'Seguridad';
           document.querySelectorAll('.sidebar-nav .menu-item').forEach(function(m) { m.classList.remove('menu-item-active'); });
@@ -4572,8 +5231,17 @@
       var ROL_ICONS = {
         admin: '<svg class="rol-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>',
         encargado: '<svg class="rol-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"/></svg>',
+        recepcionista: '<svg class="rol-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 21h18"/><path d="M5 21V7l7-4 7 4v14"/><path d="M9 21v-6h6v6"/><path d="M9 10h.01"/><path d="M15 10h.01"/></svg>',
+        profesor: '<svg class="rol-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>',
         visor: '<svg class="rol-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>'
       };
+      var ROL_ORDER = ['admin', 'encargado', 'recepcionista', 'profesor', 'visor'];
+      var ROL_LABELS = { admin: 'Admin', encargado: 'Encargado', recepcionista: 'Recepcionista', profesor: 'Profesor', visor: 'Visor' };
+      function opcionesRolSelect(roleSeleccionado) {
+        return ROL_ORDER.map(function(r) {
+          return '<option value="' + r + '"' + (roleSeleccionado === r ? ' selected' : '') + '>' + (ROL_LABELS[r] || r) + '</option>';
+        }).join('');
+      }
       function cargarSeguridad() {
         var permLoading = document.getElementById('seguridad-permisos-loading');
         var rolCards = document.getElementById('seguridad-rol-cards');
@@ -4589,10 +5257,19 @@
               if (!byRole[row.role]) byRole[row.role] = { label: row.role_label, perms: [] };
               byRole[row.role].perms.push({ permission: row.permission, description: row.perm_description, granted: row.granted });
             });
-            var order = ['admin', 'encargado', 'visor'];
             var html = '';
-            order.forEach(function(role) {
+            ROL_ORDER.forEach(function(role) {
               if (!byRole[role]) return;
+              var r = byRole[role];
+              html += '<div class="seguridad-rol-card" data-role="' + esc(role) + '"><div class="seguridad-rol-header">' + (ROL_ICONS[role] || '') + '<span>' + esc(r.label) + '</span></div><div class="seguridad-rol-opciones">';
+              r.perms.forEach(function(p) {
+                var checked = p.granted ? 'true' : 'false';
+                html += '<div class="seguridad-perm-row"><span>' + esc(p.description) + '</span><button type="button" class="toggle-switch" role="switch" aria-checked="' + checked + '" data-role="' + esc(role) + '" data-permission="' + esc(p.permission) + '" title="Activar o desactivar"><span class="toggle-switch-slider"></span></button></div>';
+              });
+              html += '</div></div>';
+            });
+            Object.keys(byRole).forEach(function(role) {
+              if (ROL_ORDER.indexOf(role) !== -1) return;
               var r = byRole[role];
               html += '<div class="seguridad-rol-card" data-role="' + esc(role) + '"><div class="seguridad-rol-header">' + (ROL_ICONS[role] || '') + '<span>' + esc(r.label) + '</span></div><div class="seguridad-rol-opciones">';
               r.perms.forEach(function(p) {
@@ -4608,7 +5285,7 @@
                 var permission = btn.getAttribute('data-permission');
                 var newGranted = btn.getAttribute('aria-checked') !== 'true';
                 client.rpc('set_role_permission', { p_role: role, p_permission: permission, p_granted: newGranted }).then(function(r) {
-                  if (r.error) { alert('Error: ' + (r.error.message || 'No se pudo guardar.')); return; }
+                  if (r.error) { showToast(r.error.message || 'No se pudo guardar.', 'error'); return; }
                   btn.setAttribute('aria-checked', newGranted ? 'true' : 'false');
                   refreshPermisosYVista();
                 });
@@ -4638,7 +5315,7 @@
             var role = (u.role || 'visor');
             var suc = u.sucursales_permitidas;
             var sucText = !suc || suc.length === 0 ? 'Todas' : suc.join(', ');
-            return '<tr data-user-id="' + uid + '"><td>' + email + '</td><td><select class="seguridad-rol" data-user-id="' + uid + '"><option value="admin"' + (role === 'admin' ? ' selected' : '') + '>Admin</option><option value="encargado"' + (role === 'encargado' ? ' selected' : '') + '>Encargado</option><option value="visor"' + (role === 'visor' ? ' selected' : '') + '>Visor</option></select></td><td><span class="seguridad-sucursales-text">' + esc(sucText) + '</span> <button type="button" class="btn-sucursales-config" data-user-id="' + uid + '" title="Configurar sucursales">Configurar</button></td><td><button type="button" class="btn-guardar-rol" data-user-id="' + uid + '">Guardar</button></td></tr>';
+            return '<tr data-user-id="' + uid + '"><td>' + email + '</td><td><select class="seguridad-rol" data-user-id="' + uid + '">' + opcionesRolSelect(role) + '</select></td><td><span class="seguridad-sucursales-text">' + esc(sucText) + '</span> <button type="button" class="btn-sucursales-config" data-user-id="' + uid + '" title="Configurar sucursales">Configurar</button></td><td><button type="button" class="btn-guardar-rol" data-user-id="' + uid + '">Guardar</button></td></tr>';
           }).join('');
           tbody.querySelectorAll('.btn-guardar-rol').forEach(function(btn) {
             btn.addEventListener('click', function() {
@@ -4647,12 +5324,875 @@
               var sel = row.querySelector('.seguridad-rol');
               var newRole = sel.value;
               client.from('app_user_profile').upsert({ user_id: uid, role: newRole, updated_by: currentUserId }, { onConflict: 'user_id' }).then(function(r) {
-                if (r.error) alert('Error: ' + (r.error.message || 'No se pudo guardar.'));
+                if (r.error) showToast(r.error.message || 'No se pudo guardar.', 'error');
               });
             });
           });
           openModalSucursalesOnClick(tbody, users, sucursalesList);
         });
+      }
+
+      var TODO_LISTA_ACTUAL = [];
+      var todoModuleReady = false;
+      var TODO_MATRIZ_ESTADOS = ['pendiente', 'en_curso', 'vencida', 'hecha', 'cancelada'];
+
+      function todoPuedeVerMatriz() {
+        return currentUserRole === 'admin' || currentUserRole === 'encargado';
+      }
+
+      function syncTodoMatrizTabVisibility() {
+        var tab = document.getElementById('todo-tab-matriz');
+        var puede = todoPuedeVerMatriz();
+        if (tab) tab.style.display = puede ? '' : 'none';
+        if (!puede) activarTodoTab('tareas');
+      }
+
+      function activarTodoTab(nombre) {
+        var tabs = document.querySelectorAll('#todo-tabs [data-todo-tab]');
+        var panels = {
+          tareas: document.getElementById('todo-panel-tareas'),
+          matriz: document.getElementById('todo-panel-matriz')
+        };
+        if (nombre === 'matriz' && !todoPuedeVerMatriz()) nombre = 'tareas';
+        tabs.forEach(function(btn) {
+          var on = btn.getAttribute('data-todo-tab') === nombre;
+          btn.classList.toggle('activo', on);
+          btn.setAttribute('aria-selected', on ? 'true' : 'false');
+        });
+        Object.keys(panels).forEach(function(k) {
+          if (!panels[k]) return;
+          panels[k].classList.toggle('activo', k === nombre);
+        });
+        if (nombre === 'matriz') renderTodoMatriz();
+      }
+
+      function todoResponsableKey(row) {
+        if ((row.responsable_tipo || '') === 'rol') {
+          return 'rol:' + String(row.responsable_role || '');
+        }
+        return 'usuario:' + String(row.responsable_user_id || row.responsable_label || 'sin');
+      }
+
+      function todoResponsableMeta(row) {
+        var tipo = row.responsable_tipo || 'usuario';
+        var label = row.responsable_label || '—';
+        var sub = tipo === 'rol' ? 'Perfil' : 'Usuario';
+        return { key: todoResponsableKey(row), tipo: tipo, label: label, sub: sub };
+      }
+
+      function todoListaPorResponsableEstado(key, estado) {
+        return todoListaFiltradaLocal().filter(function(r) {
+          if (todoResponsableKey(r) !== key) return false;
+          var est = r.estado_efectivo || r.estado || 'pendiente';
+          return est === estado;
+        });
+      }
+
+      function renderTodoMatriz() {
+        var tbody = document.getElementById('todo-matriz-tbody');
+        if (!tbody || !todoPuedeVerMatriz()) return;
+        var rows = todoListaFiltradaLocal();
+        var map = {};
+        rows.forEach(function(r) {
+          var meta = todoResponsableMeta(r);
+          if (!map[meta.key]) {
+            map[meta.key] = {
+              key: meta.key,
+              label: meta.label,
+              tipo: meta.tipo,
+              sub: meta.sub,
+              counts: { pendiente: 0, en_curso: 0, vencida: 0, hecha: 0, cancelada: 0 }
+            };
+          }
+          var est = r.estado_efectivo || r.estado || 'pendiente';
+          if (map[meta.key].counts[est] == null) map[meta.key].counts[est] = 0;
+          map[meta.key].counts[est] += 1;
+        });
+        var list = Object.keys(map).map(function(k) { return map[k]; });
+        list.sort(function(a, b) {
+          if (a.tipo !== b.tipo) return a.tipo === 'rol' ? -1 : 1;
+          if (a.tipo === 'rol') {
+            var ia = ROL_ORDER.indexOf(a.key.replace(/^rol:/, ''));
+            var ib = ROL_ORDER.indexOf(b.key.replace(/^rol:/, ''));
+            if (ia < 0) ia = 99;
+            if (ib < 0) ib = 99;
+            if (ia !== ib) return ia - ib;
+          }
+          return String(a.label).localeCompare(String(b.label), 'es');
+        });
+        if (!list.length) {
+          tbody.innerHTML = '<tr><td colspan="7" class="todo-empty">No hay tareas para los filtros seleccionados.</td></tr>';
+          return;
+        }
+        tbody.innerHTML = list.map(function(item) {
+          var total = TODO_MATRIZ_ESTADOS.reduce(function(acc, e) { return acc + (item.counts[e] || 0); }, 0);
+          var cells = TODO_MATRIZ_ESTADOS.map(function(est) {
+            var n = item.counts[est] || 0;
+            if (n <= 0) {
+              return '<td class="num"><span class="todo-matriz-count cero" aria-hidden="true">0</span></td>';
+            }
+            return '<td class="num"><button type="button" class="todo-matriz-count" data-key="' + esc(item.key) + '" data-estado="' + esc(est) + '" data-label="' + esc(item.label) + '" title="Ver tareas" aria-label="' + esc(item.label + ' · ' + labelEstadoTodo(est) + ': ' + n) + '">' + n + '</button></td>';
+          }).join('');
+          return '<tr>' +
+            '<td class="sticky-col">' + esc(item.label) +
+              '<div class="todo-matriz-sub">' + esc(item.sub) + '</div>' +
+            '</td>' +
+            cells +
+            '<td class="num"><strong>' + total + '</strong></td>' +
+          '</tr>';
+        }).join('');
+        tbody.querySelectorAll('.todo-matriz-count:not(.cero)').forEach(function(btn) {
+          btn.addEventListener('click', function() {
+            abrirModalTodoMatrizDetalle(
+              btn.getAttribute('data-key'),
+              btn.getAttribute('data-estado'),
+              btn.getAttribute('data-label')
+            );
+          });
+        });
+      }
+
+      function cerrarModalTodoMatrizDetalle() {
+        var backdrop = document.getElementById('modal-todo-matriz-backdrop');
+        if (!backdrop) return;
+        backdrop.classList.add('oculto');
+        backdrop.setAttribute('aria-hidden', 'true');
+      }
+
+      function abrirModalTodoMatrizDetalle(key, estado, labelResp) {
+        if (!todoPuedeVerMatriz()) return;
+        var rows = todoListaPorResponsableEstado(key, estado);
+        var titulo = document.getElementById('modal-todo-matriz-titulo');
+        var tbody = document.getElementById('todo-matriz-modal-tbody');
+        if (titulo) {
+          titulo.textContent = (labelResp || 'Responsable') + ' · ' + labelEstadoTodo(estado) + ' (' + rows.length + ')';
+        }
+        if (!tbody) return;
+        if (!rows.length) {
+          tbody.innerHTML = '<tr><td colspan="6" class="todo-empty">Sin tareas en este cruce.</td></tr>';
+        } else {
+          tbody.innerHTML = rows.map(function(row) {
+            var est = row.estado_efectivo || row.estado || 'pendiente';
+            var prio = Number(row.prioridad) || 2;
+            return '<tr>' +
+              '<td><div class="todo-titulo-cell">' + esc(row.titulo) + '</div>' +
+                (row.descripcion ? '<div class="todo-desc-cell">' + esc(row.descripcion) + '</div>' : '') +
+              '</td>' +
+              '<td>' + esc(row.sede || 'Empresa') + '</td>' +
+              '<td>' + esc(formatearVencimientoTodo(row.vencimiento_at)) + '</td>' +
+              '<td><span class="todo-badge todo-badge-prio-' + prio + '">' + esc(labelPrioridadTodo(prio)) + '</span></td>' +
+              '<td><span class="todo-badge todo-badge-' + esc(est) + '">' + esc(labelEstadoTodo(est)) + '</span></td>' +
+              '<td>' + esc(labelRecurrenciaTodo(row.recurrencia)) + '</td>' +
+            '</tr>';
+          }).join('');
+        }
+        var backdrop = document.getElementById('modal-todo-matriz-backdrop');
+        if (backdrop) {
+          backdrop.classList.remove('oculto');
+          backdrop.setAttribute('aria-hidden', 'false');
+        }
+      }
+
+      function todoVistaMenuActiva() {
+        var v = document.getElementById('vista-todo');
+        return !!(v && v.style.display !== 'none');
+      }
+
+      function fechaHoyYYYYMMDDArgentina() {
+        return new Date().toLocaleDateString('en-CA', { timeZone: ZONA_ARGENTINA });
+      }
+
+      function formatearVencimientoTodo(iso) {
+        if (!iso) return '—';
+        var d = new Date(iso);
+        if (isNaN(d.getTime())) return '—';
+        return d.toLocaleString('es-AR', {
+          timeZone: ZONA_ARGENTINA,
+          day: '2-digit', month: '2-digit', year: 'numeric',
+          hour: '2-digit', minute: '2-digit', hour12: false
+        });
+      }
+
+      function labelEstadoTodo(est) {
+        var map = { pendiente: 'Pendiente', en_curso: 'En curso', hecha: 'Hecha', cancelada: 'Cancelada', vencida: 'Vencida' };
+        return map[est] || est || '—';
+      }
+
+      function labelPrioridadTodo(p) {
+        if (Number(p) === 1) return 'Alta';
+        if (Number(p) === 3) return 'Baja';
+        return 'Media';
+      }
+
+      function labelRecurrenciaTodo(r) {
+        var map = { ninguna: 'Única', diaria: 'Diaria', semanal: 'Semanal', mensual: 'Mensual', bimestral: 'Bimestral', trimestral: 'Trimestral', anual: 'Anual' };
+        return map[r] || r || '—';
+      }
+
+      function todoListaFiltradaLocal() {
+        var q = ((document.getElementById('todo-filtro-q') || {}).value || '').trim().toLowerCase();
+        if (!q) return TODO_LISTA_ACTUAL.slice();
+        return TODO_LISTA_ACTUAL.filter(function(row) {
+          var t = (row.titulo || '') + ' ' + (row.descripcion || '') + ' ' + (row.responsable_label || '');
+          return t.toLowerCase().indexOf(q) !== -1;
+        });
+      }
+
+      function renderTodoResumenDesdeFiltros() {
+        var rows = todoListaFiltradaLocal();
+        var hoy = fechaHoyYYYYMMDDArgentina();
+        var sum = { pendientes: 0, en_curso: 0, vencidas: 0, hechas_hoy: 0 };
+        rows.forEach(function(r) {
+          var est = r.estado_efectivo || r.estado || 'pendiente';
+          if (est === 'pendiente') sum.pendientes += 1;
+          else if (est === 'en_curso') sum.en_curso += 1;
+          else if (est === 'vencida') sum.vencidas += 1;
+          if ((r.estado || '') === 'hecha' && r.completada_at) {
+            var d = new Date(r.completada_at);
+            if (!isNaN(d.getTime())) {
+              var dia = d.toLocaleDateString('en-CA', { timeZone: ZONA_ARGENTINA });
+              if (dia === hoy) sum.hechas_hoy += 1;
+            }
+          }
+        });
+        renderTodoResumen(sum);
+      }
+
+      function renderTodoResumen(sum) {
+        var s = sum || {};
+        var elP = document.getElementById('todo-sum-pendientes');
+        var elC = document.getElementById('todo-sum-en-curso');
+        var elV = document.getElementById('todo-sum-vencidas');
+        var elH = document.getElementById('todo-sum-hechas');
+        if (elP) elP.textContent = String(s.pendientes != null ? s.pendientes : 0);
+        if (elC) elC.textContent = String(s.en_curso != null ? s.en_curso : 0);
+        if (elV) elV.textContent = String(s.vencidas != null ? s.vencidas : 0);
+        if (elH) elH.textContent = String(s.hechas_hoy != null ? s.hechas_hoy : 0);
+      }
+
+      function renderTodoTabla() {
+        var tbody = document.getElementById('todo-tbody');
+        if (!tbody) return;
+        var rows = todoListaFiltradaLocal();
+        var canComplete = userPermissions.indexOf('completar_todo') !== -1;
+        var canEdit = userPermissions.indexOf('editar_todo') !== -1;
+        var canDelete = userPermissions.indexOf('eliminar_todo') !== -1;
+        var iconEdit = '<span class="btn-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 013 3L7 19l-4 1 1-4 12.5-12.5z"/></svg></span>';
+        var iconDel = '<span class="btn-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2"/></svg></span>';
+        if (!rows.length) {
+          tbody.innerHTML = '<tr><td colspan="8" class="todo-empty">No hay tareas para los filtros seleccionados.</td></tr>';
+          return;
+        }
+        tbody.innerHTML = rows.map(function(row) {
+          var est = row.estado_efectivo || row.estado || 'pendiente';
+          var prio = Number(row.prioridad) || 2;
+          var partes = [];
+          if (canComplete && est !== 'hecha' && row.estado !== 'cancelada') {
+            partes.push(
+              '<select class="todo-estado-select" data-id="' + esc(row.id) + '" aria-label="Cambiar estado">' +
+              '<option value="">Estado…</option>' +
+              '<option value="pendiente"' + (row.estado === 'pendiente' ? ' selected' : '') + '>Pendiente</option>' +
+              '<option value="en_curso"' + (row.estado === 'en_curso' ? ' selected' : '') + '>En curso</option>' +
+              '<option value="hecha">Hecha</option>' +
+              '<option value="cancelada">Cancelada</option>' +
+              '</select>'
+            );
+          } else if (canComplete && (est === 'hecha' || row.estado === 'cancelada')) {
+            partes.push(
+              '<select class="todo-estado-select" data-id="' + esc(row.id) + '" aria-label="Reabrir estado">' +
+              '<option value="">Reabrir…</option>' +
+              '<option value="pendiente">Pendiente</option>' +
+              '<option value="en_curso">En curso</option>' +
+              '</select>'
+            );
+          }
+          if (canEdit) {
+            partes.push('<button type="button" class="btn-todo-icon todo-btn-editar" data-id="' + esc(row.id) + '" title="Editar tarea" aria-label="Editar tarea">' + iconEdit + '</button>');
+          }
+          if (canDelete) {
+            partes.push('<button type="button" class="btn-todo-icon danger todo-btn-eliminar" data-id="' + esc(row.id) + '" data-recurrencia="' + esc(row.recurrencia || 'ninguna') + '" title="Eliminar tarea" aria-label="Eliminar tarea">' + iconDel + '</button>');
+          }
+          var acciones = partes.length ? ('<div class="todo-row-actions">' + partes.join('') + '</div>') : '—';
+          return '<tr data-id="' + esc(row.id) + '">' +
+            '<td><div class="todo-titulo-cell">' + esc(row.titulo) + '</div>' +
+              (row.descripcion ? '<div class="todo-desc-cell">' + esc(row.descripcion) + '</div>' : '') +
+            '</td>' +
+            '<td>' + esc(row.sede || 'Empresa') + '</td>' +
+            '<td>' + esc(row.responsable_label || '—') + '</td>' +
+            '<td>' + esc(formatearVencimientoTodo(row.vencimiento_at)) + '</td>' +
+            '<td><span class="todo-badge todo-badge-prio-' + prio + '">' + esc(labelPrioridadTodo(prio)) + '</span></td>' +
+            '<td><span class="todo-badge todo-badge-' + esc(est) + '">' + esc(labelEstadoTodo(est)) + '</span></td>' +
+            '<td>' + esc(labelRecurrenciaTodo(row.recurrencia)) + '</td>' +
+            '<td>' + acciones + '</td>' +
+          '</tr>';
+        }).join('');
+        tbody.querySelectorAll('.todo-estado-select').forEach(function(sel) {
+          sel.addEventListener('change', function() {
+            var id = sel.getAttribute('data-id');
+            var estado = sel.value;
+            if (!id || !estado) return;
+            client.rpc('todo_cambiar_estado', { p_instancia_id: id, p_estado: estado }).then(function(r) {
+              if (r.error) {
+                showToast(r.error.message || 'No se pudo actualizar.', 'error');
+                sel.value = '';
+                return;
+              }
+              showToast('Estado actualizado.', 'success');
+              cargarTodoBandeja();
+            });
+          });
+        });
+        tbody.querySelectorAll('.todo-btn-editar').forEach(function(btn) {
+          btn.addEventListener('click', function() {
+            abrirModalTodoEditar(btn.getAttribute('data-id'));
+          });
+        });
+        tbody.querySelectorAll('.todo-btn-eliminar').forEach(function(btn) {
+          btn.addEventListener('click', function() {
+            eliminarTodoInstancia(btn.getAttribute('data-id'), btn.getAttribute('data-recurrencia'));
+          });
+        });
+      }
+
+      function cargarTodoBandeja() {
+        if (!client || userPermissions.indexOf('ver_todo') === -1) return;
+        var estadoEl = document.getElementById('todo-estado');
+        var filtroEstado = (document.getElementById('todo-filtro-estado') || {}).value || null;
+        var filtroPrio = (document.getElementById('todo-filtro-prioridad') || {}).value || null;
+        var filtroVentana = (document.getElementById('todo-filtro-ventana') || {}).value || 'hoy';
+        var filtroSede = (document.getElementById('todo-filtro-sede') || {}).value || null;
+        if (estadoEl) {
+          estadoEl.style.display = 'block';
+          estadoEl.textContent = 'Cargando bandeja…';
+        }
+        var pEstado = filtroEstado || null;
+        var pPrio = filtroPrio ? Number(filtroPrio) : null;
+        var filtrosInbox = { p_estado: pEstado, p_prioridad: pPrio, p_ventana: filtroVentana, p_sede: filtroSede || null };
+
+        function pintarBandeja(results) {
+          if (estadoEl) estadoEl.style.display = 'none';
+          var listRes = results[0];
+          var sedesRes = results[1];
+          var selSede = document.getElementById('todo-filtro-sede');
+          if (selSede && sedesRes && !sedesRes.error && Array.isArray(sedesRes.data)) {
+            var cur = selSede.value;
+            selSede.innerHTML = '<option value="">Todas</option>' + (sedesRes.data || []).map(function(s) {
+              return '<option value="' + esc(s) + '">' + esc(s) + '</option>';
+            }).join('');
+            if (cur) selSede.value = cur;
+          }
+          if (!listRes || listRes.error) {
+            if (estadoEl) {
+              estadoEl.style.display = 'block';
+              estadoEl.textContent = 'Error: ' + ((listRes && listRes.error && listRes.error.message) || 'No se pudo cargar el To-Do.');
+            }
+            TODO_LISTA_ACTUAL = [];
+            renderTodoTabla();
+            renderTodoResumenDesdeFiltros();
+            renderTodoMatriz();
+            return;
+          }
+          TODO_LISTA_ACTUAL = listRes.data || [];
+          renderTodoTabla();
+          renderTodoResumenDesdeFiltros();
+          renderTodoMatriz();
+        }
+
+        // Listar de inmediato (no bloquear la UI). Materializar recurrencias en paralelo/background.
+        Promise.all([
+          client.rpc('todo_list_inbox', filtrosInbox),
+          client.rpc('get_sucursales_list')
+        ]).then(function(results) {
+          pintarBandeja(results);
+          client.rpc('todo_generar_instancias_todas').then(function(genRes) {
+            if (genRes && genRes.error) return;
+            if (genRes && genRes.data > 0) {
+              Promise.all([
+                client.rpc('todo_list_inbox', filtrosInbox),
+                client.rpc('get_sucursales_list')
+              ]).then(pintarBandeja).catch(function() {});
+            }
+          }).catch(function() {});
+        }).catch(function(e) {
+          if (estadoEl) {
+            estadoEl.style.display = 'block';
+            estadoEl.textContent = 'Error: ' + (e && e.message ? e.message : e);
+          }
+        });
+      }
+
+      function exportarTodoExcel() {
+        if (!window.XLSX) {
+          showToast('No está disponible la librería Excel.', 'error');
+          return;
+        }
+        var rows = todoListaFiltradaLocal();
+        var header = ['Título', 'Descripción', 'Sede', 'Responsable', 'Tipo responsable', 'Vencimiento', 'Prioridad', 'Estado', 'Recurrencia', 'Completada'];
+        var aoa = [header].concat(rows.map(function(r) {
+          return [
+            r.titulo || '',
+            r.descripcion || '',
+            r.sede || 'Empresa',
+            r.responsable_label || '',
+            r.responsable_tipo || '',
+            formatearVencimientoTodo(r.vencimiento_at),
+            Number(r.prioridad) || null,
+            labelEstadoTodo(r.estado_efectivo || r.estado),
+            labelRecurrenciaTodo(r.recurrencia),
+            r.completada_at ? formatearVencimientoTodo(r.completada_at) : ''
+          ];
+        }));
+        var ws = window.XLSX.utils.aoa_to_sheet(aoa);
+        var wb = window.XLSX.utils.book_new();
+        window.XLSX.utils.book_append_sheet(wb, ws, 'To-Do');
+        var nombre = 'todo_' + fechaHoyYYYYMMDDArgentina() + '.xlsx';
+        window.XLSX.writeFile(wb, nombre);
+      }
+
+      function syncTodoFormRecurrencia() {
+        var rec = (document.getElementById('todo-nueva-recurrencia') || {}).value || 'ninguna';
+        var wrapFecha = document.getElementById('todo-nueva-fecha-wrap');
+        var wrapFin = document.getElementById('todo-nueva-fecha-fin-wrap');
+        var wrapHora = document.getElementById('todo-nueva-hora-wrap');
+        var wrapSem = document.getElementById('todo-nueva-dia-semana-wrap');
+        var wrapMes = document.getElementById('todo-nueva-dia-mes-wrap');
+        if (wrapFecha) wrapFecha.style.display = (rec === 'ninguna') ? '' : 'none';
+        if (wrapFin) wrapFin.style.display = (rec === 'ninguna') ? 'none' : '';
+        if (wrapHora) wrapHora.style.display = '';
+        if (wrapSem) wrapSem.style.display = (rec === 'semanal') ? '' : 'none';
+        if (wrapMes) wrapMes.style.display = (rec === 'mensual' || rec === 'bimestral' || rec === 'trimestral' || rec === 'anual') ? '' : 'none';
+        if (rec !== 'ninguna') {
+          var fin = document.getElementById('todo-nueva-fecha-fin');
+          var ini = document.getElementById('todo-nueva-fecha');
+          var hoy = fechaHoyYYYYMMDDArgentina();
+          if (fin && !fin.value) {
+            var d = new Date(hoy + 'T12:00:00');
+            d.setDate(d.getDate() + 14);
+            fin.value = d.toLocaleDateString('en-CA', { timeZone: ZONA_ARGENTINA });
+          }
+          if (ini && !ini.value) ini.value = hoy;
+        }
+      }
+
+      function syncTodoFormSede() {
+        var modo = (document.getElementById('todo-nueva-sede-modo') || {}).value || 'todas';
+        var wrap = document.getElementById('todo-nueva-sede-wrap');
+        var sel = document.getElementById('todo-nueva-sede');
+        if (wrap) wrap.style.display = modo === 'una' ? '' : 'none';
+        if (sel) sel.required = modo === 'una';
+      }
+
+      function syncTodoFormResponsable() {
+        var tipo = (document.getElementById('todo-nueva-resp-tipo') || {}).value || 'usuario';
+        var wrapUser = document.getElementById('todo-nueva-resp-user-wrap');
+        var wrapRol = document.getElementById('todo-nueva-resp-rol-wrap');
+        var selUser = document.getElementById('todo-nueva-resp-user');
+        var selRol = document.getElementById('todo-nueva-resp-rol');
+        if (wrapUser) wrapUser.style.display = tipo === 'usuario' ? '' : 'none';
+        if (wrapRol) wrapRol.style.display = tipo === 'rol' ? '' : 'none';
+        if (selUser) selUser.required = tipo === 'usuario';
+        if (selRol) selRol.required = tipo === 'rol';
+      }
+
+      function abrirModalTodoNueva() {
+        var backdrop = document.getElementById('modal-todo-nueva-backdrop');
+        if (!backdrop) return;
+        var err = document.getElementById('todo-nueva-error');
+        if (err) { err.style.display = 'none'; err.textContent = ''; }
+        var form = document.getElementById('form-todo-nueva');
+        if (form) form.reset();
+        var fecha = document.getElementById('todo-nueva-fecha');
+        if (fecha) fecha.value = fechaHoyYYYYMMDDArgentina();
+        var hora = document.getElementById('todo-nueva-hora');
+        if (hora && !hora.value) hora.value = '18:00';
+        syncTodoFormRecurrencia();
+        syncTodoFormResponsable();
+        syncTodoFormSede();
+        Promise.all([
+          client.rpc('todo_list_usuarios'),
+          client.rpc('todo_list_roles'),
+          client.rpc('get_sucursales_list')
+        ]).then(function(results) {
+          var users = (!results[0].error && results[0].data) ? results[0].data : [];
+          var roles = (!results[1].error && results[1].data) ? results[1].data : [];
+          var sedes = (!results[2].error && Array.isArray(results[2].data)) ? results[2].data : [];
+          var selUser = document.getElementById('todo-nueva-resp-user');
+          var selRol = document.getElementById('todo-nueva-resp-rol');
+          var selSede = document.getElementById('todo-nueva-sede');
+          if (selUser) {
+            selUser.innerHTML = '<option value="">Elegir usuario…</option>' + users.map(function(u) {
+              return '<option value="' + esc(u.user_id) + '">' + esc(u.email) + ' (' + esc(u.role_label || u.role) + ')</option>';
+            }).join('');
+            if (currentUserId) selUser.value = currentUserId;
+          }
+          if (selRol) {
+            selRol.innerHTML = '<option value="">Elegir perfil…</option>' + roles.map(function(r) {
+              return '<option value="' + esc(r.role) + '">' + esc(r.label || r.role) + '</option>';
+            }).join('');
+          }
+          if (selSede) {
+            selSede.innerHTML = '<option value="">Elegir sede…</option>' + sedes.map(function(s) {
+              return '<option value="' + esc(s) + '">' + esc(s) + '</option>';
+            }).join('');
+          }
+          backdrop.classList.remove('oculto');
+          backdrop.setAttribute('aria-hidden', 'false');
+        });
+      }
+
+      function cerrarModalTodoNueva() {
+        var backdrop = document.getElementById('modal-todo-nueva-backdrop');
+        if (!backdrop) return;
+        backdrop.classList.add('oculto');
+        backdrop.setAttribute('aria-hidden', 'true');
+      }
+
+      var TODO_EDITAR_ROW = null;
+
+      function cerrarModalTodoEditar() {
+        var backdrop = document.getElementById('modal-todo-editar-backdrop');
+        if (!backdrop) return;
+        backdrop.classList.add('oculto');
+        backdrop.setAttribute('aria-hidden', 'true');
+        TODO_EDITAR_ROW = null;
+      }
+
+      function abrirModalTodoEditar(id) {
+        if (userPermissions.indexOf('editar_todo') === -1) return;
+        var row = null;
+        for (var i = 0; i < TODO_LISTA_ACTUAL.length; i++) {
+          if (String(TODO_LISTA_ACTUAL[i].id) === String(id)) { row = TODO_LISTA_ACTUAL[i]; break; }
+        }
+        if (!row) return;
+        TODO_EDITAR_ROW = row;
+        var err = document.getElementById('todo-editar-error');
+        if (err) { err.style.display = 'none'; err.textContent = ''; }
+        document.getElementById('todo-editar-id').value = row.id;
+        document.getElementById('todo-editar-titulo').value = row.titulo || '';
+        document.getElementById('todo-editar-desc').value = row.descripcion || '';
+        document.getElementById('todo-editar-prioridad').value = String(row.prioridad || 2);
+        var d = row.vencimiento_at ? new Date(row.vencimiento_at) : null;
+        var fechaEl = document.getElementById('todo-editar-fecha');
+        var horaEl = document.getElementById('todo-editar-hora');
+        if (d && !isNaN(d.getTime())) {
+          fechaEl.value = d.toLocaleDateString('en-CA', { timeZone: ZONA_ARGENTINA });
+          horaEl.value = d.toLocaleTimeString('en-GB', { timeZone: ZONA_ARGENTINA, hour: '2-digit', minute: '2-digit', hour12: false });
+        } else {
+          fechaEl.value = fechaHoyYYYYMMDDArgentina();
+          horaEl.value = '18:00';
+        }
+        var wrapPlant = document.getElementById('todo-editar-plantilla-wrap');
+        var chkPlant = document.getElementById('todo-editar-plantilla');
+        var esRec = row.recurrencia && row.recurrencia !== 'ninguna' && row.tarea_id;
+        if (wrapPlant) wrapPlant.style.display = esRec ? '' : 'none';
+        if (chkPlant) chkPlant.checked = false;
+        client.rpc('get_sucursales_list').then(function(res) {
+          var sedes = (!res.error && Array.isArray(res.data)) ? res.data : [];
+          var sel = document.getElementById('todo-editar-sede');
+          sel.innerHTML = '<option value="">(Sin sede)</option>' + sedes.map(function(s) {
+            return '<option value="' + esc(s) + '">' + esc(s) + '</option>';
+          }).join('');
+          if (row.sede) sel.value = row.sede;
+          var backdrop = document.getElementById('modal-todo-editar-backdrop');
+          backdrop.classList.remove('oculto');
+          backdrop.setAttribute('aria-hidden', 'false');
+        });
+      }
+
+      function eliminarTodoInstancia(id, recurrencia) {
+        if (userPermissions.indexOf('eliminar_todo') === -1) {
+          showToast('No tenés permiso para eliminar tareas.', 'error');
+          return;
+        }
+        if (!id) return;
+        var esRec = recurrencia && recurrencia !== 'ninguna';
+
+        function ejecutarEliminar(eliminarPlantilla) {
+          client.rpc('todo_eliminar_instancia', {
+            p_instancia_id: id,
+            p_eliminar_plantilla: !!eliminarPlantilla
+          }).then(function(r) {
+            if (r.error) {
+              showToast(r.error.message || 'No se pudo eliminar.', 'error');
+              return;
+            }
+            showToast(eliminarPlantilla ? 'Serie eliminada.' : 'Tarea eliminada.', 'success');
+            cargarTodoBandeja();
+          }).catch(function(ex) {
+            showToast(ex && ex.message ? ex.message : 'No se pudo eliminar.', 'error');
+          });
+        }
+
+        if (esRec) {
+          showConfirm(
+            '¿Eliminar esta ocurrencia?\n\nPodés borrar solo esta fila o toda la serie (desactiva la plantilla y quita pendientes/en curso).',
+            'Solo esta',
+            function() { ejecutarEliminar(false); },
+            null,
+            'Cancelar',
+            'Eliminar tarea',
+            {
+              extra: {
+                texto: 'Toda la serie',
+                danger: true,
+                onClick: function() { ejecutarEliminar(true); }
+              }
+            }
+          );
+        } else {
+          showConfirm(
+            '¿Eliminar esta tarea? No se volverá a generar.',
+            'Eliminar',
+            function() { ejecutarEliminar(false); },
+            null,
+            'Cancelar',
+            'Eliminar tarea'
+          );
+        }
+      }
+
+      function setupTodoModule() {
+        if (todoModuleReady) return;
+        todoModuleReady = true;
+        syncTodoMatrizTabVisibility();
+        document.querySelectorAll('#todo-tabs [data-todo-tab]').forEach(function(btn) {
+          btn.addEventListener('click', function() {
+            activarTodoTab(btn.getAttribute('data-todo-tab'));
+          });
+        });
+        ['todo-filtro-estado', 'todo-filtro-prioridad', 'todo-filtro-ventana', 'todo-filtro-sede'].forEach(function(id) {
+          var el = document.getElementById(id);
+          if (el) el.addEventListener('change', function() { cargarTodoBandeja(); });
+        });
+        var q = document.getElementById('todo-filtro-q');
+        if (q) {
+          var t = null;
+          q.addEventListener('input', function() {
+            if (t) clearTimeout(t);
+            t = setTimeout(function() {
+              renderTodoTabla();
+              renderTodoResumenDesdeFiltros();
+              renderTodoMatriz();
+            }, 180);
+          });
+        }
+        var btnExcel = document.getElementById('btn-todo-excel');
+        if (btnExcel) btnExcel.addEventListener('click', exportarTodoExcel);
+        var btnNueva = document.getElementById('btn-todo-nueva');
+        if (btnNueva) btnNueva.addEventListener('click', function() {
+          if (userPermissions.indexOf('crear_todo') === -1) return;
+          abrirModalTodoNueva();
+        });
+        var closeBtn = document.getElementById('modal-todo-nueva-close');
+        var cancelBtn = document.getElementById('todo-nueva-cancelar');
+        var backdrop = document.getElementById('modal-todo-nueva-backdrop');
+        if (closeBtn) closeBtn.addEventListener('click', cerrarModalTodoNueva);
+        if (cancelBtn) cancelBtn.addEventListener('click', cerrarModalTodoNueva);
+        if (backdrop) setupBackdropCloseOnlyOnRealClick(backdrop, cerrarModalTodoNueva);
+        var closeEdit = document.getElementById('modal-todo-editar-close');
+        var cancelEdit = document.getElementById('todo-editar-cancelar');
+        var backdropEdit = document.getElementById('modal-todo-editar-backdrop');
+        if (closeEdit) closeEdit.addEventListener('click', cerrarModalTodoEditar);
+        if (cancelEdit) cancelEdit.addEventListener('click', cerrarModalTodoEditar);
+        if (backdropEdit) setupBackdropCloseOnlyOnRealClick(backdropEdit, cerrarModalTodoEditar);
+        var closeMatriz = document.getElementById('modal-todo-matriz-close');
+        var backdropMatriz = document.getElementById('modal-todo-matriz-backdrop');
+        if (closeMatriz) closeMatriz.addEventListener('click', cerrarModalTodoMatrizDetalle);
+        if (backdropMatriz) setupBackdropCloseOnlyOnRealClick(backdropMatriz, cerrarModalTodoMatrizDetalle);
+        var formEdit = document.getElementById('form-todo-editar');
+        if (formEdit) {
+          formEdit.addEventListener('submit', function(e) {
+            e.preventDefault();
+            if (userPermissions.indexOf('editar_todo') === -1) return;
+            var err = document.getElementById('todo-editar-error');
+            function showErr(msg) {
+              if (!err) { showToast(msg, 'error'); return; }
+              err.style.display = 'block';
+              err.textContent = msg;
+            }
+            var id = (document.getElementById('todo-editar-id') || {}).value;
+            var titulo = ((document.getElementById('todo-editar-titulo') || {}).value || '').trim();
+            if (!id || !titulo) { showErr('El título es obligatorio.'); return; }
+            var fecha = (document.getElementById('todo-editar-fecha') || {}).value || fechaHoyYYYYMMDDArgentina();
+            var hora = (document.getElementById('todo-editar-hora') || {}).value || '23:59';
+            var vencIso = null;
+            try {
+              // Construir instante Argentina vía RPC helper no disponible en client; usar offset fijo AR (-03)
+              vencIso = new Date(fecha + 'T' + (hora.length === 5 ? hora + ':00' : hora) + '-03:00').toISOString();
+            } catch (ex) {
+              showErr('Fecha/hora inválida.');
+              return;
+            }
+            var sedeVal = (document.getElementById('todo-editar-sede') || {}).value || '';
+            var btnG = document.getElementById('todo-editar-guardar');
+            if (btnG) btnG.disabled = true;
+            client.rpc('todo_editar_instancia', {
+              p_instancia_id: id,
+              p_titulo: titulo,
+              p_descripcion: ((document.getElementById('todo-editar-desc') || {}).value || '').trim(),
+              p_prioridad: Number((document.getElementById('todo-editar-prioridad') || {}).value || 2),
+              p_vencimiento_at: vencIso,
+              p_sede: sedeVal,
+              p_actualizar_plantilla: !!(document.getElementById('todo-editar-plantilla') || {}).checked
+            }).then(function(r) {
+              if (btnG) btnG.disabled = false;
+              if (r.error) { showErr(r.error.message || 'No se pudo guardar.'); return; }
+              cerrarModalTodoEditar();
+              showToast('Tarea actualizada.', 'success');
+              cargarTodoBandeja();
+            }).catch(function(ex) {
+              if (btnG) btnG.disabled = false;
+              showErr(ex && ex.message ? ex.message : String(ex));
+            });
+          });
+        }
+        var rec = document.getElementById('todo-nueva-recurrencia');
+        if (rec) rec.addEventListener('change', syncTodoFormRecurrencia);
+        var tipo = document.getElementById('todo-nueva-resp-tipo');
+        if (tipo) tipo.addEventListener('change', syncTodoFormResponsable);
+        var sedeModo = document.getElementById('todo-nueva-sede-modo');
+        if (sedeModo) sedeModo.addEventListener('change', syncTodoFormSede);
+        var form = document.getElementById('form-todo-nueva');
+        if (form) {
+          form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            var err = document.getElementById('todo-nueva-error');
+            function showErr(msg) {
+              if (!err) { showToast(msg, 'error'); return; }
+              err.style.display = 'block';
+              err.textContent = msg;
+            }
+            var titulo = ((document.getElementById('todo-nueva-titulo') || {}).value || '').trim();
+            if (!titulo) { showErr('El título es obligatorio.'); return; }
+            var respTipo = (document.getElementById('todo-nueva-resp-tipo') || {}).value || 'usuario';
+            var userId = (document.getElementById('todo-nueva-resp-user') || {}).value || null;
+            var roleId = (document.getElementById('todo-nueva-resp-rol') || {}).value || null;
+            if (respTipo === 'usuario' && !userId) { showErr('Elegí el usuario responsable.'); return; }
+            if (respTipo === 'rol' && !roleId) { showErr('Elegí el perfil responsable.'); return; }
+            var sedeModoVal = (document.getElementById('todo-nueva-sede-modo') || {}).value || 'todas';
+            var sedeUna = (document.getElementById('todo-nueva-sede') || {}).value || null;
+            if (sedeModoVal === 'una' && !sedeUna) { showErr('Elegí la sede.'); return; }
+            var recurrencia = (document.getElementById('todo-nueva-recurrencia') || {}).value || 'ninguna';
+            var fecha = (document.getElementById('todo-nueva-fecha') || {}).value || fechaHoyYYYYMMDDArgentina();
+            var fechaFin = (document.getElementById('todo-nueva-fecha-fin') || {}).value || null;
+            var hora = (document.getElementById('todo-nueva-hora') || {}).value || '23:59';
+            var diaSemana = (document.getElementById('todo-nueva-dia-semana') || {}).value || null;
+            var diaMes = (document.getElementById('todo-nueva-dia-mes') || {}).value || null;
+            if (recurrencia === 'semanal' && !diaSemana) { showErr('Indicá el día de la semana.'); return; }
+            if ((recurrencia === 'mensual' || recurrencia === 'bimestral' || recurrencia === 'trimestral' || recurrencia === 'anual') && !diaMes) { showErr('Indicá el día del mes.'); return; }
+            if (recurrencia === 'diaria' && !hora) { showErr('Indicá la hora.'); return; }
+            if (recurrencia !== 'ninguna' && !fechaFin) { showErr('Indicá hasta qué fecha se replica la tarea.'); return; }
+            var payload = {
+              p_titulo: titulo,
+              p_descripcion: ((document.getElementById('todo-nueva-desc') || {}).value || '').trim() || null,
+              p_prioridad: Number((document.getElementById('todo-nueva-prioridad') || {}).value || 2),
+              p_responsable_tipo: respTipo,
+              p_responsable_user_id: respTipo === 'usuario' ? userId : null,
+              p_responsable_role: respTipo === 'rol' ? roleId : null,
+              p_recurrencia: recurrencia,
+              p_hora_vencimiento: hora || null,
+              p_dia_semana: recurrencia === 'semanal' ? Number(diaSemana) : null,
+              p_dia_mes: (recurrencia === 'mensual' || recurrencia === 'bimestral' || recurrencia === 'trimestral' || recurrencia === 'anual') ? Number(diaMes) : null,
+              p_fecha_inicio: recurrencia === 'ninguna' ? fecha : fechaHoyYYYYMMDDArgentina(),
+              p_fecha_fin: recurrencia === 'ninguna' ? null : fechaFin,
+              p_vencimiento_at: null,
+              p_aplica_todas_sedes: sedeModoVal === 'todas',
+              p_sede: sedeModoVal === 'una' ? sedeUna : null
+            };
+            var btnGuardar = document.getElementById('todo-nueva-guardar');
+            if (btnGuardar) btnGuardar.disabled = true;
+            client.rpc('todo_crear_tarea', payload).then(function(r) {
+              if (btnGuardar) btnGuardar.disabled = false;
+              if (r.error) {
+                showErr(r.error.message || 'No se pudo crear la tarea.');
+                return;
+              }
+              cerrarModalTodoNueva();
+              showToast('Tarea creada.', 'success');
+              cargarTodoBandeja();
+            }).catch(function(ex) {
+              if (btnGuardar) btnGuardar.disabled = false;
+              showErr(ex && ex.message ? ex.message : String(ex));
+            });
+          });
+        }
+      }
+
+      var sedesModuleReady = false;
+      function cargarSedesAbm() {
+        if (!client || userPermissions.indexOf('assign_roles') === -1) return;
+        var estado = document.getElementById('sedes-estado');
+        var tbody = document.getElementById('sedes-tbody');
+        if (estado) { estado.style.display = 'block'; estado.textContent = 'Cargando sedes…'; }
+        client.rpc('sedes_list_admin', { p_incluir_inactivas: true }).then(function(res) {
+          if (estado) estado.style.display = 'none';
+          if (!tbody) return;
+          if (res.error) {
+            if (estado) { estado.style.display = 'block'; estado.textContent = 'Error: ' + (res.error.message || 'No se pudo cargar.'); }
+            tbody.innerHTML = '';
+            return;
+          }
+          var rows = res.data || [];
+          if (!rows.length) {
+            tbody.innerHTML = '<tr><td colspan="4" class="todo-empty">No hay sedes. Creá la primera.</td></tr>';
+            return;
+          }
+          tbody.innerHTML = rows.map(function(s) {
+            var activa = !!s.activa;
+            return '<tr data-id="' + esc(s.id) + '">' +
+              '<td><input type="text" class="sede-nombre" value="' + esc(s.nombre) + '" aria-label="Nombre sede" /></td>' +
+              '<td><input type="number" class="sede-orden" value="' + esc(String(s.orden != null ? s.orden : 100)) + '" min="0" max="9999" aria-label="Orden" style="max-width:6rem;" /></td>' +
+              '<td><span class="todo-badge ' + (activa ? 'sedes-badge-activa' : 'sedes-badge-inactiva') + '">' + (activa ? 'Activa' : 'Inactiva') + '</span></td>' +
+              '<td style="white-space:nowrap;">' +
+                '<button type="button" class="btn-sucursales-config sede-guardar" data-id="' + esc(s.id) + '">Guardar</button> ' +
+                '<button type="button" class="btn-sucursales-config sede-toggle" data-id="' + esc(s.id) + '" data-activa="' + (activa ? '1' : '0') + '">' + (activa ? 'Desactivar' : 'Activar') + '</button>' +
+              '</td></tr>';
+          }).join('');
+          tbody.querySelectorAll('.sede-guardar').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+              var tr = btn.closest('tr');
+              var id = btn.getAttribute('data-id');
+              var nombre = (tr.querySelector('.sede-nombre') || {}).value || '';
+              var orden = Number((tr.querySelector('.sede-orden') || {}).value || 100);
+              client.rpc('sedes_upsert', { p_id: id, p_nombre: nombre, p_orden: orden }).then(function(r) {
+                if (r.error) showToast(r.error.message || 'No se pudo guardar.', 'error');
+                else cargarSedesAbm();
+              });
+            });
+          });
+          tbody.querySelectorAll('.sede-toggle').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+              var id = btn.getAttribute('data-id');
+              var activa = btn.getAttribute('data-activa') === '1';
+              client.rpc('sedes_set_activa', { p_id: id, p_activa: !activa }).then(function(r) {
+                if (r.error) showToast(r.error.message || 'No se pudo actualizar.', 'error');
+                else cargarSedesAbm();
+              });
+            });
+          });
+        });
+      }
+
+      function setupSedesModule() {
+        if (sedesModuleReady) return;
+        sedesModuleReady = true;
+        var btn = document.getElementById('btn-sede-nueva');
+        if (btn) {
+          btn.addEventListener('click', function() {
+            var nombre = window.prompt('Nombre de la nueva sede:');
+            if (nombre == null) return;
+            nombre = String(nombre).trim();
+            if (!nombre) return;
+            client.rpc('sedes_upsert', { p_nombre: nombre, p_activa: true, p_orden: 100, p_id: null }).then(function(r) {
+              if (r.error) {
+                showToast(r.error.message || 'No se pudo crear.', 'error');
+                return;
+              }
+              showToast('Sede creada.', 'success');
+              cargarSedesAbm();
+            });
+          });
+        }
       }
 
       var modalSucursalesUserId = null;
@@ -4682,7 +6222,7 @@
               if (arr.length === 0) arr = null;
             }
             client.rpc('set_user_sucursales', { p_user_id: modalSucursalesUserId, p_sucursales: arr }).then(function(r) {
-              if (r.error) { alert('Error: ' + (r.error.message || 'No se pudo guardar.')); return; }
+              if (r.error) { showToast(r.error.message || 'No se pudo guardar.', 'error'); return; }
               var t = document.getElementById('seguridad-tbody');
               if (t) { var row = t.querySelector('tr[data-user-id="' + modalSucursalesUserId + '"]'); if (row) { var textEl = row.querySelector('.seguridad-sucursales-text'); if (textEl) textEl.textContent = !arr || arr.length === 0 ? 'Todas' : arr.join(', '); } }
               backdrop.classList.add('oculto');
@@ -4749,7 +6289,11 @@
             proyeccion_cantidad: cantidad,
             proyeccion_recorte: recorte
           }, { onConflict: 'user_id' }).then(function(r) {
-            if (r.error) { alert('Error al guardar: ' + (r.error.message || '')); return; }
+            if (r.error) {
+              showToast('Error al guardar: ' + (r.error.message || ''), 'error');
+              return;
+            }
+            showToast('Guardado.', 'success');
             configProyeccionCache = { metodo: metodo, meses: meses, mesesAProyectar: cantidad, recortePct: recorte };
             backdrop.classList.add('oculto');
             renderizar();

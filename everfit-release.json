@@ -1,8 +1,9 @@
 {
-  "versionLabel": "v1.29",
+  "versionLabel": "v1.30",
   "lines": [
-    "Flujo por mes y gráfico G/P usan exclusión por concepto Inversiones y Saldo Inicial (solo ahí); ayudas y documentación actualizadas.",
-    "La proyección usa una ventana de N meses calendario antes del mes en curso y no mezcla mes en curso ni futuros en la base del cálculo.",
-    "Nueva guía docs/PROYECCION_FLUJO.md y referencias en EXCLUSIONES y DASHBOARD. Podés recargar cuando quieras."
+    "Nuevo menú To-Do: bandeja de tareas con filtros; por defecto ves las que vencen hoy.",
+    "Al crear una tarea podés elegir una sede, todas las sedes o nivel Empresa (una sola).",
+    "Encargado y Admin tienen la solapa Por responsable: clic en un número abre el detalle.",
+    "Confirmaciones y avisos van por la app (sin ventanas del navegador)."
   ]
 }
