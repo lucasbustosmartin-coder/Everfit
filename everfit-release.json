@@ -1,9 +1,8 @@
 {
-  "versionLabel": "v1.31",
+  "versionLabel": "v1.32",
   "lines": [
-    "Nuevo menú Configuración: podés pasar las tareas de una persona a otra, o de un perfil a otro (por ejemplo Recepcionista a Profesor).",
-    "En To-Do, al entrar ves solo las tareas abiertas: pendiente, en curso y vencida.",
-    "Los filtros que están recortando el listado se marcan en verde con la leyenda «activo».",
-    "Si cerraste una tarea por error, filtrá Hecha y volvé a abrirla."
+    "Al crear una tarea recurrente, primero elegís el vencimiento inicial (por ejemplo el lunes próximo).",
+    "A partir de esa fecha se replica el resto: diaria, semanal, mensual, trimestral, etc.",
+    "Ya no hace falta indicar aparte el día de la semana o el día del mes."
   ]
 }

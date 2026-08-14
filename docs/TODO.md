@@ -9,7 +9,7 @@ Ejecutar en este orden (si el proyecto ya tenía seguridad):
 1. `sql/helpers_fecha_argentina.sql` — `fecha_hoy_argentina()`
 2. `sql/supabase_todo.sql` — roles, permisos, tablas, RLS y RPCs
 
-En entornos ya migrados vía MCP/agente, estos scripts reflejan el estado aplicado. Incremental: `sql/supabase_todo_inbox_estado_abiertas.sql` (`p_estado = 'abiertas'`).
+En entornos ya migrados vía MCP/agente, estos scripts reflejan el estado aplicado. Incremental: `sql/supabase_todo_inbox_estado_abiertas.sql` (`p_estado = 'abiertas'`), `sql/supabase_todo_primer_vencimiento.sql` (primer due date de la serie).
 
 ## Roles nuevos
 
@@ -56,7 +56,7 @@ Ahora:
 - Fórmula aproximada: `N ≈ días_en_rango × cantidad_de_sedes` (si elegís “Todas”).
 - Ejemplo: diaria, 14 días, 3 sedes → hasta **42** instancias.
 
-Recurrencias: `ninguna`, `diaria` (con hora), `semanal`, `mensual`, `bimestral`, `trimestral`, `anual`. Fechas/horas en **America/Argentina/Buenos_Aires**.
+Recurrencias: `ninguna`, `diaria` (con hora), `semanal`, `mensual`, `bimestral`, `trimestral`, `anual`. En recurrentes se indica el **primer vencimiento** (due date inicial) y **Replicar hasta**; el resto de la serie se calcula desde esa fecha (diario +1 día, semanal +7, trimestral +3 meses, etc.). Fechas/horas en **America/Argentina/Buenos_Aires**. Incremental: `sql/supabase_todo_primer_vencimiento.sql`.
 
 ## RPCs principales
 

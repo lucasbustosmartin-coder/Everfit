@@ -685,7 +685,7 @@
         <span class="menu-label">Seguridad</span>
       </a>
     </nav>
-    <div class="sidebar-version" id="sidebar-version" aria-label="Versión">v1.31</div>
+    <div class="sidebar-version" id="sidebar-version" aria-label="Versión">v1.32</div>
   </aside>
 
   <main class="main-content">
@@ -1119,13 +1119,14 @@
                 </select>
               </div>
               <div class="form-group" id="todo-nueva-fecha-wrap">
-                <label for="todo-nueva-fecha">Fecha de vencimiento</label>
+                <label for="todo-nueva-fecha" id="todo-nueva-fecha-label">Fecha de vencimiento</label>
                 <input type="date" id="todo-nueva-fecha" />
+                <small id="todo-nueva-fecha-hint" style="display:none; margin-top:0.25rem; color:#64748b; font-size:0.78rem;">La serie arranca en esta fecha; las siguientes se calculan según la recurrencia (diario +1 día, semanal +7, trimestral +3 meses, etc.).</small>
               </div>
               <div class="form-group" id="todo-nueva-fecha-fin-wrap" style="display:none;">
                 <label for="todo-nueva-fecha-fin">Replicar hasta *</label>
                 <input type="date" id="todo-nueva-fecha-fin" />
-                <small style="display:block; margin-top:0.25rem; color:#64748b; font-size:0.78rem;">Obligatorio en recurrentes. Máx. 366 días desde el inicio. Así se evita crear registros de más.</small>
+                <small style="display:block; margin-top:0.25rem; color:#64748b; font-size:0.78rem;">Obligatorio en recurrentes. Máx. 366 días desde el primer vencimiento.</small>
               </div>
               <div class="form-group" id="todo-nueva-hora-wrap">
                 <label for="todo-nueva-hora">Hora (Argentina)</label>
@@ -5638,6 +5639,16 @@
         return new Date().toLocaleDateString('en-CA', { timeZone: ZONA_ARGENTINA });
       }
 
+      function fechaAddDaysYYYYMMDDArgentina(yyyyMmDd, days) {
+        var parts = String(yyyyMmDd || '').split('-');
+        var y = Number(parts[0]);
+        var m = Number(parts[1]);
+        var d = Number(parts[2]);
+        if (!y || !m || !d) return fechaHoyYYYYMMDDArgentina();
+        var utc = Date.UTC(y, m - 1, d + Number(days || 0));
+        return new Date(utc).toLocaleDateString('en-CA', { timeZone: 'UTC' });
+      }
+
       function formatearVencimientoTodo(iso) {
         if (!iso) return '—';
         var d = new Date(iso);
@@ -5918,21 +5929,26 @@
         var wrapHora = document.getElementById('todo-nueva-hora-wrap');
         var wrapSem = document.getElementById('todo-nueva-dia-semana-wrap');
         var wrapMes = document.getElementById('todo-nueva-dia-mes-wrap');
-        if (wrapFecha) wrapFecha.style.display = (rec === 'ninguna') ? '' : 'none';
+        var labFecha = document.getElementById('todo-nueva-fecha-label');
+        var hintFecha = document.getElementById('todo-nueva-fecha-hint');
+        if (wrapFecha) wrapFecha.style.display = '';
+        if (labFecha) labFecha.textContent = rec === 'ninguna' ? 'Fecha de vencimiento' : 'Primer vencimiento *';
+        if (hintFecha) hintFecha.style.display = rec === 'ninguna' ? 'none' : 'block';
         if (wrapFin) wrapFin.style.display = (rec === 'ninguna') ? 'none' : '';
         if (wrapHora) wrapHora.style.display = '';
-        if (wrapSem) wrapSem.style.display = (rec === 'semanal') ? '' : 'none';
-        if (wrapMes) wrapMes.style.display = (rec === 'mensual' || rec === 'bimestral' || rec === 'trimestral' || rec === 'anual') ? '' : 'none';
+        if (wrapSem) wrapSem.style.display = 'none';
+        if (wrapMes) wrapMes.style.display = 'none';
         if (rec !== 'ninguna') {
           var fin = document.getElementById('todo-nueva-fecha-fin');
           var ini = document.getElementById('todo-nueva-fecha');
           var hoy = fechaHoyYYYYMMDDArgentina();
-          if (fin && !fin.value) {
-            var d = new Date(hoy + 'T12:00:00');
-            d.setDate(d.getDate() + 14);
-            fin.value = d.toLocaleDateString('en-CA', { timeZone: ZONA_ARGENTINA });
-          }
           if (ini && !ini.value) ini.value = hoy;
+          if (fin && !fin.value && ini && ini.value) {
+            fin.value = fechaAddDaysYYYYMMDDArgentina(ini.value, 14);
+          }
+          if (fin && ini && ini.value && fin.value && fin.value < ini.value) {
+            fin.value = fechaAddDaysYYYYMMDDArgentina(ini.value, 14);
+          }
         }
       }
 
@@ -6218,6 +6234,8 @@
         }
         var rec = document.getElementById('todo-nueva-recurrencia');
         if (rec) rec.addEventListener('change', syncTodoFormRecurrencia);
+        var fechaNueva = document.getElementById('todo-nueva-fecha');
+        if (fechaNueva) fechaNueva.addEventListener('change', syncTodoFormRecurrencia);
         var tipo = document.getElementById('todo-nueva-resp-tipo');
         if (tipo) tipo.addEventListener('change', syncTodoFormResponsable);
         var sedeModo = document.getElementById('todo-nueva-sede-modo');
@@ -6246,12 +6264,13 @@
             var fecha = (document.getElementById('todo-nueva-fecha') || {}).value || fechaHoyYYYYMMDDArgentina();
             var fechaFin = (document.getElementById('todo-nueva-fecha-fin') || {}).value || null;
             var hora = (document.getElementById('todo-nueva-hora') || {}).value || '23:59';
-            var diaSemana = (document.getElementById('todo-nueva-dia-semana') || {}).value || null;
-            var diaMes = (document.getElementById('todo-nueva-dia-mes') || {}).value || null;
-            if (recurrencia === 'semanal' && !diaSemana) { showErr('Indicá el día de la semana.'); return; }
-            if ((recurrencia === 'mensual' || recurrencia === 'bimestral' || recurrencia === 'trimestral' || recurrencia === 'anual') && !diaMes) { showErr('Indicá el día del mes.'); return; }
+            if (!fecha) { showErr('Indicá el primer vencimiento.'); return; }
             if (recurrencia === 'diaria' && !hora) { showErr('Indicá la hora.'); return; }
             if (recurrencia !== 'ninguna' && !fechaFin) { showErr('Indicá hasta qué fecha se replica la tarea.'); return; }
+            if (recurrencia !== 'ninguna' && fechaFin && fechaFin < fecha) {
+              showErr('«Replicar hasta» no puede ser anterior al primer vencimiento.');
+              return;
+            }
             var payload = {
               p_titulo: titulo,
               p_descripcion: ((document.getElementById('todo-nueva-desc') || {}).value || '').trim() || null,
@@ -6261,9 +6280,9 @@
               p_responsable_role: respTipo === 'rol' ? roleId : null,
               p_recurrencia: recurrencia,
               p_hora_vencimiento: hora || null,
-              p_dia_semana: recurrencia === 'semanal' ? Number(diaSemana) : null,
-              p_dia_mes: (recurrencia === 'mensual' || recurrencia === 'bimestral' || recurrencia === 'trimestral' || recurrencia === 'anual') ? Number(diaMes) : null,
-              p_fecha_inicio: recurrencia === 'ninguna' ? fecha : fechaHoyYYYYMMDDArgentina(),
+              p_dia_semana: null,
+              p_dia_mes: null,
+              p_fecha_inicio: fecha,
               p_fecha_fin: recurrencia === 'ninguna' ? null : fechaFin,
               p_vencimiento_at: null,
               p_aplica_todas_sedes: sedeModoVal === 'todas',
