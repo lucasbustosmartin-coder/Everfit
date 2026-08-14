@@ -685,7 +685,7 @@
         <span class="menu-label">Seguridad</span>
       </a>
     </nav>
-    <div class="sidebar-version" id="sidebar-version" aria-label="Versión">v1.33</div>
+    <div class="sidebar-version" id="sidebar-version" aria-label="Versión">v1.34</div>
   </aside>
 
   <main class="main-content">
@@ -5659,6 +5659,14 @@
         return new Date(Date.UTC(y, m - 1, d)).getUTCDay() === 0;
       }
 
+      function todoDiariaAntesDeVencer(row) {
+        if (!row || (row.recurrencia || '') !== 'diaria') return false;
+        if (!row.vencimiento_at) return false;
+        var t = new Date(row.vencimiento_at).getTime();
+        if (isNaN(t)) return false;
+        return t > Date.now();
+      }
+
       function todoEstadoParaConteo(row) {
         var raw = (row && row.estado) || 'pendiente';
         if (raw === 'en_curso') return 'en_curso';
@@ -5751,12 +5759,14 @@
           var prio = Number(row.prioridad) || 2;
           var partes = [];
           if (canComplete && est !== 'hecha' && row.estado !== 'cancelada') {
+            var bloquearHecha = todoDiariaAntesDeVencer(row);
+            var titleHecha = bloquearHecha ? ' title="Se puede dar por hecha a partir del vencimiento"' : '';
             partes.push(
-              '<select class="todo-estado-select" data-id="' + esc(row.id) + '" aria-label="Cambiar estado">' +
+              '<select class="todo-estado-select" data-id="' + esc(row.id) + '" data-recurrencia="' + esc(row.recurrencia || '') + '" data-vencimiento="' + esc(row.vencimiento_at || '') + '" aria-label="Cambiar estado">' +
               '<option value="">Estado…</option>' +
               '<option value="pendiente"' + (row.estado === 'pendiente' ? ' selected' : '') + '>Pendiente</option>' +
               '<option value="en_curso"' + (row.estado === 'en_curso' ? ' selected' : '') + '>En curso</option>' +
-              '<option value="hecha">Hecha</option>' +
+              '<option value="hecha"' + (bloquearHecha ? ' disabled' : '') + titleHecha + '>Hecha</option>' +
               '<option value="cancelada">Cancelada</option>' +
               '</select>'
             );
@@ -5794,6 +5804,16 @@
             var id = sel.getAttribute('data-id');
             var estado = sel.value;
             if (!id || !estado) return;
+            var rec = sel.getAttribute('data-recurrencia') || '';
+            var venc = sel.getAttribute('data-vencimiento') || '';
+            if (estado === 'hecha' && rec === 'diaria' && venc) {
+              var tv = new Date(venc).getTime();
+              if (!isNaN(tv) && tv > Date.now()) {
+                showToast('Esta tarea diaria se puede dar por hecha a partir de su hora de vencimiento.', 'info');
+                sel.value = '';
+                return;
+              }
+            }
             client.rpc('todo_cambiar_estado', { p_instancia_id: id, p_estado: estado }).then(function(r) {
               if (r.error) {
                 showToast(r.error.message || 'No se pudo actualizar.', 'error');

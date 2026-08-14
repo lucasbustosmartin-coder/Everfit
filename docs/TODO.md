@@ -9,7 +9,7 @@ Ejecutar en este orden (si el proyecto ya tenía seguridad):
 1. `sql/helpers_fecha_argentina.sql` — `fecha_hoy_argentina()`
 2. `sql/supabase_todo.sql` — roles, permisos, tablas, RLS y RPCs
 
-En entornos ya migrados vía MCP/agente, estos scripts reflejan el estado aplicado. Incremental: `sql/supabase_todo_inbox_estado_abiertas.sql` (`p_estado = 'abiertas'`), `sql/supabase_todo_primer_vencimiento.sql` (primer due date de la serie), `sql/supabase_todo_en_curso_sin_domingo.sql` (en curso vs vencida; sin domingos).
+En entornos ya migrados vía MCP/agente, estos scripts reflejan el estado aplicado. Incremental: `sql/supabase_todo_inbox_estado_abiertas.sql` (`p_estado = 'abiertas'`), `sql/supabase_todo_primer_vencimiento.sql` (primer due date de la serie), `sql/supabase_todo_en_curso_sin_domingo.sql` (en curso vs vencida; sin domingos), `sql/supabase_todo_diaria_hecha_al_vencer.sql` (diaria: Hecha recién al vencimiento).
 
 ## Roles nuevos
 
@@ -68,7 +68,7 @@ Recurrencias: `ninguna`, `diaria` (con hora), `semanal`, `mensual`, `bimestral`,
 | `todo_crear_tarea(...)` | Alta (requiere `crear_todo`) |
 | `todo_list_inbox(estado, prioridad, ventana)` | Bandeja filtrada. `estado=abiertas` = pendiente + en curso (incluye vencidas efectivas) |
 | `todo_resumen_bandeja()` | Contadores globales (legado; la UI calcula cards sobre el listado filtrado) |
-| `todo_cambiar_estado(id, estado)` | Cambio de estado |
+| `todo_cambiar_estado(id, estado)` | Cambio de estado. Una **diaria** no se puede marcar Hecha antes de `vencimiento_at` |
 | `todo_editar_instancia(...)` | Editar ocurrencia (`editar_todo`) |
 | `todo_eliminar_instancia(...)` | Eliminar ocurrencia / cortar serie (`eliminar_todo`) |
 | `todo_list_usuarios()` / `todo_list_roles()` | Combos del formulario de alta y de Configuración |
@@ -78,7 +78,7 @@ Recurrencias: `ninguna`, `diaria` (con hora), `semanal`, `mensual`, `bimestral`,
 
 - Solapas: **Tareas** (bandeja) y **Por responsable** (solo Admin / Encargado).
 - Cards resumen (calculadas con los filtros activos) + filtros compartidos (estado por defecto **Abiertas** = pendiente / en curso / vencida; vencimiento por defecto **Hoy**; prioridad, sede, búsqueda). Los filtros que recortan el listado se resaltan (borde/fondo y leyenda «activo»). Para reabrir una tarea cerrada, filtrar **Hecha** (si el vencimiento estaba en Hoy, pasa a Todas).
-- Tabla sticky, badges, acciones de estado.
+- Tabla sticky, badges, acciones de estado. Una tarea **diaria** no se puede dar por hecha antes de su vencimiento.
 - **Por responsable:** matriz responsable (perfil o usuario) × estado; clic en la cantidad abre modal con esas tareas.
 - **Nueva tarea** (solo `crear_todo`): responsable obligatorio.
 - **Editar / Eliminar** en cada fila si el rol tiene `editar_todo` / `eliminar_todo` (toggles en Seguridad). Eliminar no regenera la tarea: única desactiva la plantilla; recurrente puede ser solo esta ocurrencia o toda la serie.

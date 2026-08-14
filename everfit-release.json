@@ -1,8 +1,7 @@
 {
-  "versionLabel": "v1.33",
+  "versionLabel": "v1.34",
   "lines": [
-    "Las tareas en curso se ven en las tarjetas y en Por responsable, aunque la fecha ya haya pasado.",
-    "Ya no se cargan vencimientos en domingo: el comercio está cerrado.",
-    "Si una tarea mensual o trimestral cae domingo, pasa al lunes."
+    "Las tareas diarias no se pueden dar por hechas antes de la hora de vencimiento.",
+    "Hasta ese momento las podés dejar en pendiente o en curso."
   ]
 }
