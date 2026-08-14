@@ -1,8 +1,8 @@
 {
-  "versionLabel": "v1.32",
+  "versionLabel": "v1.33",
   "lines": [
-    "Al crear una tarea recurrente, primero elegís el vencimiento inicial (por ejemplo el lunes próximo).",
-    "A partir de esa fecha se replica el resto: diaria, semanal, mensual, trimestral, etc.",
-    "Ya no hace falta indicar aparte el día de la semana o el día del mes."
+    "Las tareas en curso se ven en las tarjetas y en Por responsable, aunque la fecha ya haya pasado.",
+    "Ya no se cargan vencimientos en domingo: el comercio está cerrado.",
+    "Si una tarea mensual o trimestral cae domingo, pasa al lunes."
   ]
 }

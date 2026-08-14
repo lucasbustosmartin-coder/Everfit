@@ -88,6 +88,8 @@ const datosLog = [
   ['__HOY__', '__AHORA__', 'Despliegue v1.31', 'Menú Configuración (reasignar To-Do por usuario o perfil). To-Do: estado Abiertas por defecto y resalte de filtros activos. everfit-release.json v1.31. Push a main y vercel --prod.', 'Despliegue'],
   ['__HOY__', '__AHORA__', 'To-Do: primer vencimiento de la serie', 'En recurrentes se elige el primer due date (p. ej. el lunes próximo) y desde ahí se replica: diario +1, semanal +7, trimestral +3 meses, etc. Se ocultan día de semana / día del mes. SQL supabase_todo_primer_vencimiento.sql.', 'Ajuste'],
   ['__HOY__', '__AHORA__', 'Despliegue v1.32', 'To-Do recurrente: primer vencimiento a elección y réplica de la serie desde esa fecha. everfit-release.json v1.32. Push a main y vercel --prod.', 'Despliegue'],
+  ['__HOY__', '__AHORA__', 'To-Do: en curso + sin domingo', 'En curso se cuenta en cards y Por responsable aunque esté vencida la fecha. No se registran tareas en domingo (AR): diaria omite el día; mensual/trimestral pasa al lunes. SQL supabase_todo_en_curso_sin_domingo.sql.', 'Corrección'],
+  ['__HOY__', '__AHORA__', 'Despliegue v1.33', 'To-Do: en curso se cuenta aunque esté vencida la fecha; sin vencimientos en domingo. everfit-release.json v1.33. Push a main y vercel --prod.', 'Despliegue'],
 ];
 
 const datosLogParaExcel = preservarFechasHistoricasLog(projectRoot, outPath, datosLog);
@@ -162,6 +164,7 @@ const versiones = [
   ['1.30', '__HOY__', 'To-Do (bandeja, filtros Hoy, solapas Tareas y Por responsable, alta Empresa/sede, eliminar sin regenerar, toast/confirm). Catálogo Sedes. Roles Recepcionista/Profesor. everfit-release.json v1.30.'],
   ['1.31', '__HOY__', 'Menú Configuración: reasignar tareas To-Do de un usuario a otro o de un perfil a otro. To-Do: filtro estado Abiertas por defecto y resalte de filtros activos. everfit-release.json v1.31.'],
   ['1.32', '__HOY__', 'To-Do recurrente: se indica el primer vencimiento y desde ahí se replica la serie (diario, semanal, trimestral, etc.). everfit-release.json v1.32.'],
+  ['1.33', '__HOY__', 'To-Do: en curso se cuenta en cards y Por responsable aunque esté vencida la fecha; no se registran vencimientos en domingo. everfit-release.json v1.33.'],
 ];
 const versionesParaExcel = preservarFechasHistoricasVersiones(projectRoot, outPath, versiones);
 const wsVersiones = XLSX.utils.aoa_to_sheet(versionesParaExcel);

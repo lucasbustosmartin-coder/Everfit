@@ -685,7 +685,7 @@
         <span class="menu-label">Seguridad</span>
       </a>
     </nav>
-    <div class="sidebar-version" id="sidebar-version" aria-label="Versión">v1.32</div>
+    <div class="sidebar-version" id="sidebar-version" aria-label="Versión">v1.33</div>
   </aside>
 
   <main class="main-content">
@@ -1121,7 +1121,7 @@
               <div class="form-group" id="todo-nueva-fecha-wrap">
                 <label for="todo-nueva-fecha" id="todo-nueva-fecha-label">Fecha de vencimiento</label>
                 <input type="date" id="todo-nueva-fecha" />
-                <small id="todo-nueva-fecha-hint" style="display:none; margin-top:0.25rem; color:#64748b; font-size:0.78rem;">La serie arranca en esta fecha; las siguientes se calculan según la recurrencia (diario +1 día, semanal +7, trimestral +3 meses, etc.).</small>
+                <small id="todo-nueva-fecha-hint" style="display:block; margin-top:0.25rem; color:#64748b; font-size:0.78rem;">No se asignan vencimientos en domingo (el comercio está cerrado).</small>
               </div>
               <div class="form-group" id="todo-nueva-fecha-fin-wrap" style="display:none;">
                 <label for="todo-nueva-fecha-fin">Replicar hasta *</label>
@@ -5520,7 +5520,7 @@
       function todoListaPorResponsableEstado(key, estado) {
         return todoListaFiltradaLocal().filter(function(r) {
           if (todoResponsableKey(r) !== key) return false;
-          var est = r.estado_efectivo || r.estado || 'pendiente';
+          var est = todoEstadoParaConteo(r);
           return est === estado;
         });
       }
@@ -5541,7 +5541,7 @@
               counts: { pendiente: 0, en_curso: 0, vencida: 0, hecha: 0, cancelada: 0 }
             };
           }
-          var est = r.estado_efectivo || r.estado || 'pendiente';
+          var est = todoEstadoParaConteo(r);
           if (map[meta.key].counts[est] == null) map[meta.key].counts[est] = 0;
           map[meta.key].counts[est] += 1;
         });
@@ -5609,7 +5609,7 @@
           tbody.innerHTML = '<tr><td colspan="6" class="todo-empty">Sin tareas en este cruce.</td></tr>';
         } else {
           tbody.innerHTML = rows.map(function(row) {
-            var est = row.estado_efectivo || row.estado || 'pendiente';
+            var est = todoEstadoParaConteo(row);
             var prio = Number(row.prioridad) || 2;
             return '<tr>' +
               '<td><div class="todo-titulo-cell">' + esc(row.titulo) + '</div>' +
@@ -5647,6 +5647,22 @@
         if (!y || !m || !d) return fechaHoyYYYYMMDDArgentina();
         var utc = Date.UTC(y, m - 1, d + Number(days || 0));
         return new Date(utc).toLocaleDateString('en-CA', { timeZone: 'UTC' });
+      }
+
+      function esDomingoYYYYMMDD(yyyyMmDd) {
+        var parts = String(yyyyMmDd || '').split('-');
+        if (parts.length !== 3) return false;
+        var y = Number(parts[0]);
+        var m = Number(parts[1]);
+        var d = Number(parts[2]);
+        if (!y || !m || !d) return false;
+        return new Date(Date.UTC(y, m - 1, d)).getUTCDay() === 0;
+      }
+
+      function todoEstadoParaConteo(row) {
+        var raw = (row && row.estado) || 'pendiente';
+        if (raw === 'en_curso') return 'en_curso';
+        return (row && row.estado_efectivo) || raw;
       }
 
       function formatearVencimientoTodo(iso) {
@@ -5690,7 +5706,7 @@
         var hoy = fechaHoyYYYYMMDDArgentina();
         var sum = { pendientes: 0, en_curso: 0, vencidas: 0, hechas_hoy: 0 };
         rows.forEach(function(r) {
-          var est = r.estado_efectivo || r.estado || 'pendiente';
+          var est = todoEstadoParaConteo(r);
           if (est === 'pendiente') sum.pendientes += 1;
           else if (est === 'en_curso') sum.en_curso += 1;
           else if (est === 'vencida') sum.vencidas += 1;
@@ -5731,7 +5747,7 @@
           return;
         }
         tbody.innerHTML = rows.map(function(row) {
-          var est = row.estado_efectivo || row.estado || 'pendiente';
+          var est = todoEstadoParaConteo(row);
           var prio = Number(row.prioridad) || 2;
           var partes = [];
           if (canComplete && est !== 'hecha' && row.estado !== 'cancelada') {
@@ -5910,7 +5926,7 @@
             r.responsable_tipo || '',
             formatearVencimientoTodo(r.vencimiento_at),
             Number(r.prioridad) || null,
-            labelEstadoTodo(r.estado_efectivo || r.estado),
+            labelEstadoTodo(todoEstadoParaConteo(r)),
             labelRecurrenciaTodo(r.recurrencia),
             r.completada_at ? formatearVencimientoTodo(r.completada_at) : ''
           ];
@@ -5933,7 +5949,12 @@
         var hintFecha = document.getElementById('todo-nueva-fecha-hint');
         if (wrapFecha) wrapFecha.style.display = '';
         if (labFecha) labFecha.textContent = rec === 'ninguna' ? 'Fecha de vencimiento' : 'Primer vencimiento *';
-        if (hintFecha) hintFecha.style.display = rec === 'ninguna' ? 'none' : 'block';
+        if (hintFecha) {
+          hintFecha.style.display = 'block';
+          hintFecha.textContent = rec === 'ninguna'
+            ? 'No se asignan vencimientos en domingo (el comercio está cerrado).'
+            : 'La serie arranca en esta fecha. No se generan ocurrencias en domingo. Diario +1 día (lun–sáb), semanal +7, trimestral +3 meses, etc.';
+        }
         if (wrapFin) wrapFin.style.display = (rec === 'ninguna') ? 'none' : '';
         if (wrapHora) wrapHora.style.display = '';
         if (wrapSem) wrapSem.style.display = 'none';
@@ -6201,6 +6222,7 @@
             if (!id || !titulo) { showErr('El título es obligatorio.'); return; }
             var fecha = (document.getElementById('todo-editar-fecha') || {}).value || fechaHoyYYYYMMDDArgentina();
             var hora = (document.getElementById('todo-editar-hora') || {}).value || '23:59';
+            if (esDomingoYYYYMMDD(fecha)) { showErr('El domingo el comercio está cerrado. Elegí otro día.'); return; }
             var vencIso = null;
             try {
               // Construir instante Argentina vía RPC helper no disponible en client; usar offset fijo AR (-03)
@@ -6265,6 +6287,7 @@
             var fechaFin = (document.getElementById('todo-nueva-fecha-fin') || {}).value || null;
             var hora = (document.getElementById('todo-nueva-hora') || {}).value || '23:59';
             if (!fecha) { showErr('Indicá el primer vencimiento.'); return; }
+            if (esDomingoYYYYMMDD(fecha)) { showErr('El domingo el comercio está cerrado. Elegí otro día.'); return; }
             if (recurrencia === 'diaria' && !hora) { showErr('Indicá la hora.'); return; }
             if (recurrencia !== 'ninguna' && !fechaFin) { showErr('Indicá hasta qué fecha se replica la tarea.'); return; }
             if (recurrencia !== 'ninguna' && fechaFin && fechaFin < fecha) {

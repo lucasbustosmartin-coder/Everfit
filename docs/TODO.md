@@ -9,7 +9,7 @@ Ejecutar en este orden (si el proyecto ya tenía seguridad):
 1. `sql/helpers_fecha_argentina.sql` — `fecha_hoy_argentina()`
 2. `sql/supabase_todo.sql` — roles, permisos, tablas, RLS y RPCs
 
-En entornos ya migrados vía MCP/agente, estos scripts reflejan el estado aplicado. Incremental: `sql/supabase_todo_inbox_estado_abiertas.sql` (`p_estado = 'abiertas'`), `sql/supabase_todo_primer_vencimiento.sql` (primer due date de la serie).
+En entornos ya migrados vía MCP/agente, estos scripts reflejan el estado aplicado. Incremental: `sql/supabase_todo_inbox_estado_abiertas.sql` (`p_estado = 'abiertas'`), `sql/supabase_todo_primer_vencimiento.sql` (primer due date de la serie), `sql/supabase_todo_en_curso_sin_domingo.sql` (en curso vs vencida; sin domingos).
 
 ## Roles nuevos
 
@@ -55,8 +55,11 @@ Ahora:
 - Tope de seguridad: **366 días** desde el inicio.
 - Fórmula aproximada: `N ≈ días_en_rango × cantidad_de_sedes` (si elegís “Todas”).
 - Ejemplo: diaria, 14 días, 3 sedes → hasta **42** instancias.
+- **Domingo (Argentina):** no se registran vencimientos; en diarias se omite el domingo; si una mensual/trimestral cae domingo, pasa al lunes.
 
-Recurrencias: `ninguna`, `diaria` (con hora), `semanal`, `mensual`, `bimestral`, `trimestral`, `anual`. En recurrentes se indica el **primer vencimiento** (due date inicial) y **Replicar hasta**; el resto de la serie se calcula desde esa fecha (diario +1 día, semanal +7, trimestral +3 meses, etc.). Fechas/horas en **America/Argentina/Buenos_Aires**. Incremental: `sql/supabase_todo_primer_vencimiento.sql`.
+Recurrencias: `ninguna`, `diaria` (con hora), `semanal`, `mensual`, `bimestral`, `trimestral`, `anual`. En recurrentes se indica el **primer vencimiento** (due date inicial) y **Replicar hasta**; el resto de la serie se calcula desde esa fecha (diario +1 día lun–sáb, semanal +7, trimestral +3 meses, etc.). Fechas/horas en **America/Argentina/Buenos_Aires**. Incremental: `sql/supabase_todo_primer_vencimiento.sql`, `sql/supabase_todo_en_curso_sin_domingo.sql`.
+
+“Vencida” (estado efectivo) aplica solo a **pendiente** con fecha pasada. **En curso** se cuenta y se muestra como en curso aunque el vencimiento ya haya pasado.
 
 ## RPCs principales
 
