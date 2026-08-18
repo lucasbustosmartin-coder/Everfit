@@ -1,6 +1,6 @@
--- HISTÓRICO: controlaba Hecha vs hora de vencimiento (vencimiento_at > now()).
--- Criterio vigente: sql/supabase_todo_diaria_hecha_mismo_dia.sql (día calendario AR, no la hora).
--- Prerrequisito: sql/supabase_todo.sql
+-- Diaria: Hecha permitida todo el día de vencimiento (Argentina), sin exigir la hora.
+-- Sigue bloqueado si el vencimiento es un día calendario posterior a hoy.
+-- Reemplaza el criterio de sql/supabase_todo_diaria_hecha_al_vencer.sql (comparaba timestamptz vs now()).
 
 CREATE OR REPLACE FUNCTION public.todo_cambiar_estado(p_instancia_id uuid, p_estado text)
 RETURNS void
@@ -11,6 +11,7 @@ AS $$
 DECLARE
   i public.todo_instancia%ROWTYPE;
   v_rec text;
+  v_dia_venc date;
 BEGIN
   IF p_estado NOT IN ('pendiente', 'en_curso', 'hecha', 'cancelada') THEN
     RAISE EXCEPTION 'Estado inválido';
@@ -29,8 +30,11 @@ BEGIN
     SELECT COALESCE(t.recurrencia, 'ninguna') INTO v_rec
     FROM public.todo_tarea t
     WHERE t.id = i.tarea_id;
-    IF COALESCE(v_rec, 'ninguna') = 'diaria' AND i.vencimiento_at > now() THEN
-      RAISE EXCEPTION 'Esta tarea diaria se puede dar por hecha a partir de su hora de vencimiento';
+    IF COALESCE(v_rec, 'ninguna') = 'diaria' AND i.vencimiento_at IS NOT NULL THEN
+      v_dia_venc := (i.vencimiento_at AT TIME ZONE 'America/Argentina/Buenos_Aires')::date;
+      IF v_dia_venc > public.fecha_hoy_argentina() THEN
+        RAISE EXCEPTION 'Esta tarea diaria se puede dar por hecha a partir del día de vencimiento';
+      END IF;
     END IF;
   END IF;
 

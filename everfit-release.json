@@ -1,7 +1,8 @@
 {
-  "versionLabel": "v1.34",
+  "versionLabel": "v1.35",
   "lines": [
-    "Las tareas diarias no se pueden dar por hechas antes de la hora de vencimiento.",
-    "Hasta ese momento las podés dejar en pendiente o en curso."
+    "En las tareas diarias podés marcar Hecha en cualquier momento del día de vencimiento, sin esperar la hora.",
+    "La tarjeta Hechas hoy se actualiza al completar una tarea, aunque estés viendo las abiertas.",
+    "Recargá cuando quieras para usar esta versión."
   ]
 }

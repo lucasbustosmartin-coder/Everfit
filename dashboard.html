@@ -685,7 +685,7 @@
         <span class="menu-label">Seguridad</span>
       </a>
     </nav>
-    <div class="sidebar-version" id="sidebar-version" aria-label="Versión">v1.34</div>
+    <div class="sidebar-version" id="sidebar-version" aria-label="Versión">v1.35</div>
   </aside>
 
   <main class="main-content">
@@ -5470,6 +5470,7 @@
       }
 
       var TODO_LISTA_ACTUAL = [];
+      var TODO_HECHAS_HOY = [];
       var todoModuleReady = false;
       var TODO_MATRIZ_ESTADOS = ['pendiente', 'en_curso', 'vencida', 'hecha', 'cancelada'];
 
@@ -5659,12 +5660,14 @@
         return new Date(Date.UTC(y, m - 1, d)).getUTCDay() === 0;
       }
 
-      function todoDiariaAntesDeVencer(row) {
+      /** Diaria: bloquear Hecha solo si el día de vencimiento (AR) es posterior a hoy. No mira la hora. */
+      function todoDiariaHechaAntesDelDia(row) {
         if (!row || (row.recurrencia || '') !== 'diaria') return false;
         if (!row.vencimiento_at) return false;
-        var t = new Date(row.vencimiento_at).getTime();
-        if (isNaN(t)) return false;
-        return t > Date.now();
+        var d = new Date(row.vencimiento_at);
+        if (isNaN(d.getTime())) return false;
+        var diaVenc = d.toLocaleDateString('en-CA', { timeZone: ZONA_ARGENTINA });
+        return diaVenc > fechaHoyYYYYMMDDArgentina();
       }
 
       function todoEstadoParaConteo(row) {
@@ -5700,31 +5703,31 @@
         return map[r] || r || '—';
       }
 
+      function todoTextoBusqueda(row) {
+        return ((row.titulo || '') + ' ' + (row.descripcion || '') + ' ' + (row.responsable_label || '')).toLowerCase();
+      }
+
       function todoListaFiltradaLocal() {
         var q = ((document.getElementById('todo-filtro-q') || {}).value || '').trim().toLowerCase();
         if (!q) return TODO_LISTA_ACTUAL.slice();
         return TODO_LISTA_ACTUAL.filter(function(row) {
-          var t = (row.titulo || '') + ' ' + (row.descripcion || '') + ' ' + (row.responsable_label || '');
-          return t.toLowerCase().indexOf(q) !== -1;
+          return todoTextoBusqueda(row).indexOf(q) !== -1;
         });
       }
 
       function renderTodoResumenDesdeFiltros() {
         var rows = todoListaFiltradaLocal();
-        var hoy = fechaHoyYYYYMMDDArgentina();
+        var q = ((document.getElementById('todo-filtro-q') || {}).value || '').trim().toLowerCase();
         var sum = { pendientes: 0, en_curso: 0, vencidas: 0, hechas_hoy: 0 };
         rows.forEach(function(r) {
           var est = todoEstadoParaConteo(r);
           if (est === 'pendiente') sum.pendientes += 1;
           else if (est === 'en_curso') sum.en_curso += 1;
           else if (est === 'vencida') sum.vencidas += 1;
-          if ((r.estado || '') === 'hecha' && r.completada_at) {
-            var d = new Date(r.completada_at);
-            if (!isNaN(d.getTime())) {
-              var dia = d.toLocaleDateString('en-CA', { timeZone: ZONA_ARGENTINA });
-              if (dia === hoy) sum.hechas_hoy += 1;
-            }
-          }
+        });
+        (TODO_HECHAS_HOY || []).forEach(function(r) {
+          if (q && todoTextoBusqueda(r).indexOf(q) === -1) return;
+          sum.hechas_hoy += 1;
         });
         renderTodoResumen(sum);
       }
@@ -5759,8 +5762,8 @@
           var prio = Number(row.prioridad) || 2;
           var partes = [];
           if (canComplete && est !== 'hecha' && row.estado !== 'cancelada') {
-            var bloquearHecha = todoDiariaAntesDeVencer(row);
-            var titleHecha = bloquearHecha ? ' title="Se puede dar por hecha a partir del vencimiento"' : '';
+            var bloquearHecha = todoDiariaHechaAntesDelDia(row);
+            var titleHecha = bloquearHecha ? ' title="Se puede dar por hecha el día de vencimiento (no hace falta esperar la hora)"' : '';
             partes.push(
               '<select class="todo-estado-select" data-id="' + esc(row.id) + '" data-recurrencia="' + esc(row.recurrencia || '') + '" data-vencimiento="' + esc(row.vencimiento_at || '') + '" aria-label="Cambiar estado">' +
               '<option value="">Estado…</option>' +
@@ -5807,11 +5810,14 @@
             var rec = sel.getAttribute('data-recurrencia') || '';
             var venc = sel.getAttribute('data-vencimiento') || '';
             if (estado === 'hecha' && rec === 'diaria' && venc) {
-              var tv = new Date(venc).getTime();
-              if (!isNaN(tv) && tv > Date.now()) {
-                showToast('Esta tarea diaria se puede dar por hecha a partir de su hora de vencimiento.', 'info');
-                sel.value = '';
-                return;
+              var dv = new Date(venc);
+              if (!isNaN(dv.getTime())) {
+                var diaVenc = dv.toLocaleDateString('en-CA', { timeZone: ZONA_ARGENTINA });
+                if (diaVenc > fechaHoyYYYYMMDDArgentina()) {
+                  showToast('Esta tarea diaria se puede dar por hecha a partir del día de vencimiento (cualquier hora de ese día).', 'info');
+                  sel.value = '';
+                  return;
+                }
               }
             }
             client.rpc('todo_cambiar_estado', { p_instancia_id: id, p_estado: estado }).then(function(r) {
@@ -5876,11 +5882,14 @@
         var pEstado = filtroEstado || null;
         var pPrio = filtroPrio ? Number(filtroPrio) : null;
         var filtrosInbox = { p_estado: pEstado, p_prioridad: pPrio, p_ventana: filtroVentana, p_sede: filtroSede || null };
+        var filtrosHechasHoy = { p_prioridad: pPrio, p_sede: filtroSede || null };
 
         function pintarBandeja(results) {
           if (estadoEl) estadoEl.style.display = 'none';
           var listRes = results[0];
           var sedesRes = results[1];
+          var hechasRes = results[2];
+          TODO_HECHAS_HOY = (hechasRes && !hechasRes.error && Array.isArray(hechasRes.data)) ? hechasRes.data : [];
           var selSede = document.getElementById('todo-filtro-sede');
           if (selSede && sedesRes && !sedesRes.error && Array.isArray(sedesRes.data)) {
             var cur = selSede.value;
@@ -5910,7 +5919,8 @@
         // Listar de inmediato (no bloquear la UI). Materializar recurrencias en paralelo/background.
         Promise.all([
           client.rpc('todo_list_inbox', filtrosInbox),
-          client.rpc('get_sucursales_list')
+          client.rpc('get_sucursales_list'),
+          client.rpc('todo_list_hechas_hoy', filtrosHechasHoy)
         ]).then(function(results) {
           pintarBandeja(results);
           client.rpc('todo_generar_instancias_todas').then(function(genRes) {
@@ -5918,7 +5928,8 @@
             if (genRes && genRes.data > 0) {
               Promise.all([
                 client.rpc('todo_list_inbox', filtrosInbox),
-                client.rpc('get_sucursales_list')
+                client.rpc('get_sucursales_list'),
+                client.rpc('todo_list_hechas_hoy', filtrosHechasHoy)
               ]).then(pintarBandeja).catch(function() {});
             }
           }).catch(function() {});
