@@ -103,6 +103,8 @@ const datosLog = [
   ['__HOY__', '__AHORA__', 'To-Do: tabla mobile', 'Bandeja: columnas auto (max-content), scroll horizontal; Acción 4.ª columna; Tarea y Acción sticky en scroll móvil.', 'Ajuste'],
   ['__HOY__', '__AHORA__', 'To-Do: tooltip email', 'Responsable y Usuario: hover/tap muestra email flotante con botón Copiar; RPC todo_list_inbox devuelve responsable_email y estado_modificado_email. SQL supabase_todo_list_inbox_emails.sql.', 'Feature'],
   ['__HOY__', '__AHORA__', 'Despliegue v1.36', 'To-Do: Mi perfil y nombre visible; columna Usuario; tooltip email copiar; bandeja mobile (Acción 4.ª); modales responsive; ver_dashboard y nombres en Seguridad. everfit-release.json v1.36. Push a main y vercel --prod.', 'Despliegue'],
+  ['__HOY__', '__AHORA__', 'To-Do: scroll móvil vertical', 'Bandeja: en portrait la tabla se cortaba en la 4.ª columna (Acción sticky + min-width 100%). Sin sticky Acción en ≤768px, scroll horizontal en el wrap, hint deslizar, main-content sin overflow-x.', 'Fix'],
+  ['__HOY__', '__AHORA__', 'Despliegue v1.37', 'Fix scroll To-Do en celular vertical; everfit-release.json v1.37. Push a main y vercel --prod.', 'Despliegue'],
 ];
 
 const datosLogParaExcel = preservarFechasHistoricasLog(projectRoot, outPath, datosLog);
@@ -181,6 +183,7 @@ const versiones = [
   ['1.34', '__HOY__', 'To-Do: una tarea diaria no se puede marcar Hecha antes de su vencimiento. everfit-release.json v1.34.'],
   ['1.35', '__HOY__', 'To-Do: diaria se marca Hecha el mismo día de vencimiento (sin esperar la hora); card Hechas hoy se actualiza con Abiertas. everfit-release.json v1.35.'],
   ['1.36', '__HOY__', 'To-Do: Mi perfil (nombre para mostrar); columna Usuario; tooltip email copiar en Responsable/Usuario; bandeja mobile (Acción 4.ª, scroll horizontal); modales nueva/editar responsive; permiso ver_dashboard; Seguridad edita nombre por usuario. SQL migraciones Supabase. everfit-release.json v1.36.'],
+  ['1.37', '__HOY__', 'To-Do: fix scroll bandeja en celular vertical (sin sticky Acción ≤768px, hint deslizar). everfit-release.json v1.37.'],
 ];
 const versionesParaExcel = preservarFechasHistoricasVersiones(projectRoot, outPath, versiones);
 const wsVersiones = XLSX.utils.aoa_to_sheet(versionesParaExcel);

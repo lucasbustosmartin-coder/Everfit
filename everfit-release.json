@@ -1,9 +1,7 @@
 {
-  "versionLabel": "v1.36",
+  "versionLabel": "v1.37",
   "lines": [
-    "En Mi perfil podés elegir un nombre para mostrar; en To-Do la bandeja usa ese nombre en lugar del email.",
-    "En Responsable y Usuario, pasá el mouse o tocá el nombre para ver el email y copiarlo al portapapeles.",
-    "La bandeja To-Do se ve mejor en el celular: Acción queda más cerca al deslizar la tabla.",
-    "En Seguridad podés definir qué roles ven Home y Asistencia, y editar el nombre de cada usuario."
+    "En el celular vertical, la bandeja To-Do ya no se corta en la columna Acción: podés deslizar para ver todas las columnas.",
+    "Debajo de la tabla aparece una leyenda que indica que podés deslizar hacia la derecha."
   ]
 }

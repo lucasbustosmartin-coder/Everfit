@@ -26,7 +26,7 @@
     .sidebar-nav .menu-item .menu-label { white-space: nowrap; opacity: 0; width: 0; overflow: hidden; transition: opacity 0.2s, width 0.2s; }
     .sidebar.expanded .sidebar-nav .menu-item .menu-label { opacity: 1; width: auto; }
     .sidebar-version { margin-top: auto; padding: 0.75rem 1rem; font-size: 0.75rem; color: rgba(255,255,255,0.5); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex-shrink: 0; }
-    .main-content { flex: 1; padding: 1.5rem; overflow-x: auto; }
+    .main-content { flex: 1; padding: 1.5rem; overflow-x: auto; min-width: 0; }
     .app { max-width: 1200px; }
     .page-header { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem; flex-wrap: wrap; }
     .page-header .page-logo { height: 40px; width: auto; max-width: 160px; object-fit: contain; display: block; }
@@ -409,8 +409,9 @@
     .todo-panel { display: none; }
     .todo-panel.activo { display: block; }
     .todo-tabla-wrap { overflow: auto; max-height: 65vh; -webkit-overflow-scrolling: touch; overscroll-behavior-x: contain; border: 1px solid #e5e7eb; border-radius: 10px; background: #fff; }
-    #todo-panel-tareas .todo-tabla-wrap { overflow-x: auto; overflow-y: auto; }
-    #todo-tabla { width: max-content; min-width: 100%; table-layout: auto; border-collapse: separate; border-spacing: 0; font-size: 0.92rem; }
+    #todo-panel-tareas .todo-tabla-wrap { overflow-x: auto; overflow-y: auto; width: 100%; max-width: 100%; min-width: 0; }
+    .todo-tabla-scroll-hint { display: none; margin: 0.4rem 0 0; font-size: 0.82rem; color: #64748b; line-height: 1.35; }
+    #todo-tabla { width: max-content; table-layout: auto; border-collapse: separate; border-spacing: 0; font-size: 0.92rem; }
     .todo-tabla { width: 100%; border-collapse: collapse; font-size: 0.92rem; }
     .todo-tabla th { position: sticky; top: 0; z-index: 2; background: #1e293b; color: #fff; text-align: left; padding: 0.65rem 0.75rem; box-shadow: 0 1px 0 #0f172a; }
     .todo-tabla td { padding: 0.65rem 0.75rem; border-bottom: 1px solid #eee; vertical-align: middle; }
@@ -549,6 +550,15 @@
       .todo-acciones .btn-todo-nueva, .todo-acciones .btn-todo-excel { flex: 1 1 auto; justify-content: center; }
       .todo-form-grid { grid-template-columns: 1fr; }
       .todo-tabla-wrap { max-height: 55vh; }
+      #todo-panel-tareas .todo-tabla-wrap { overflow-x: scroll; -webkit-overflow-scrolling: touch; touch-action: pan-x pan-y; }
+      #todo-tabla { width: max-content; }
+      #todo-tabla th.col-accion, #todo-tabla td.col-accion {
+        position: static; left: auto; z-index: auto; box-shadow: none;
+      }
+      #todo-tabla th.col-accion { background: #1e293b; }
+      #todo-tabla tr:hover td.col-accion { background: #f8fafc; }
+      .todo-tabla-scroll-hint { display: block; }
+      .main-content { overflow-x: hidden; }
       #todo-tabla .col-tarea { min-width: 6.5rem; max-width: 10rem; }
       #todo-tabla .col-accion { min-width: 6.75rem; }
       #todo-tabla .todo-row-actions select { font-size: 16px; max-width: 6.5rem; }
@@ -746,7 +756,7 @@
         <span class="menu-label">Seguridad</span>
       </a>
     </nav>
-    <div class="sidebar-version" id="sidebar-version" aria-label="Versión">v1.36</div>
+    <div class="sidebar-version" id="sidebar-version" aria-label="Versión">v1.37</div>
   </aside>
 
   <main class="main-content">
@@ -1071,6 +1081,7 @@
               <tbody id="todo-tbody"></tbody>
             </table>
           </div>
+          <p class="todo-tabla-scroll-hint">Deslizá la tabla hacia la derecha para ver vencimiento, prioridad, estado y el resto de columnas.</p>
         </div>
         <div id="todo-panel-matriz" class="todo-panel" role="tabpanel" aria-labelledby="todo-tab-matriz">
           <p class="todo-matriz-hint">Cantidad de tareas por responsable (perfil o usuario) y estado, según los filtros de arriba. Hacé clic en un número para ver el detalle.</p>
@@ -6191,6 +6202,10 @@
       function syncTodoTablaAccionSticky() {
         var table = document.getElementById('todo-tabla');
         if (!table) return;
+        if (window.matchMedia('(max-width: 768px)').matches) {
+          table.style.removeProperty('--todo-accion-sticky-left');
+          return;
+        }
         var row = table.querySelector('tbody tr[data-id]');
         if (!row) {
           table.style.removeProperty('--todo-accion-sticky-left');
