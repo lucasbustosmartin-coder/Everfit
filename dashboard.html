@@ -113,6 +113,8 @@
     .user-bar .btn-cerrar { padding: 0.4rem 0.75rem; border: 1px solid #ccc; background: #fff; border-radius: 6px; cursor: pointer; font-size: 0.85rem; }
     .user-bar .btn-cerrar:hover { background: #f0f0f0; }
     .user-bar .btn-refresh { display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; padding: 0; border: 1px solid #ccc; background: #fff; border-radius: 6px; cursor: pointer; color: #555; }
+    .user-bar .btn-perfil { display: inline-flex; align-items: center; gap: 0.35rem; min-height: 36px; padding: 0.35rem 0.65rem; border: 1px solid #ccc; background: #fff; border-radius: 8px; cursor: pointer; color: #333; font-size: 0.875rem; font-family: inherit; max-width: min(220px, 42vw); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .user-bar .btn-perfil:hover { background: #f8fafc; border-color: #94a3b8; }
     .user-bar .btn-refresh:hover { background: #f0f0f0; color: #1a1a1a; }
     .user-bar .btn-refresh svg { width: 18px; height: 18px; }
     .panel-seguridad table { margin-top: 0.75rem; }
@@ -205,15 +207,27 @@
     .modal-confirm .btn-danger:hover { background: #991b1b; }
     .modal-confirm .btn-primary .btn-icon, .modal-confirm .btn-secondary .btn-icon, .modal-confirm .btn-danger .btn-icon { display: inline-flex; width: 18px; height: 18px; }
     .modal-confirm .btn-primary .btn-icon svg, .modal-confirm .btn-secondary .btn-icon svg, .modal-confirm .btn-danger .btn-icon svg { width: 100%; height: 100%; stroke: currentColor; fill: none; }
-    .modal { background: #fff; border-radius: 12px; max-width: 720px; width: 100%; max-height: 85vh; overflow: hidden; display: flex; flex-direction: column; box-shadow: 0 8px 32px rgba(0,0,0,0.2); }
+    .modal { background: #fff; border-radius: 12px; max-width: 720px; width: 100%; max-height: min(85vh, 85dvh); overflow: hidden; display: flex; flex-direction: column; box-shadow: 0 8px 32px rgba(0,0,0,0.2); }
+    .modal-body { padding: 1rem 1.25rem; }
+    .modal-header { flex-shrink: 0; }
+    .modal-todo .modal-body {
+      flex: 1 1 auto; min-height: 0; overflow-y: auto; overflow-x: hidden;
+      -webkit-overflow-scrolling: touch; overscroll-behavior: contain;
+    }
+    .modal-todo .modal-footer {
+      flex-shrink: 0; padding: 0.75rem 1.25rem; padding-bottom: max(0.75rem, env(safe-area-inset-bottom));
+      border-top: 1px solid #eee; background: #fff; display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center;
+    }
+    .modal-footer .btn-todo-nueva { margin: 0; }
+    .modal-todo { max-width: min(640px, 100%); max-height: min(92vh, 92dvh); }
+    #modal-todo-nueva-backdrop.modal-backdrop,
+    #modal-todo-editar-backdrop.modal-backdrop { align-items: center; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: max(0.5rem, env(safe-area-inset-top)) 0.5rem max(0.5rem, env(safe-area-inset-bottom)); }
     .modal-header { padding: 1rem 1.25rem; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
     .modal-header h2 { margin: 0; font-size: 1.25rem; }
     .modal-close { background: none; border: none; padding: 0.35rem; cursor: pointer; color: #666; line-height: 1; display: inline-flex; align-items: center; justify-content: center; border-radius: 4px; }
     .modal-close:hover { color: #1a1a1a; background: #eee; }
     .modal-close .icon-close { width: 20px; height: 20px; }
-    .modal-close .icon-close svg { width: 100%; height: 100%; stroke: currentColor; }
-    .modal-body { padding: 1rem 1.25rem; }
-    .modal-body .modal-tabs { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 0.75rem; }
+    .modal-footer { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 0.75rem; }
     .modal-body .modal-tabs button { padding: 0.5rem 1rem; border: 1px solid #ccc; background: #fff; border-radius: 6px; cursor: pointer; font-size: 0.9rem; display: inline-flex; align-items: center; gap: 0.4rem; }
     .modal-body .modal-tabs .modal-tab-icon { width: 18px; height: 18px; flex-shrink: 0; }
     .modal-body .modal-tabs .modal-tab-icon svg { width: 100%; height: 100%; stroke: currentColor; }
@@ -280,6 +294,7 @@
       .page-header h1, .page-header #page-title { font-size: 1.25rem; }
       .user-bar { margin-left: 0; width: 100%; order: 3; flex-wrap: wrap; gap: 0.5rem; justify-content: flex-end; }
       .user-bar .btn-cerrar { min-height: 44px; padding: 0.5rem 0.85rem; }
+      .user-bar .btn-perfil { min-height: 44px; max-width: min(180px, 55vw); }
       .user-bar .btn-refresh { min-width: 44px; min-height: 44px; }
       .card { padding: 1rem; margin-bottom: 0.75rem; border-radius: 6px; }
       .filtros { flex-direction: column; align-items: stretch; gap: 0.75rem; margin-bottom: 0.75rem; }
@@ -303,7 +318,12 @@
       #tabla-flujo th.col-item, #tabla-flujo td.col-item { min-width: 80px; }
       .tabs button { min-height: 44px; padding: 0.5rem 0.85rem; }
       .modal-backdrop { padding: 0.5rem; align-items: flex-start; padding-top: max(0.5rem, env(safe-area-inset-top)); }
-      .modal { max-height: 90vh; border-radius: 10px; }
+      .modal { max-height: min(90vh, 90dvh); }
+      .modal-todo { max-height: min(96vh, 96dvh); width: 100%; border-radius: 12px; }
+      #modal-todo-nueva-backdrop.modal-backdrop,
+      #modal-todo-editar-backdrop.modal-backdrop { align-items: flex-start; padding-top: max(0.35rem, env(safe-area-inset-top)); }
+      .modal-footer .btn-todo-nueva,
+      .modal-footer button[id$="-cancelar"] { flex: 1 1 auto; min-width: calc(50% - 0.25rem); justify-content: center; }
       .modal-header { padding: 0.75rem 1rem; }
       .modal-header h2 { font-size: 1.1rem; }
       .modal-body { padding: 0.75rem 1rem; }
@@ -318,7 +338,10 @@
       .panel-seguridad .seguridad-rol-header { padding: 0.6rem 0.85rem; font-size: 0.95rem; }
       .panel-seguridad .seguridad-perm-row { padding: 0.5rem 0; }
       #seguridad-tabla-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+      #seguridad-tabla .seguridad-nombre { font-size: 16px; min-width: 100px; }
       .panel-seguridad table { font-size: 0.9rem; }
+    #seguridad-tabla .seguridad-nombre { min-width: 120px; max-width: 200px; width: 100%; padding: 0.35rem 0.5rem; font-size: 0.9rem; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; }
+    #seguridad-tabla .seguridad-email { font-size: 0.875rem; color: #334155; word-break: break-word; }
       .modal-body .modal-tabs button { min-height: 44px; }
       .tabla-ratios th, .tabla-ratios td, #tbody-ratios td { padding: 0.4rem 0.5rem; font-size: 0.875rem; }
       #modal-asistencia-permanencia-cliente-backdrop.permanencia-modal-rango > .modal {
@@ -386,14 +409,48 @@
     .todo-panel { display: none; }
     .todo-panel.activo { display: block; }
     .todo-tabla-wrap { overflow: auto; max-height: 65vh; -webkit-overflow-scrolling: touch; overscroll-behavior-x: contain; border: 1px solid #e5e7eb; border-radius: 10px; background: #fff; }
+    #todo-panel-tareas .todo-tabla-wrap { overflow-x: auto; overflow-y: auto; }
+    #todo-tabla { width: max-content; min-width: 100%; table-layout: auto; border-collapse: separate; border-spacing: 0; font-size: 0.92rem; }
     .todo-tabla { width: 100%; border-collapse: collapse; font-size: 0.92rem; }
     .todo-tabla th { position: sticky; top: 0; z-index: 2; background: #1e293b; color: #fff; text-align: left; padding: 0.65rem 0.75rem; box-shadow: 0 1px 0 #0f172a; }
     .todo-tabla td { padding: 0.65rem 0.75rem; border-bottom: 1px solid #eee; vertical-align: middle; }
-    /* Tarea / Sede / Responsable: forzar izquierda (el CSS global alinea td a la derecha) */
-    #todo-tabla th:nth-child(1), #todo-tabla th:nth-child(2), #todo-tabla th:nth-child(3),
-    #todo-tabla td:nth-child(1), #todo-tabla td:nth-child(2), #todo-tabla td:nth-child(3) {
-      text-align: left;
+    #todo-tabla th, #todo-tabla td { text-align: left; white-space: nowrap; }
+    #todo-tabla .col-tarea { white-space: normal; min-width: 7rem; max-width: 12rem; }
+    #todo-tabla .col-sede { min-width: 4.25rem; max-width: 7rem; }
+    #todo-tabla .col-responsable { white-space: normal; min-width: 5rem; max-width: 9rem; }
+    #todo-tabla .col-accion { white-space: nowrap; min-width: 7.5rem; }
+    #todo-tabla .col-venc { min-width: 8.5rem; }
+    #todo-tabla .col-prio, #todo-tabla .col-estado, #todo-tabla .col-usuario, #todo-tabla .col-rec { min-width: 4.5rem; }
+    #todo-tabla th.col-tarea, #todo-tabla td.col-tarea {
+      position: sticky; left: 0; z-index: 3; background: #fff; box-shadow: 1px 0 0 #e5e7eb;
     }
+    #todo-tabla th.col-tarea { z-index: 5; background: #1e293b; box-shadow: 1px 0 0 #0f172a; }
+    #todo-tabla th.col-accion, #todo-tabla td.col-accion {
+      position: sticky; left: var(--todo-accion-sticky-left, 0); z-index: 4; background: #fff; box-shadow: -1px 0 0 #e5e7eb, 1px 0 0 #e5e7eb;
+    }
+    #todo-tabla th.col-accion { z-index: 6; background: #1e293b; box-shadow: 1px 0 0 #0f172a; }
+    #todo-tabla tr:hover td.col-tarea, #todo-tabla tr:hover td.col-accion { background: #f8fafc; }
+    #todo-tabla .todo-row-actions { flex-wrap: nowrap; }
+    #todo-tabla .todo-row-actions select { max-width: 7.5rem; }
+    .todo-persona-hint {
+      display: inline; border-bottom: 1px dotted #94a3b8; cursor: help;
+      text-decoration: inherit; color: inherit;
+    }
+    .todo-persona-hint:focus { outline: 2px solid #0d9488; outline-offset: 2px; border-radius: 2px; }
+    .todo-persona-float {
+      position: fixed; z-index: 1200; min-width: 12rem; max-width: min(20rem, 92vw);
+      padding: 0.55rem 0.65rem; background: #fff; border: 1px solid #cbd5e1; border-radius: 8px;
+      box-shadow: 0 6px 24px rgba(0,0,0,0.14); display: flex; flex-direction: column; gap: 0.45rem;
+      pointer-events: auto;
+    }
+    .todo-persona-float.oculto { display: none; }
+    .todo-persona-float-email { font-size: 0.85rem; color: #334155; word-break: break-all; line-height: 1.35; }
+    .todo-persona-copy {
+      display: inline-flex; align-items: center; justify-content: center; gap: 0.35rem;
+      min-height: 36px; padding: 0.35rem 0.65rem; border-radius: 8px; border: 1px solid #0d7d3d;
+      background: #0d7d3d; color: #fff; font-size: 0.85rem; font-family: inherit; cursor: pointer;
+    }
+    .todo-persona-copy:hover { background: #0a5c2e; }
     .todo-tabla tr:hover td { background: #f8fafc; }
     .todo-matriz tr:hover td.sticky-col { background: #f8fafc; }
     .todo-matriz th.num, .todo-matriz td.num { text-align: center; }
@@ -492,6 +549,10 @@
       .todo-acciones .btn-todo-nueva, .todo-acciones .btn-todo-excel { flex: 1 1 auto; justify-content: center; }
       .todo-form-grid { grid-template-columns: 1fr; }
       .todo-tabla-wrap { max-height: 55vh; }
+      #todo-tabla .col-tarea { min-width: 6.5rem; max-width: 10rem; }
+      #todo-tabla .col-accion { min-width: 6.75rem; }
+      #todo-tabla .todo-row-actions select { font-size: 16px; max-width: 6.5rem; }
+      .todo-persona-copy { min-height: 44px; width: 100%; }
       .todo-tabs button { width: 100%; justify-content: center; }
       #modal-todo-matriz-backdrop .modal { width: 100%; max-width: 100%; margin: 0; border-radius: 12px 12px 0 0; }
     }
@@ -660,7 +721,7 @@
       <span class="icon-collapse" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></span>
     </button>
     <nav class="sidebar-nav">
-      <a href="#" class="menu-item menu-item-active" id="menu-home" title="Home" aria-label="Home">
+      <a href="#" class="menu-item menu-item-active" id="menu-home" title="Home" aria-label="Home" style="display:none;">
         <span class="menu-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><path d="M9 22V12h6v10"/></svg></span>
         <span class="menu-label">Home</span>
       </a>
@@ -685,7 +746,7 @@
         <span class="menu-label">Seguridad</span>
       </a>
     </nav>
-    <div class="sidebar-version" id="sidebar-version" aria-label="Versión">v1.35</div>
+    <div class="sidebar-version" id="sidebar-version" aria-label="Versión">v1.36</div>
   </aside>
 
   <main class="main-content">
@@ -729,7 +790,9 @@
         <img src="Logo.png" alt="Everfit" class="page-logo" id="page-logo" onerror="this.style.display='none'" />
         <h1 id="page-title">Dashboard</h1>
         <div class="user-bar" id="user-bar">
-          <span id="user-email"></span>
+          <button type="button" class="btn-perfil" id="btn-mi-perfil" title="Mi perfil" aria-label="Mi perfil">
+            <span id="user-display-label">—</span>
+          </button>
           <button type="button" class="btn-refresh" id="btn-refresh" title="Actualizar permisos y vista" aria-label="Actualizar permisos y vista">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg>
           </button>
@@ -994,14 +1057,15 @@
             <table class="todo-tabla" id="todo-tabla" aria-label="Bandeja de tareas">
               <thead>
                 <tr>
-                  <th>Tarea</th>
-                  <th>Sede</th>
-                  <th>Responsable</th>
-                  <th>Vencimiento</th>
-                  <th>Prioridad</th>
-                  <th>Estado</th>
-                  <th>Recurrencia</th>
-                  <th>Acción</th>
+                  <th class="col-tarea">Tarea</th>
+                  <th class="col-sede">Sede</th>
+                  <th class="col-responsable">Responsable</th>
+                  <th class="col-accion">Acción</th>
+                  <th class="col-venc">Vencimiento</th>
+                  <th class="col-prio">Prioridad</th>
+                  <th class="col-estado">Estado</th>
+                  <th class="col-usuario">Usuario</th>
+                  <th class="col-rec">Recurrencia</th>
                 </tr>
               </thead>
               <tbody id="todo-tbody"></tbody>
@@ -1045,6 +1109,7 @@
                     <th>Vencimiento</th>
                     <th>Prioridad</th>
                     <th>Estado</th>
+                    <th>Usuario</th>
                     <th>Recurrencia</th>
                   </tr>
                 </thead>
@@ -1056,7 +1121,7 @@
       </div>
 
       <div id="modal-todo-nueva-backdrop" class="modal-backdrop oculto" aria-hidden="true">
-        <div class="modal" style="max-width:640px;" role="dialog" aria-modal="true" aria-labelledby="modal-todo-nueva-titulo">
+        <div class="modal modal-todo" role="dialog" aria-modal="true" aria-labelledby="modal-todo-nueva-titulo">
           <div class="modal-header">
             <h2 id="modal-todo-nueva-titulo" style="margin:0; font-size:1.15rem;">Nueva tarea</h2>
             <button type="button" class="modal-close" id="modal-todo-nueva-close" aria-label="Cerrar"><span class="icon-close"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg></span></button>
@@ -1149,20 +1214,20 @@
                 <input type="number" id="todo-nueva-dia-mes" min="1" max="31" value="1" />
               </div>
               <p id="todo-nueva-error" class="todo-form-error full" style="display:none;"></p>
-              <div class="form-group full form-actions" style="display:flex; gap:0.5rem; flex-wrap:wrap; margin-top:0.25rem;">
-                <button type="submit" class="btn-todo-nueva" id="todo-nueva-guardar">
-                  <span class="btn-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
-                  Guardar
-                </button>
-                <button type="button" id="todo-nueva-cancelar" style="min-height:44px; padding:0.5rem 1rem; border:1px solid #999; background:#fff; border-radius:8px; cursor:pointer; font-size:0.9rem;">Cancelar</button>
-              </div>
             </form>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" form="form-todo-nueva" class="btn-todo-nueva" id="todo-nueva-guardar">
+              <span class="btn-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              Guardar
+            </button>
+            <button type="button" id="todo-nueva-cancelar" style="min-height:44px; padding:0.5rem 1rem; border:1px solid #999; background:#fff; border-radius:8px; cursor:pointer; font-size:0.9rem;">Cancelar</button>
           </div>
         </div>
       </div>
 
       <div id="modal-todo-editar-backdrop" class="modal-backdrop oculto" aria-hidden="true">
-        <div class="modal" style="max-width:560px;" role="dialog" aria-modal="true" aria-labelledby="modal-todo-editar-titulo">
+        <div class="modal modal-todo" role="dialog" aria-modal="true" aria-labelledby="modal-todo-editar-titulo">
           <div class="modal-header">
             <h2 id="modal-todo-editar-titulo" style="margin:0; font-size:1.15rem;">Editar tarea</h2>
             <button type="button" class="modal-close" id="modal-todo-editar-close" aria-label="Cerrar"><span class="icon-close"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg></span></button>
@@ -1205,14 +1270,14 @@
                 </label>
               </div>
               <p id="todo-editar-error" class="todo-form-error full" style="display:none;"></p>
-              <div class="form-group full form-actions" style="display:flex; gap:0.5rem; flex-wrap:wrap; margin-top:0.25rem;">
-                <button type="submit" class="btn-todo-nueva" id="todo-editar-guardar">
-                  <span class="btn-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
-                  Guardar cambios
-                </button>
-                <button type="button" id="todo-editar-cancelar" style="min-height:44px; padding:0.5rem 1rem; border:1px solid #999; background:#fff; border-radius:8px; cursor:pointer; font-size:0.9rem;">Cancelar</button>
-              </div>
             </form>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" form="form-todo-editar" class="btn-todo-nueva" id="todo-editar-guardar">
+              <span class="btn-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              Guardar cambios
+            </button>
+            <button type="button" id="todo-editar-cancelar" style="min-height:44px; padding:0.5rem 1rem; border:1px solid #999; background:#fff; border-radius:8px; cursor:pointer; font-size:0.9rem;">Cancelar</button>
           </div>
         </div>
       </div>
@@ -1317,6 +1382,36 @@
         </div>
       </div>
 
+      <div id="modal-mi-perfil-backdrop" class="modal-backdrop oculto" aria-hidden="true">
+        <div class="modal modal-todo" style="max-width:420px;" role="dialog" aria-modal="true" aria-labelledby="modal-mi-perfil-titulo">
+          <div class="modal-header">
+            <h2 id="modal-mi-perfil-titulo" style="margin:0; font-size:1.15rem;">Mi perfil</h2>
+            <button type="button" class="modal-close" id="modal-mi-perfil-close" aria-label="Cerrar"><span class="icon-close"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg></span></button>
+          </div>
+          <div class="modal-body">
+            <form id="form-mi-perfil">
+              <div class="form-group full">
+                <label for="mi-perfil-email">Email</label>
+                <input type="email" id="mi-perfil-email" readonly disabled style="background:#f1f5f9; color:#64748b;" />
+              </div>
+              <div class="form-group full">
+                <label for="mi-perfil-nombre">Nombre para mostrar</label>
+                <input type="text" id="mi-perfil-nombre" maxlength="80" placeholder="Ej. María G." autocomplete="nickname" />
+                <p class="todo-form-hint" style="margin:0.35rem 0 0; font-size:0.8rem; color:#64748b;">Aparece en la bandeja To-Do (Responsable y Usuario) en lugar del email. Si lo dejás vacío se usa el email.</p>
+              </div>
+              <p id="mi-perfil-error" class="todo-form-error full" style="display:none;"></p>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" form="form-mi-perfil" class="btn-todo-nueva" id="mi-perfil-guardar">
+              <span class="btn-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              Guardar
+            </button>
+            <button type="button" id="mi-perfil-cancelar" style="min-height:44px; padding:0.5rem 1rem; border:1px solid #999; background:#fff; border-radius:8px; cursor:pointer; font-size:0.9rem;">Cancelar</button>
+          </div>
+        </div>
+      </div>
+
       <div id="modal-everfit-nueva-version-backdrop" class="modal-backdrop oculto" aria-hidden="true">
         <div class="modal modal-everfit-release" role="dialog" aria-modal="true" aria-labelledby="everfit-nueva-version-titulo">
           <div class="modal-header">
@@ -1346,7 +1441,7 @@
           <span><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span>
           Seguridad – Usuarios y perfiles
         </h2>
-        <p style="margin:0 0 0.75rem 0; font-size:0.95rem; color:#555;">Configurá los permisos de cada rol, asigná el rol a cada usuario y qué sucursales puede ver cada uno.</p>
+        <p style="margin:0 0 0.75rem 0; font-size:0.95rem; color:#555;">Configurá los permisos de cada rol, asigná el rol a cada usuario, el nombre para mostrar y qué sucursales puede ver cada uno.</p>
         <h3 style="margin:0 0 0.5rem 0; font-size:1rem;">Permisos por rol</h3>
         <div id="seguridad-permisos-loading" class="seguridad-permisos-loading" style="display:none;">Cargando permisos…</div>
         <div id="seguridad-rol-cards" class="seguridad-rol-cards"></div>
@@ -1354,7 +1449,7 @@
         <div id="seguridad-loading" class="seguridad-loading">Cargando usuarios…</div>
         <div id="seguridad-tabla-wrap" style="display:none;">
           <table id="seguridad-tabla">
-            <thead><tr><th>Email</th><th>Rol</th><th>Sucursales</th><th>Acción</th></tr></thead>
+            <thead><tr><th>Email</th><th>Nombre para mostrar</th><th>Rol</th><th>Sucursales</th><th>Acción</th></tr></thead>
             <tbody id="seguridad-tbody"></tbody>
           </table>
         </div>
@@ -1583,6 +1678,8 @@
       var clientOrigenTC = (ORIGEN_TC_URL && ORIGEN_TC_ANON_KEY) ? window.supabase.createClient(ORIGEN_TC_URL, ORIGEN_TC_ANON_KEY) : null;
       var userPermissions = [];
       var currentUserEmail = '';
+      var currentUserDisplayLabel = '';
+      var currentUserNombre = '';
       var currentUserId = null;
       var currentUserRole = null;
       /** localStorage: última versión de despliegue que el usuario ya reconoció (modal «Nueva versión»). */
@@ -1726,6 +1823,105 @@
         }
         document.addEventListener('visibilitychange', scheduleCheck);
         window.addEventListener('focus', scheduleCheck);
+      }
+
+      function userProfileLabelFromParts(nombre, email) {
+        var n = (nombre || '').trim();
+        if (n) return n;
+        return (email || '').trim() || '—';
+      }
+
+      function userProfileComboLabel(u) {
+        if (!u) return '—';
+        var name = (u.label || u.nombre_usuario || '').trim() || (u.email || '').trim();
+        var role = u.role_label || u.role || '';
+        if (role) return name + ' (' + role + ')';
+        return name;
+      }
+
+      function refreshUserBarLabel() {
+        var el = document.getElementById('user-display-label');
+        var btn = document.getElementById('btn-mi-perfil');
+        var label = userProfileLabelFromParts(currentUserNombre, currentUserEmail);
+        currentUserDisplayLabel = label;
+        if (el) el.textContent = label;
+        if (btn) {
+          btn.title = currentUserEmail ? ('Mi perfil · ' + currentUserEmail) : 'Mi perfil';
+          btn.setAttribute('aria-label', 'Mi perfil: ' + label);
+        }
+      }
+
+      function cargarMiPerfil() {
+        if (!client || !currentUserId) return Promise.resolve();
+        return client.rpc('get_my_profile').then(function(res) {
+          if (res.error || !res.data || !res.data.length) {
+            refreshUserBarLabel();
+            return;
+          }
+          var row = res.data[0];
+          currentUserNombre = row.nombre_usuario || '';
+          if (row.email) currentUserEmail = row.email;
+          refreshUserBarLabel();
+        }).catch(function() {
+          refreshUserBarLabel();
+        });
+      }
+
+      function abrirModalMiPerfil() {
+        var backdrop = document.getElementById('modal-mi-perfil-backdrop');
+        if (!backdrop) return;
+        var err = document.getElementById('mi-perfil-error');
+        if (err) { err.style.display = 'none'; err.textContent = ''; }
+        var emailEl = document.getElementById('mi-perfil-email');
+        var nombreEl = document.getElementById('mi-perfil-nombre');
+        if (emailEl) emailEl.value = currentUserEmail || '';
+        if (nombreEl) nombreEl.value = currentUserNombre || '';
+        backdrop.classList.remove('oculto');
+        backdrop.setAttribute('aria-hidden', 'false');
+        if (nombreEl) setTimeout(function() { nombreEl.focus(); }, 50);
+      }
+
+      function cerrarModalMiPerfil() {
+        var backdrop = document.getElementById('modal-mi-perfil-backdrop');
+        if (!backdrop) return;
+        backdrop.classList.add('oculto');
+        backdrop.setAttribute('aria-hidden', 'true');
+      }
+
+      function setupMiPerfilModule() {
+        var btn = document.getElementById('btn-mi-perfil');
+        var form = document.getElementById('form-mi-perfil');
+        var closeBtn = document.getElementById('modal-mi-perfil-close');
+        var cancelBtn = document.getElementById('mi-perfil-cancelar');
+        var backdrop = document.getElementById('modal-mi-perfil-backdrop');
+        if (btn) btn.addEventListener('click', abrirModalMiPerfil);
+        if (closeBtn) closeBtn.addEventListener('click', cerrarModalMiPerfil);
+        if (cancelBtn) cancelBtn.addEventListener('click', cerrarModalMiPerfil);
+        if (backdrop && typeof setupBackdropCloseOnlyOnRealClick === 'function') {
+          setupBackdropCloseOnlyOnRealClick(backdrop, cerrarModalMiPerfil);
+        }
+        if (form) {
+          form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            var nombreEl = document.getElementById('mi-perfil-nombre');
+            var err = document.getElementById('mi-perfil-error');
+            var nombre = nombreEl ? nombreEl.value : '';
+            client.rpc('set_my_nombre_usuario', { p_nombre: nombre }).then(function(r) {
+              if (r.error) {
+                if (err) {
+                  err.style.display = 'block';
+                  err.textContent = r.error.message || 'No se pudo guardar.';
+                }
+                return;
+              }
+              currentUserNombre = (nombre || '').trim();
+              refreshUserBarLabel();
+              cerrarModalMiPerfil();
+              showToast('Perfil actualizado.', 'success');
+              if (todoVistaMenuActiva()) cargarTodoBandeja();
+            });
+          });
+        }
       }
 
       function ensureProfile(session) {
@@ -4023,6 +4219,178 @@
         return String(v == null ? '' : v).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
       }
 
+      function escHtmlMsg(v) {
+        return String(v == null ? '' : v).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+      }
+
+      function copiarTextoPortapapeles(texto) {
+        var t = String(texto || '').trim();
+        if (!t) return Promise.reject(new Error('Nada para copiar'));
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          return navigator.clipboard.writeText(t);
+        }
+        return new Promise(function(resolve, reject) {
+          var ta = document.createElement('textarea');
+          ta.value = t;
+          ta.setAttribute('readonly', '');
+          ta.style.position = 'fixed';
+          ta.style.left = '-9999px';
+          document.body.appendChild(ta);
+          ta.select();
+          try {
+            if (document.execCommand('copy')) resolve();
+            else reject(new Error('No se pudo copiar'));
+          } catch (e) { reject(e); }
+          document.body.removeChild(ta);
+        });
+      }
+
+      var todoPersonaFloatEl = null;
+      var todoPersonaFloatEmail = '';
+      var todoPersonaFloatHideTimer = null;
+      var todoPersonaFloatAnchor = null;
+      var todoPersonaHintsReady = false;
+
+      function ensureTodoPersonaFloat() {
+        if (todoPersonaFloatEl) return todoPersonaFloatEl;
+        var el = document.createElement('div');
+        el.id = 'todo-persona-float';
+        el.className = 'todo-persona-float oculto';
+        el.setAttribute('role', 'tooltip');
+        el.innerHTML =
+          '<span class="todo-persona-float-email" id="todo-persona-float-email"></span>' +
+          '<button type="button" class="todo-persona-copy" id="todo-persona-float-copy">' +
+            '<span class="btn-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg></span>' +
+            'Copiar email' +
+          '</button>';
+        document.body.appendChild(el);
+        el.addEventListener('mouseenter', function() {
+          if (todoPersonaFloatHideTimer) { clearTimeout(todoPersonaFloatHideTimer); todoPersonaFloatHideTimer = null; }
+        });
+        el.addEventListener('mouseleave', function() { ocultarTodoPersonaFloat(120); });
+        el.querySelector('#todo-persona-float-copy').addEventListener('click', function(e) {
+          e.preventDefault();
+          e.stopPropagation();
+          copiarTextoPortapapeles(todoPersonaFloatEmail).then(function() {
+            showToast('Email copiado.', 'success');
+          }).catch(function() {
+            showToast('No se pudo copiar el email.', 'error');
+          });
+        });
+        todoPersonaFloatEl = el;
+        return el;
+      }
+
+      function posicionarTodoPersonaFloat(anchor) {
+        var float = ensureTodoPersonaFloat();
+        var r = anchor.getBoundingClientRect();
+        var top = r.bottom + 6;
+        var left = r.left;
+        float.style.top = top + 'px';
+        float.style.left = left + 'px';
+        var fr = float.getBoundingClientRect();
+        if (fr.right > window.innerWidth - 8) {
+          left = Math.max(8, window.innerWidth - fr.width - 8);
+          float.style.left = left + 'px';
+        }
+        if (fr.bottom > window.innerHeight - 8) {
+          top = Math.max(8, r.top - fr.height - 6);
+          float.style.top = top + 'px';
+        }
+      }
+
+      function mostrarTodoPersonaFloat(anchor, email) {
+        var em = String(email || '').trim();
+        if (!em || !anchor) return;
+        if (todoPersonaFloatHideTimer) { clearTimeout(todoPersonaFloatHideTimer); todoPersonaFloatHideTimer = null; }
+        todoPersonaFloatAnchor = anchor;
+        todoPersonaFloatEmail = em;
+        var float = ensureTodoPersonaFloat();
+        var emailEl = document.getElementById('todo-persona-float-email');
+        if (emailEl) emailEl.textContent = em;
+        float.classList.remove('oculto');
+        posicionarTodoPersonaFloat(anchor);
+      }
+
+      function ocultarTodoPersonaFloat(delayMs) {
+        if (todoPersonaFloatHideTimer) clearTimeout(todoPersonaFloatHideTimer);
+        var ms = delayMs != null ? delayMs : 0;
+        todoPersonaFloatHideTimer = setTimeout(function() {
+          todoPersonaFloatHideTimer = null;
+          if (todoPersonaFloatEl) todoPersonaFloatEl.classList.add('oculto');
+          todoPersonaFloatAnchor = null;
+          document.querySelectorAll('.todo-persona-hint.activo').forEach(function(el) { el.classList.remove('activo'); });
+        }, ms);
+      }
+
+      function todoHtmlCeldaPersona(label, email) {
+        var em = String(email || '').trim();
+        if (!em) return esc(label || '—');
+        return '<span class="todo-persona-hint" tabindex="0" data-email="' + escHtmlMsg(em) + '" title="Ver email">' +
+          esc(label || em) + '</span>';
+      }
+
+      function setupTodoPersonaHints() {
+        if (todoPersonaHintsReady) return;
+        todoPersonaHintsReady = true;
+        var puedeHover = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+        document.addEventListener('mouseover', function(e) {
+          if (!puedeHover) return;
+          var hint = e.target.closest && e.target.closest('.todo-persona-hint');
+          if (!hint || !hint.getAttribute('data-email')) return;
+          if (e.relatedTarget && hint.contains(e.relatedTarget)) return;
+          mostrarTodoPersonaFloat(hint, hint.getAttribute('data-email'));
+        });
+        document.addEventListener('mouseout', function(e) {
+          if (!puedeHover) return;
+          var hint = e.target.closest && e.target.closest('.todo-persona-hint');
+          if (!hint) return;
+          if (e.relatedTarget && (hint.contains(e.relatedTarget) || (todoPersonaFloatEl && todoPersonaFloatEl.contains(e.relatedTarget)))) return;
+          ocultarTodoPersonaFloat(160);
+        });
+        document.addEventListener('focusin', function(e) {
+          var hint = e.target.closest && e.target.closest('.todo-persona-hint');
+          if (!hint || !hint.getAttribute('data-email')) return;
+          mostrarTodoPersonaFloat(hint, hint.getAttribute('data-email'));
+        });
+        document.addEventListener('focusout', function(e) {
+          var hint = e.target.closest && e.target.closest('.todo-persona-hint');
+          if (!hint) return;
+          if (e.relatedTarget && (hint.contains(e.relatedTarget) || (todoPersonaFloatEl && todoPersonaFloatEl.contains(e.relatedTarget)))) return;
+          ocultarTodoPersonaFloat(160);
+        });
+        document.addEventListener('click', function(e) {
+          var hint = e.target.closest && e.target.closest('.todo-persona-hint');
+          if (hint && hint.getAttribute('data-email') && !puedeHover) {
+            e.preventDefault();
+            var activo = hint.classList.contains('activo');
+            document.querySelectorAll('.todo-persona-hint.activo').forEach(function(el) { el.classList.remove('activo'); });
+            if (!activo) {
+              hint.classList.add('activo');
+              mostrarTodoPersonaFloat(hint, hint.getAttribute('data-email'));
+            } else {
+              ocultarTodoPersonaFloat(0);
+            }
+            return;
+          }
+          if (todoPersonaFloatEl && !todoPersonaFloatEl.classList.contains('oculto')) {
+            if (!e.target.closest('.todo-persona-hint') && !todoPersonaFloatEl.contains(e.target)) {
+              ocultarTodoPersonaFloat(0);
+            }
+          }
+        });
+        window.addEventListener('scroll', function() {
+          if (todoPersonaFloatAnchor && todoPersonaFloatEl && !todoPersonaFloatEl.classList.contains('oculto')) {
+            posicionarTodoPersonaFloat(todoPersonaFloatAnchor);
+          }
+        }, true);
+        window.addEventListener('resize', function() {
+          if (todoPersonaFloatAnchor && todoPersonaFloatEl && !todoPersonaFloatEl.classList.contains('oculto')) {
+            posicionarTodoPersonaFloat(todoPersonaFloatAnchor);
+          }
+        });
+      }
+
       /** Toast interno (estilo Pandi). type: success | info | error */
       function showToast(mensaje, type, duracionMs) {
         var container = document.getElementById('toast-container');
@@ -5126,7 +5494,8 @@
           else myAllowedSucursales = null;
           currentUserRole = (!results[2].error && results[2].data != null) ? String(results[2].data) : null;
           showAppContent();
-          document.getElementById('user-email').textContent = currentUserEmail;
+          refreshUserBarLabel();
+          void cargarMiPerfil();
           var btnUpload = document.getElementById('btn-actualizar-base');
           var wrapUpload = btnUpload && btnUpload.closest('.filtros-der');
           if (wrapUpload) wrapUpload.style.display = userPermissions.indexOf('upload_base') !== -1 ? '' : 'none';
@@ -5138,6 +5507,9 @@
           if (menuSeg) menuSeg.style.display = userPermissions.indexOf('assign_roles') !== -1 ? '' : 'none';
           var menuSedes = document.getElementById('menu-sedes');
           if (menuSedes) menuSedes.style.display = userPermissions.indexOf('assign_roles') !== -1 ? '' : 'none';
+          var menuHome = document.getElementById('menu-home');
+          var showDash = userPermissions.indexOf('ver_dashboard') !== -1;
+          if (menuHome) menuHome.style.display = showDash ? '' : 'none';
           var menuAsist = document.getElementById('menu-asistencia');
           if (menuAsist) menuAsist.style.display = userPermissions.indexOf('ver_asistencia') !== -1 ? '' : 'none';
           var menuTodo = document.getElementById('menu-todo');
@@ -5153,15 +5525,22 @@
           var btnRefresh = document.getElementById('btn-refresh');
           if (btnRefresh) btnRefresh.addEventListener('click', function() { refreshPermisosYVista(); });
           setupVistasMenu();
+          setupMiPerfilModule();
           setupHelpExclusiones();
           setupSeguridad();
           setupTodoModule();
           setupSedesModule();
           setupConfiguracionModule();
           var promConfig = (userPermissions.indexOf('ver_proyeccion') !== -1) ? loadConfigProyeccion() : Promise.resolve();
-          promConfig.then(function() { return cargarDatos(); })
+          var promDatos = showDash ? cargarDatos() : Promise.resolve();
+          promConfig.then(function() { return promDatos; })
             .then(function() {
               document.getElementById('loading').style.display = 'none';
+              if (!showDash) {
+                var vd = document.getElementById('vista-dashboard');
+                if (vd) vd.style.display = 'none';
+                navegarPrimeraVistaDisponible();
+              }
               everfitSetupNuevaVersionListeners();
               void everfitOfferNuevaVersionIfNeeded();
             })
@@ -5177,6 +5556,36 @@
           errPanel.style.display = 'block';
           errPanel.textContent = 'Error al inicializar la sesión: ' + (e && e.message ? e.message : e);
         });
+      }
+
+      function navegarPrimeraVistaDisponible() {
+        var perms = userPermissions || [];
+        if (perms.indexOf('ver_dashboard') !== -1) {
+          var mh = document.getElementById('menu-home');
+          if (mh) mh.click();
+          return;
+        }
+        if (perms.indexOf('ver_asistencia') !== -1) {
+          var ma = document.getElementById('menu-asistencia');
+          if (ma) ma.click();
+          return;
+        }
+        if (perms.indexOf('ver_todo') !== -1) {
+          var mt = document.getElementById('menu-todo');
+          if (mt) mt.click();
+          return;
+        }
+        if (perms.indexOf('ver_configuracion') !== -1) {
+          var mc = document.getElementById('menu-config');
+          if (mc) mc.click();
+          return;
+        }
+        if (perms.indexOf('assign_roles') !== -1) {
+          var ms = document.getElementById('menu-sedes');
+          if (ms && ms.style.display !== 'none') { ms.click(); return; }
+          var mseg = document.getElementById('menu-seguridad');
+          if (mseg) mseg.click();
+        }
       }
 
       function refreshPermisosYVista() {
@@ -5199,6 +5608,15 @@
           if (btnImpAsist2) btnImpAsist2.style.display = userPermissions.indexOf('upload_base') !== -1 ? 'inline-flex' : 'none';
           var btnProy = document.getElementById('btn-config-proyeccion');
           if (btnProy) btnProy.style.display = userPermissions.indexOf('ver_proyeccion') !== -1 ? '' : 'none';
+          var menuHome2 = document.getElementById('menu-home');
+          var showDash2 = userPermissions.indexOf('ver_dashboard') !== -1;
+          if (menuHome2) {
+            menuHome2.style.display = showDash2 ? '' : 'none';
+            if (!showDash2) {
+              var vd2 = document.getElementById('vista-dashboard');
+              if (vd2 && vd2.style.display !== 'none') navegarPrimeraVistaDisponible();
+            }
+          }
           var menuSeg = document.getElementById('menu-seguridad');
           if (menuSeg) menuSeg.style.display = userPermissions.indexOf('assign_roles') !== -1 ? '' : 'none';
           var menuSedes2 = document.getElementById('menu-sedes');
@@ -5207,7 +5625,7 @@
             menuSedes2.style.display = showSedes ? '' : 'none';
             if (!showSedes) {
               var vs = document.getElementById('vista-sedes');
-              if (vs && vs.style.display !== 'none') document.getElementById('menu-home').click();
+              if (vs && vs.style.display !== 'none') navegarPrimeraVistaDisponible();
             }
           }
           var menuAsist2 = document.getElementById('menu-asistencia');
@@ -5216,7 +5634,7 @@
             menuAsist2.style.display = showAsist ? '' : 'none';
             if (!showAsist) {
               var va = document.getElementById('vista-asistencia');
-              if (va && va.style.display !== 'none') document.getElementById('menu-home').click();
+              if (va && va.style.display !== 'none') navegarPrimeraVistaDisponible();
             }
           }
           var menuTodo2 = document.getElementById('menu-todo');
@@ -5225,7 +5643,7 @@
             menuTodo2.style.display = showTodo ? '' : 'none';
             if (!showTodo) {
               var vt = document.getElementById('vista-todo');
-              if (vt && vt.style.display !== 'none') document.getElementById('menu-home').click();
+              if (vt && vt.style.display !== 'none') navegarPrimeraVistaDisponible();
             }
           }
           var menuConfig2 = document.getElementById('menu-config');
@@ -5234,16 +5652,16 @@
             menuConfig2.style.display = showCfg ? '' : 'none';
             if (!showCfg) {
               var vc = document.getElementById('vista-config');
-              if (vc && vc.style.display !== 'none') document.getElementById('menu-home').click();
+              if (vc && vc.style.display !== 'none') navegarPrimeraVistaDisponible();
             }
           }
           var btnTodoNueva2 = document.getElementById('btn-todo-nueva');
           if (btnTodoNueva2) btnTodoNueva2.style.display = userPermissions.indexOf('crear_todo') !== -1 ? 'inline-flex' : 'none';
           syncTodoMatrizTabVisibility();
-          // No invalidateAsistenciaCache aquí: el botón Actualizar debe respetar cache + RPC get_asistencia_dataset_version.
-          cargarDatos()
+          var promRefresh = showDash2 ? cargarDatos() : Promise.resolve();
+          promRefresh
             .then(function() {
-              renderizar();
+              if (showDash2) renderizar();
               if (asistenciaVistaMenuActiva()) renderVistaAsistencia(false);
               if (todoVistaMenuActiva()) cargarTodoBandeja();
             })
@@ -5291,6 +5709,7 @@
         }
         document.getElementById('menu-home').addEventListener('click', function(e) {
           e.preventDefault();
+          if (!userPermissions || userPermissions.indexOf('ver_dashboard') === -1) return;
           hideAllVistas();
           vistaDashboard.style.display = 'block';
           pageTitle.textContent = 'Dashboard';
@@ -5448,20 +5867,42 @@
           wrap.style.display = 'block';
           tbody.innerHTML = users.map(function(u) {
             var uid = u.user_id;
-            var email = (u.email || '').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+            var email = escHtmlMsg(u.email || '—');
+            var nombreVal = escHtmlMsg(u.nombre_usuario || '');
             var role = (u.role || 'visor');
             var suc = u.sucursales_permitidas;
             var sucText = !suc || suc.length === 0 ? 'Todas' : suc.join(', ');
-            return '<tr data-user-id="' + uid + '"><td>' + email + '</td><td><select class="seguridad-rol" data-user-id="' + uid + '">' + opcionesRolSelect(role) + '</select></td><td><span class="seguridad-sucursales-text">' + esc(sucText) + '</span> <button type="button" class="btn-sucursales-config" data-user-id="' + uid + '" title="Configurar sucursales">Configurar</button></td><td><button type="button" class="btn-guardar-rol" data-user-id="' + uid + '">Guardar</button></td></tr>';
+            return '<tr data-user-id="' + uid + '">' +
+              '<td class="seguridad-email">' + email + '</td>' +
+              '<td><input type="text" class="seguridad-nombre" maxlength="80" value="' + nombreVal + '" placeholder="Opcional" aria-label="Nombre para mostrar" /></td>' +
+              '<td><select class="seguridad-rol" data-user-id="' + uid + '">' + opcionesRolSelect(role) + '</select></td>' +
+              '<td><span class="seguridad-sucursales-text">' + esc(sucText) + '</span> <button type="button" class="btn-sucursales-config" data-user-id="' + uid + '" title="Configurar sucursales">Configurar</button></td>' +
+              '<td><button type="button" class="btn-guardar-rol" data-user-id="' + uid + '">Guardar</button></td>' +
+            '</tr>';
           }).join('');
           tbody.querySelectorAll('.btn-guardar-rol').forEach(function(btn) {
             btn.addEventListener('click', function() {
               var uid = btn.getAttribute('data-user-id');
               var row = btn.closest('tr');
               var sel = row.querySelector('.seguridad-rol');
+              var nombreInput = row.querySelector('.seguridad-nombre');
               var newRole = sel.value;
-              client.from('app_user_profile').upsert({ user_id: uid, role: newRole, updated_by: currentUserId }, { onConflict: 'user_id' }).then(function(r) {
-                if (r.error) showToast(r.error.message || 'No se pudo guardar.', 'error');
+              var nombre = nombreInput ? nombreInput.value : '';
+              Promise.all([
+                client.from('app_user_profile').upsert({ user_id: uid, role: newRole, updated_by: currentUserId }, { onConflict: 'user_id' }),
+                client.rpc('set_user_nombre_usuario', { p_user_id: uid, p_nombre: nombre })
+              ]).then(function(results) {
+                var err = (results[0] && results[0].error) || (results[1] && results[1].error);
+                if (err) {
+                  showToast(err.message || 'No se pudo guardar.', 'error');
+                  return;
+                }
+                showToast('Usuario actualizado.', 'success');
+                if (uid === currentUserId) {
+                  currentUserNombre = (nombre || '').trim();
+                  refreshUserBarLabel();
+                }
+                if (todoVistaMenuActiva()) cargarTodoBandeja();
               });
             });
           });
@@ -5607,7 +6048,7 @@
         }
         if (!tbody) return;
         if (!rows.length) {
-          tbody.innerHTML = '<tr><td colspan="6" class="todo-empty">Sin tareas en este cruce.</td></tr>';
+          tbody.innerHTML = '<tr><td colspan="7" class="todo-empty">Sin tareas en este cruce.</td></tr>';
         } else {
           tbody.innerHTML = rows.map(function(row) {
             var est = todoEstadoParaConteo(row);
@@ -5620,6 +6061,9 @@
               '<td>' + esc(formatearVencimientoTodo(row.vencimiento_at)) + '</td>' +
               '<td><span class="todo-badge todo-badge-prio-' + prio + '">' + esc(labelPrioridadTodo(prio)) + '</span></td>' +
               '<td><span class="todo-badge todo-badge-' + esc(est) + '">' + esc(labelEstadoTodo(est)) + '</span></td>' +
+              '<td>' + (row.estado_modificado_email
+                ? todoHtmlCeldaPersona(row.estado_modificado_label, row.estado_modificado_email)
+                : esc(row.estado_modificado_label || '—')) + '</td>' +
               '<td>' + esc(labelRecurrenciaTodo(row.recurrencia)) + '</td>' +
             '</tr>';
           }).join('');
@@ -5744,6 +6188,21 @@
         if (elH) elH.textContent = String(s.hechas_hoy != null ? s.hechas_hoy : 0);
       }
 
+      function syncTodoTablaAccionSticky() {
+        var table = document.getElementById('todo-tabla');
+        if (!table) return;
+        var row = table.querySelector('tbody tr[data-id]');
+        if (!row) {
+          table.style.removeProperty('--todo-accion-sticky-left');
+          return;
+        }
+        var cells = row.querySelectorAll('td');
+        if (cells.length < 4) return;
+        var left = 0;
+        for (var i = 0; i < 3; i++) left += cells[i].getBoundingClientRect().width;
+        table.style.setProperty('--todo-accion-sticky-left', Math.round(left) + 'px');
+      }
+
       function renderTodoTabla() {
         var tbody = document.getElementById('todo-tbody');
         if (!tbody) return;
@@ -5754,7 +6213,7 @@
         var iconEdit = '<span class="btn-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 013 3L7 19l-4 1 1-4 12.5-12.5z"/></svg></span>';
         var iconDel = '<span class="btn-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2"/></svg></span>';
         if (!rows.length) {
-          tbody.innerHTML = '<tr><td colspan="8" class="todo-empty">No hay tareas para los filtros seleccionados.</td></tr>';
+          tbody.innerHTML = '<tr><td colspan="9" class="todo-empty">No hay tareas para los filtros seleccionados.</td></tr>';
           return;
         }
         tbody.innerHTML = rows.map(function(row) {
@@ -5789,17 +6248,24 @@
             partes.push('<button type="button" class="btn-todo-icon danger todo-btn-eliminar" data-id="' + esc(row.id) + '" data-recurrencia="' + esc(row.recurrencia || 'ninguna') + '" title="Eliminar tarea" aria-label="Eliminar tarea">' + iconDel + '</button>');
           }
           var acciones = partes.length ? ('<div class="todo-row-actions">' + partes.join('') + '</div>') : '—';
+          var respHtml = (row.responsable_tipo === 'usuario' && row.responsable_email)
+            ? todoHtmlCeldaPersona(row.responsable_label, row.responsable_email)
+            : esc(row.responsable_label || '—');
+          var usrHtml = row.estado_modificado_email
+            ? todoHtmlCeldaPersona(row.estado_modificado_label, row.estado_modificado_email)
+            : esc(row.estado_modificado_label || '—');
           return '<tr data-id="' + esc(row.id) + '">' +
-            '<td><div class="todo-titulo-cell">' + esc(row.titulo) + '</div>' +
+            '<td class="col-tarea"><div class="todo-titulo-cell">' + esc(row.titulo) + '</div>' +
               (row.descripcion ? '<div class="todo-desc-cell">' + esc(row.descripcion) + '</div>' : '') +
             '</td>' +
-            '<td>' + esc(row.sede || 'Empresa') + '</td>' +
-            '<td>' + esc(row.responsable_label || '—') + '</td>' +
-            '<td>' + esc(formatearVencimientoTodo(row.vencimiento_at)) + '</td>' +
-            '<td><span class="todo-badge todo-badge-prio-' + prio + '">' + esc(labelPrioridadTodo(prio)) + '</span></td>' +
-            '<td><span class="todo-badge todo-badge-' + esc(est) + '">' + esc(labelEstadoTodo(est)) + '</span></td>' +
-            '<td>' + esc(labelRecurrenciaTodo(row.recurrencia)) + '</td>' +
-            '<td>' + acciones + '</td>' +
+            '<td class="col-sede">' + esc(row.sede || 'Empresa') + '</td>' +
+            '<td class="col-responsable">' + respHtml + '</td>' +
+            '<td class="col-accion">' + acciones + '</td>' +
+            '<td class="col-venc">' + esc(formatearVencimientoTodo(row.vencimiento_at)) + '</td>' +
+            '<td class="col-prio"><span class="todo-badge todo-badge-prio-' + prio + '">' + esc(labelPrioridadTodo(prio)) + '</span></td>' +
+            '<td class="col-estado"><span class="todo-badge todo-badge-' + esc(est) + '">' + esc(labelEstadoTodo(est)) + '</span></td>' +
+            '<td class="col-usuario">' + usrHtml + '</td>' +
+            '<td class="col-rec">' + esc(labelRecurrenciaTodo(row.recurrencia)) + '</td>' +
           '</tr>';
         }).join('');
         tbody.querySelectorAll('.todo-estado-select').forEach(function(sel) {
@@ -5841,6 +6307,7 @@
             eliminarTodoInstancia(btn.getAttribute('data-id'), btn.getAttribute('data-recurrencia'));
           });
         });
+        requestAnimationFrame(function() { syncTodoTablaAccionSticky(); });
       }
 
       function todoFiltroEstaActivo(el) {
@@ -5947,7 +6414,7 @@
           return;
         }
         var rows = todoListaFiltradaLocal();
-        var header = ['Título', 'Descripción', 'Sede', 'Responsable', 'Tipo responsable', 'Vencimiento', 'Prioridad', 'Estado', 'Recurrencia', 'Completada'];
+        var header = ['Título', 'Descripción', 'Sede', 'Responsable', 'Tipo responsable', 'Vencimiento', 'Prioridad', 'Estado', 'Usuario', 'Recurrencia', 'Completada'];
         var aoa = [header].concat(rows.map(function(r) {
           return [
             r.titulo || '',
@@ -5958,6 +6425,7 @@
             formatearVencimientoTodo(r.vencimiento_at),
             Number(r.prioridad) || null,
             labelEstadoTodo(todoEstadoParaConteo(r)),
+            r.estado_modificado_label || '',
             labelRecurrenciaTodo(r.recurrencia),
             r.completada_at ? formatearVencimientoTodo(r.completada_at) : ''
           ];
@@ -6051,7 +6519,7 @@
           var selSede = document.getElementById('todo-nueva-sede');
           if (selUser) {
             selUser.innerHTML = '<option value="">Elegir usuario…</option>' + users.map(function(u) {
-              return '<option value="' + esc(u.user_id) + '">' + esc(u.email) + ' (' + esc(u.role_label || u.role) + ')</option>';
+              return '<option value="' + esc(u.user_id) + '">' + esc(userProfileComboLabel(u)) + '</option>';
             }).join('');
             if (currentUserId) selUser.value = currentUserId;
           }
@@ -6184,6 +6652,7 @@
       function setupTodoModule() {
         if (todoModuleReady) return;
         todoModuleReady = true;
+        setupTodoPersonaHints();
         syncTodoMatrizTabVisibility();
         document.querySelectorAll('#todo-tabs [data-todo-tab]').forEach(function(btn) {
           btn.addEventListener('click', function() {
@@ -6359,6 +6828,12 @@
             });
           });
         }
+        var todoResizeTimer = null;
+        window.addEventListener('resize', function() {
+          if (!todoVistaMenuActiva()) return;
+          if (todoResizeTimer) clearTimeout(todoResizeTimer);
+          todoResizeTimer = setTimeout(syncTodoTablaAccionSticky, 120);
+        });
       }
 
       var sedesModuleReady = false;
@@ -6474,7 +6949,7 @@
             if (!sel) return;
             var cur = sel.value;
             sel.innerHTML = '<option value="">Elegir…</option>' + users.map(function(u) {
-              return '<option value="' + esc(u.user_id) + '">' + esc(u.email) + ' (' + esc(u.role_label || u.role) + ')</option>';
+              return '<option value="' + esc(u.user_id) + '">' + esc(userProfileComboLabel(u)) + '</option>';
             }).join('');
             if (cur) sel.value = cur;
           }

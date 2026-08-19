@@ -1,8 +1,9 @@
 {
-  "versionLabel": "v1.35",
+  "versionLabel": "v1.36",
   "lines": [
-    "En las tareas diarias podés marcar Hecha en cualquier momento del día de vencimiento, sin esperar la hora.",
-    "La tarjeta Hechas hoy se actualiza al completar una tarea, aunque estés viendo las abiertas.",
-    "Recargá cuando quieras para usar esta versión."
+    "En Mi perfil podés elegir un nombre para mostrar; en To-Do la bandeja usa ese nombre en lugar del email.",
+    "En Responsable y Usuario, pasá el mouse o tocá el nombre para ver el email y copiarlo al portapapeles.",
+    "La bandeja To-Do se ve mejor en el celular: Acción queda más cerca al deslizar la tabla.",
+    "En Seguridad podés definir qué roles ven Home y Asistencia, y editar el nombre de cada usuario."
   ]
 }

@@ -6,15 +6,16 @@ La app usa **login por email y contraseña** (Supabase Auth). Los permisos se co
 
 | Rol        | Ver dashboard | Actualizar base (upload) | Asignar perfiles | Proyección | Asistencia | To-Do (ver / completar) | To-Do (crear) |
 |-----------|----------------|---------------------------|-------------------|------------|------------|-------------------------|---------------|
-| **Admin** | Sí             | Sí                        | Sí                | Sí (ver y configurar) | Sí (por defecto; configurable) | Sí | Sí |
-| **Encargado** | Sí         | Sí                        | No                | Sí (ver y configurar) | Sí (por defecto; configurable) | Sí | Sí |
-| **Recepcionista** | Sí     | No                        | No                | No                    | Sí (por defecto; configurable) | Sí | No |
-| **Profesor** | Sí          | No                        | No                | No                    | Sí (por defecto; configurable) | Sí | No |
-| **Visor** | Sí             | No                        | No                | No                    | Sí (por defecto; configurable) | Sí | No |
+| **Admin** | Sí (configurable) | Sí                        | Sí                | Sí (ver y configurar) | Sí (configurable) | Sí | Sí |
+| **Encargado** | Sí (configurable) | Sí                        | No                | Sí (ver y configurar) | Sí (configurable) | Sí | Sí |
+| **Recepcionista** | Sí (configurable) | No                        | No                | No                    | Sí (configurable) | Sí | No |
+| **Profesor** | Sí (configurable) | No                        | No                | No                    | Sí (configurable) | Sí | No |
+| **Visor** | Sí (configurable) | No                        | No                | No                    | Sí (configurable) | Sí | No |
 
 - **Actualizar base:** truncar la tabla `base_everfit` y cargar un Excel (botón "Actualizar base" en el dashboard).
-- **Asignar perfiles:** acceder al módulo Seguridad y cambiar el rol de cualquier usuario.
+- **Asignar perfiles:** acceder al módulo Seguridad y cambiar el rol de cualquier usuario, su **nombre para mostrar** y sus sucursales permitidas.
 - **Ver proyección:** ver en la tabla Flujo por mes los meses proyectados (método, meses de historia, meses a proyectar, recorte) y el botón "Proyección" para configurarlos. Solo Admin y Encargado; Visor no ve la proyección ni el botón.
+- **Ver dashboard (`ver_dashboard`):** menú **Home** (flujo, tarjetas, gráficos). Configurable por rol en Seguridad. Si un usuario no lo tiene, la app abre la primera vista disponible (Asistencia, To-Do, etc.). SQL: `sql/supabase_menu_ver_dashboard.sql`.
 - **Ver asistencia (`ver_asistencia`):** menú **Asistencia** y lectura de `transacciones_asistencia` (heatmap, multi-sede, años). El **Admin** puede activar o desactivar este permiso por rol en Seguridad (igual que Actualizar base o Proyección). **Importar asistencia** sigue requiriendo `upload_base` (no cambia). Ejecutá `sql/supabase_asistencia_ver_permiso.sql` si la tabla ya existía sin este permiso, o reaplicá `sql/supabase_transacciones_asistencia.sql` en instalaciones nuevas.
 - **To-Do (`ver_todo` / `crear_todo` / `editar_todo` / `eliminar_todo` / `completar_todo`):** menú **To-Do**, bandeja y alta de tareas. Alta/editar/eliminar por defecto Admin y Encargado (cada uno configurable por rol en Seguridad). Roles nuevos: **Recepcionista** y **Profesor**. Detalle: `docs/TODO.md` y `sql/supabase_todo.sql`.
 - **Configuración (`ver_configuracion`):** menú **Configuración** (default Admin y Encargado). Reasignar una, varias o todas las tareas abiertas de un usuario a otro, o de un perfil a otro. SQL: `sql/supabase_todo_reasignar.sql`. Doc: `docs/CONFIGURACION.md`.
@@ -38,7 +39,7 @@ Para habilitar también la **proyección** (solo Admin y Encargado), ejecutá ad
 
 Eso crea:
 
-- `user_profiles`: id y email de cada usuario (se llena con un trigger al registrarse).
+- `user_profiles`: id, email y **nombre_usuario** (nombre para mostrar; si está vacío se usa el email). Se llena con trigger al registrarse; cada usuario lo edita en **Mi perfil** (barra superior). SQL: `sql/supabase_user_profiles_nombre_usuario.sql`.
 - `app_role` y `app_role_permission`: roles (admin, encargado, visor) y qué permiso tiene cada uno.
 - `app_user_profile`: rol asignado a cada usuario.
 - Funciones: `get_my_role()`, `has_permission(perm)`, `get_my_permissions()`, `get_users_for_admin()`.

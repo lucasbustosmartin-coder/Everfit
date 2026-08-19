@@ -52,6 +52,8 @@ En la barra de filtros, a la derecha, hay un botón **Actualizar base** (icono d
 
 Botón **Importar asistencia** junto a “Actualizar base” (mismo permiso `upload_base`). Permite subir el Excel tipo **Transacciones** (`Sheet1`, fila de encabezados con Nombre / Apellido). **Cramer** y **Migueletes** usan 5 columnas; **Cabildo** incluye columnas extra; todo se guarda en `transacciones_asistencia`. Por cada import se **reemplazan** las filas de esa sucursal. Crear la tabla: `sql/supabase_transacciones_asistencia.sql`. Detalle: **`docs/TRANSACCIONES_ASISTENCIA.md`**.
 
+El menú lateral **Home** (Dashboard: flujo, tarjetas, gráficos) solo se muestra si el rol tiene el permiso **`ver_dashboard`**, configurable por el Admin en **Seguridad → Permisos por rol**. Migración: `sql/supabase_menu_ver_dashboard.sql`.
+
 El menú lateral **Asistencia** (heatmap, años, multi-sede) solo se muestra si el rol tiene el permiso **`ver_asistencia`**, configurable por el Admin en **Seguridad → Permisos por rol** (junto a Proyección y Actualizar base). La lectura en Supabase también exige ese permiso (RLS). Migración si la tabla ya existía: `sql/supabase_asistencia_ver_permiso.sql`.
 
 El menú **Configuración** (reasignar To-Do entre usuarios o perfiles) requiere **`ver_configuracion`**. Ver **`docs/CONFIGURACION.md`**.
