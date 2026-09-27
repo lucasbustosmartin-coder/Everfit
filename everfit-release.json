@@ -1,8 +1,8 @@
 {
-  "versionLabel": "v1.38",
+  "versionLabel": "v1.39",
   "lines": [
-    "En el Detalle por Concepto y por Beneficiario, tocá cualquier importe para ver los movimientos que lo forman.",
-    "El listado muestra fecha, beneficiario, detalle, medio, sucursal y el total al pie, igual al número que tocaste.",
-    "Podés descargar esos movimientos a Excel con un clic."
+    "Nuevo filtro Período: por defecto muestra el último año, y tarjetas, gráfico y tabla coinciden en los mismos meses.",
+    "El gráfico G/P Mensual suma línea de tendencia y la variación contra el mes anterior en monto y %.",
+    "Botón PDF: descargá un reporte de la pantalla con los filtros activos resaltados y los importes en miles."
   ]
 }

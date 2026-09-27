@@ -60,7 +60,13 @@
     .grafico-gp-wrap .grafico-titulo { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.75rem; font-size: 1.05rem; font-weight: 600; color: #1a1a1a; }
     .grafico-gp-wrap .grafico-titulo .grafico-icon { width: 22px; height: 22px; color: #555; }
     .grafico-gp-wrap .grafico-titulo .grafico-icon svg { width: 100%; height: 100%; stroke: currentColor; }
-    .grafico-gp-wrap .chart-container { position: relative; height: 280px; width: 100%; }
+    .grafico-gp-wrap .chart-container { position: relative; height: 300px; width: 100%; }
+    .gp-resumen { display: flex; flex-wrap: wrap; gap: 0.4rem 1.25rem; margin: 0 0 0.5rem 0; font-size: 0.875rem; color: #334155; }
+    .gp-resumen:empty { display: none; }
+    .gp-resumen-item { display: inline-flex; align-items: baseline; gap: 0.3rem; padding: 0.3rem 0.6rem; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; }
+    .gp-resumen-label { color: #64748b; }
+    .gp-resumen strong.positivo { color: #0d7d3d; }
+    .gp-resumen strong.negativo { color: #b91c1c; }
     .asistencia-activos-mes-wrap { min-height: 200px; width: 100%; }
     .asistencia-activos-mes-wrap .chart-container { position: relative; height: 280px; width: 100%; min-width: 0; }
     table { width: 100%; border-collapse: collapse; }
@@ -167,10 +173,77 @@
     .ratios-seccion-titulo .ratios-titulo-icon svg { width: 100%; height: 100%; stroke: currentColor; }
     .btn-config-proyeccion { display: inline-flex; align-items: center; gap: 0.45rem; padding: 0.5rem 1rem; border: 1px solid #555; background: #fff; color: #333; border-radius: 6px; cursor: pointer; font-size: 0.9rem; font-family: inherit; }
     .btn-config-proyeccion:hover { background: #f0f0f0; border-color: #333; }
+    .btn-reporte-pdf { display: inline-flex; align-items: center; gap: 0.45rem; padding: 0.5rem 1rem; border: 1px solid #1e3a5f; background: #1e3a5f; color: #fff; border-radius: 6px; cursor: pointer; font-size: 0.9rem; font-family: inherit; }
+    .btn-reporte-pdf:hover { background: #152a45; border-color: #152a45; }
+    .btn-reporte-pdf .btn-icon { display: inline-flex; width: 18px; height: 18px; }
+    .btn-reporte-pdf .btn-icon svg { width: 100%; height: 100%; stroke: currentColor; }
+
+    #rep-print-root { display: none; }
+    @media print {
+      @page { size: A4 landscape; margin: 10mm; }
+      html, body { background: #fff !important; height: auto !important; overflow: visible !important; }
+      body.rep-printing * { visibility: hidden; }
+      body.rep-printing #rep-print-root, body.rep-printing #rep-print-root * { visibility: visible; }
+      body.rep-printing .sidebar, body.rep-printing .main-content > *:not(#rep-print-root) { display: none !important; }
+      body.rep-printing .main-content { padding: 0 !important; margin: 0 !important; overflow: visible !important; height: auto !important; max-height: none !important; width: 100% !important; }
+      body.rep-printing #rep-print-root { display: block !important; position: static; width: 100%; background: #fff; color: #0f172a; font-family: system-ui, -apple-system, 'Segoe UI', sans-serif; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      #rep-print-root .rep-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; margin-bottom: 0.6rem; padding-bottom: 0.55rem; border-bottom: 2px solid #0f172a; }
+      #rep-print-root .rep-brand { display: flex; align-items: center; gap: 0.7rem; }
+      #rep-print-root .rep-brand img { height: 38px; width: auto; }
+      #rep-print-root .rep-kicker { margin: 0; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #64748b; }
+      #rep-print-root .rep-head h1 { margin: 0.1rem 0 0; font-size: 1.3rem; color: #0f172a; }
+      #rep-print-root .rep-meta { text-align: right; font-size: 0.78rem; color: #334155; line-height: 1.45; }
+      #rep-print-root .rep-meta p { margin: 0; }
+      #rep-print-root .rep-filtros { border: 2px solid #0d9488; background: #f0fdfa; border-radius: 10px; padding: 0.5rem 0.7rem; margin-bottom: 0.65rem; break-inside: avoid; }
+      #rep-print-root .rep-filtros-titulo { margin: 0 0 0.4rem; font-size: 0.72rem; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; color: #0f766e; }
+      #rep-print-root .rep-filtros-estado { font-weight: 700; text-transform: none; letter-spacing: 0; color: #0f172a; margin-left: 0.35rem; }
+      #rep-print-root .rep-chips { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+      #rep-print-root .rep-chip { display: inline-flex; flex-direction: column; gap: 0.05rem; padding: 0.3rem 0.65rem; border-radius: 8px; border: 1px solid #cbd5e1; background: #fff; min-width: 7.5rem; }
+      #rep-print-root .rep-chip-lab { font-size: 0.6rem; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; color: #64748b; }
+      #rep-print-root .rep-chip-val { font-size: 0.9rem; font-weight: 700; color: #334155; }
+      #rep-print-root .rep-chip.activo { background: #0d9488; border-color: #0d9488; }
+      #rep-print-root .rep-chip.activo .rep-chip-lab { color: #ccfbf1; }
+      #rep-print-root .rep-chip.activo .rep-chip-val { color: #fff; }
+      #rep-print-root .rep-chip-tag { font-size: 0.55rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; background: #fff; color: #0f766e; border-radius: 4px; padding: 0 0.3rem; align-self: flex-start; margin-top: 0.1rem; }
+      #rep-print-root .rep-cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.5rem; margin-bottom: 0.6rem; }
+      #rep-print-root .rep-cards .card { border: 1px solid #cbd5e1; border-radius: 10px; padding: 0.45rem 0.7rem; background: #fff; box-shadow: none; margin: 0; break-inside: avoid; }
+      #rep-print-root .rep-cards .card-titulo { display: flex; align-items: center; gap: 0.35rem; font-size: 0.8rem; color: #475569; }
+      #rep-print-root .rep-cards .card-icon { width: 14px; height: 14px; display: inline-flex; }
+      #rep-print-root .rep-cards .card-icon svg { width: 100%; height: 100%; stroke: currentColor; }
+      #rep-print-root .rep-cards .valor { font-size: 1.15rem; font-weight: 700; }
+      #rep-print-root .ingresos, #rep-print-root .positivo { color: #15803d; }
+      #rep-print-root .egresos, #rep-print-root .negativo { color: #b91c1c; }
+      #rep-print-root .rep-seccion { break-inside: avoid; margin-bottom: 0.6rem; }
+      #rep-print-root .rep-seccion h2 { margin: 0 0 0.3rem; font-size: 0.95rem; color: #0f172a; }
+      #rep-print-root .gp-resumen { display: flex; flex-wrap: wrap; gap: 0.4rem 1rem; margin: 0 0 0.35rem; font-size: 0.78rem; }
+      #rep-print-root .gp-resumen-item { padding: 0.2rem 0.5rem; border: 1px solid #e2e8f0; border-radius: 6px; background: #f8fafc; }
+      #rep-print-root .gp-resumen-label { color: #64748b; }
+      #rep-print-root .rep-chart { display: block; width: 100%; max-height: 240px; object-fit: contain; border: 1px solid #e5e7eb; border-radius: 10px; background: #fff; }
+      #rep-print-root .rep-tabla { width: 100%; border-collapse: collapse; font-size: 7.5pt; margin-bottom: 0.45rem; break-inside: avoid; }
+      #rep-print-root .rep-tabla th, #rep-print-root .rep-tabla td { padding: 0.2rem 0.3rem; border-bottom: 1px solid #e5e7eb; text-align: right; white-space: nowrap; }
+      #rep-print-root .rep-tabla th:first-child, #rep-print-root .rep-tabla td:first-child { text-align: left; }
+      #rep-print-root .rep-tabla thead th { background: #1a1a1a; color: #fff; font-weight: 600; }
+      #rep-print-root .rep-tabla th.col-proyeccion { background: #0f5c4a; }
+      #rep-print-root .rep-tabla td.col-proyeccion { background: #e8f4f0; }
+      #rep-print-root .rep-tabla .ratio-var-igual { color: #888; }
+      #rep-print-root .rep-tabla tr.rep-fila-total td { font-weight: 700; border-top: 2px solid #333; background: #f5f5f5; }
+      #rep-print-root .rep-tabla tr.rep-fila-titulo td { font-weight: 700; background: #f8fafc; }
+      #rep-print-root .rep-tabla .item-icon, #rep-print-root .rep-tabla .ratio-var-icon, #rep-print-root .rep-tabla .ratios-titulo-icon { display: inline-flex; width: 10px; height: 10px; vertical-align: middle; }
+      #rep-print-root .rep-tabla svg { width: 100%; height: 100%; stroke: currentColor; }
+      #rep-print-root .rep-tabla .item-con-icono, #rep-print-root .rep-tabla .ratio-con-variacion { display: inline-flex; align-items: center; gap: 0.2rem; }
+      #rep-print-root .rep-tabla .ratio-var-subio { color: #b91c1c; }
+      #rep-print-root .rep-tabla .ratio-var-bajo { color: #15803d; }
+      #rep-print-root .rep-unidad-aviso { margin: 0 0 0.5rem; padding: 0.3rem 0.6rem; font-size: 0.8rem; color: #0f172a; background: #fef9c3; border: 1px solid #facc15; border-radius: 6px; display: inline-block; }
+      #rep-print-root .rep-unidad { font-weight: 400; font-size: 0.85em; opacity: 0.85; }
+      #rep-print-root .rep-notas { font-size: 0.68rem; color: #64748b; margin: 0.35rem 0 0; padding: 0; list-style: none; }
+      #rep-print-root .rep-notas li { margin: 0 0 0.15rem; }
+    }
     .config-proyeccion .form-group { margin-bottom: 0.75rem; }
     .config-proyeccion label { display: block; margin-bottom: 0.25rem; font-size: 0.9rem; }
     .config-proyeccion select { padding: 0.4rem 0.6rem; border-radius: 6px; border: 1px solid #ccc; }
     .filtros select { padding: 0.4rem 0.6rem; border-radius: 6px; border: 1px solid #ccc; }
+    .filtros select#filtro-periodo { min-height: 2.25rem; font-family: inherit; font-size: 0.9rem; }
+    .filtros select#filtro-periodo.filtro-activo { border-color: #0d9488; background: #f0fdfa; box-shadow: 0 0 0 1px #0d9488; color: #0f172a; font-weight: 600; }
     .toggle-moneda { display: inline-flex; border-radius: 8px; border: 1px solid #ccc; overflow: hidden; background: #eee; }
     .toggle-moneda button { padding: 0.5rem 1rem; border: none; background: transparent; cursor: pointer; font-size: 1rem; }
     .toggle-moneda button.activo { background: #1a1a1a; color: #fff; font-weight: 600; }
@@ -319,9 +392,10 @@
       .filtros .filtros-izq { flex-direction: column; align-items: stretch; gap: 0.6rem; }
       .filtros .filtros-der { margin-left: 0; justify-content: flex-start; flex-wrap: wrap; }
       .filtros label { flex-wrap: wrap; }
+      .filtros select#filtro-periodo { min-height: 44px; font-size: 16px; }
       .toggle-moneda button { min-height: 44px; padding: 0.55rem 1rem; }
       .filtro-sucursal .btn-sucursal { min-height: 44px; padding: 0.5rem 0.75rem; }
-      .btn-actualizar-base, .btn-importar-asistencia, .btn-config-proyeccion { min-height: 44px; }
+      .btn-actualizar-base, .btn-importar-asistencia, .btn-config-proyeccion, .btn-reporte-pdf { min-height: 44px; }
       .resumen { gap: 0.75rem; margin-bottom: 0.75rem; }
       .resumen .card { min-width: 0; flex: 1 1 100%; }
       .resumen .valor { font-size: 1.35rem; }
@@ -331,6 +405,8 @@
       .grafico-gp-wrap .chart-container { height: 240px; }
       .asistencia-activos-mes-wrap .chart-container { height: 240px; }
       .grafico-gp-wrap .grafico-titulo { font-size: 1rem; }
+      .gp-resumen { font-size: 0.8rem; gap: 0.35rem; }
+      .gp-resumen-item { flex: 1 1 100%; flex-wrap: wrap; }
       #tabla-flujo-wrap { max-height: 60vh; margin-top: 0.35rem; -webkit-overflow-scrolling: touch; }
       #tabla-flujo th, #tabla-flujo td { padding: 0.4rem 0.5rem; font-size: 0.875rem; }
       #tabla-flujo th.col-item, #tabla-flujo td.col-item { min-width: 80px; }
@@ -782,7 +858,7 @@
         <span class="menu-label">Seguridad</span>
       </a>
     </nav>
-    <div class="sidebar-version" id="sidebar-version" aria-label="Versión">v1.38</div>
+    <div class="sidebar-version" id="sidebar-version" aria-label="Versión">v1.39</div>
   </aside>
 
   <main class="main-content">
@@ -854,6 +930,13 @@
               <option value="oficial">Oficial</option>
             </select>
           </label>
+          <label class="filtro-periodo-wrap" id="filtro-periodo-wrap">
+            <span>Período:</span>
+            <select id="filtro-periodo" aria-label="Período">
+              <option value="ultimo_anio" selected>Último año</option>
+              <option value="todo">Todo el histórico</option>
+            </select>
+          </label>
           <label class="filtro-sucursal-wrap" id="filtro-sucursal-wrap" style="display:none;">
             <span>Sucursal:</span>
             <div class="filtro-sucursal" id="filtro-sucursal"></div>
@@ -863,6 +946,10 @@
           <button type="button" id="btn-config-proyeccion" class="btn-config-proyeccion" aria-label="Configurar proyección" style="display:none;">
             <span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z"/></svg></span>
             Proyección
+          </button>
+          <button type="button" id="btn-reporte-pdf" class="btn-reporte-pdf" title="Reporte PDF de esta pantalla con los filtros activos" aria-label="Generar reporte PDF">
+            <span class="btn-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg></span>
+            PDF
           </button>
           <button type="button" id="btn-actualizar-base" class="btn-actualizar-base" aria-label="Actualizar base de datos">
             <span class="btn-upload-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></span>
@@ -885,7 +972,7 @@
           <button type="button" class="help-exclusiones" id="help-tarjetas" title="Reglas de exclusión" aria-label="Ver reglas de exclusión">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
           </button>
-            <div class="help-exclusiones-popover" id="help-tarjetas-popover"><strong>Tarjetas (resumen):</strong> solo se excluyen filas con <strong>centro_de_costos</strong> = Saldo Inicial (sin distinguir mayúsculas). El campo <strong>concepto</strong> no se filtra aquí (Inversiones y demás entran si corresponden). Incluye reales, pendientes y proyectados. La suma no usa las columnas «Proy.» de la tabla.</div>
+            <div class="help-exclusiones-popover" id="help-tarjetas-popover"><strong>Tarjetas (resumen):</strong> solo se excluyen filas con <strong>centro_de_costos</strong> = Saldo Inicial (sin distinguir mayúsculas). El campo <strong>concepto</strong> no se filtra aquí (Inversiones y demás entran si corresponden). Incluye reales, pendientes y proyectados. La suma no usa las columnas «Proy.» de la tabla. Suman solo los meses del filtro <strong>Período</strong> (por defecto último año).</div>
         </span>
       </div>
 
@@ -897,10 +984,11 @@
             <button type="button" class="help-exclusiones" id="help-grafico" title="Reglas de exclusión" aria-label="Ver reglas de exclusión">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
             </button>
-            <div class="help-exclusiones-popover" id="help-grafico-popover"><strong>Gráfico G/P mensual</strong> (mismo agregado que la tabla Flujo por mes): (1) excluye <strong>centro_de_costos</strong> = Saldo Inicial; (2) <strong>solo aquí</strong> excluye además filas cuyo <strong>concepto</strong> es <strong>Inversiones</strong> o <strong>Saldo Inicial</strong> (texto sin distinguir mayúsculas). Incluye reales, pendientes y proyectados. No aplica a tarjetas ni al modal Detalle.</div>
+            <div class="help-exclusiones-popover" id="help-grafico-popover"><strong>Gráfico G/P mensual</strong> (mismo agregado que la tabla Flujo por mes): (1) excluye <strong>centro_de_costos</strong> = Saldo Inicial; (2) <strong>solo aquí</strong> excluye además filas cuyo <strong>concepto</strong> es <strong>Inversiones</strong> o <strong>Saldo Inicial</strong> (texto sin distinguir mayúsculas). Incluye reales, pendientes y proyectados. No aplica a tarjetas ni al modal Detalle.<br><br><strong>Período:</strong> sigue el filtro Período de arriba (por defecto último año: mes actual y los 12 anteriores), igual que tarjetas, tabla y Detalle. <strong>Tendencia:</strong> recta de mínimos cuadrados sobre los meses mostrados (línea azul punteada); «por mes» es la pendiente. <strong>Variación:</strong> G/P del mes menos G/P del mes anterior; el % se calcula sobre el valor absoluto del mes anterior (sin % si el anterior es 0). El primer mes se compara con el mes previo aunque no se grafique. En pantallas chicas la variación se ve en el tooltip.</div>
           </span>
         </div>
-        <p style="margin:0 0 0.5rem 0; font-size:0.9rem; color:#666;">Desde el mes del año anterior hasta el mes actual (ej. 03-2025 a 03-2026).</p>
+        <p id="grafico-gp-periodo" style="margin:0 0 0.5rem 0; font-size:0.9rem; color:#666;">Período: último año. Sobre cada barra: variación vs mes anterior (% y monto).</p>
+        <div class="gp-resumen" id="grafico-gp-resumen" aria-live="polite"></div>
         <div class="chart-container"><canvas id="chart-gp-mensual"></canvas></div>
       </div>
 
@@ -916,7 +1004,7 @@
             <button type="button" class="help-exclusiones" id="help-flujo" title="Reglas de exclusión" aria-label="Ver reglas de exclusión">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
             </button>
-            <div class="help-exclusiones-popover" id="help-flujo-popover"><strong>Tabla Flujo por mes</strong> (y ratios que la usan): (1) excluye <strong>centro_de_costos</strong> = Saldo Inicial; (2) <strong>solo en esta tabla y en el gráfico G/P</strong> excluye filas con <strong>concepto</strong> = Inversiones o Saldo Inicial. Incluye reales, pendientes y proyectados. Las tarjetas y el Detalle por concepto/beneficiario no filtran por concepto así.</div>
+            <div class="help-exclusiones-popover" id="help-flujo-popover"><strong>Tabla Flujo por mes</strong> (y ratios que la usan): (1) excluye <strong>centro_de_costos</strong> = Saldo Inicial; (2) <strong>solo en esta tabla y en el gráfico G/P</strong> excluye filas con <strong>concepto</strong> = Inversiones o Saldo Inicial. Incluye reales, pendientes y proyectados. Las tarjetas y el Detalle por concepto/beneficiario no filtran por concepto así. Muestra los meses del filtro <strong>Período</strong>; las columnas «Proy.» aparecen solo si el período incluye el mes en curso y se calculan con la historia completa (no dependen del período elegido).</div>
           </span>
         </div>
         <p style="color:#666; font-size:0.9rem; margin:0 0 0.5rem 0;">Hacé clic en una fila para ver el detalle por concepto o beneficiario.</p>
@@ -2085,7 +2173,92 @@
 
       function getSucursalFilter() { return sucursalFilterSet; }
 
+      /** Filtro Período (mes de fecha_pago, calendario Argentina). Default: último año = mismos 13 meses que el gráfico G/P. */
+      var PERIODO_DEFAULT = 'ultimo_anio';
+      function getPeriodoValor() {
+        var sel = document.getElementById('filtro-periodo');
+        return (sel && sel.value) || PERIODO_DEFAULT;
+      }
+      function getRangoPeriodo() {
+        var v = getPeriodoValor();
+        if (v === 'todo') return { valor: v, desde: null, hasta: null };
+        if (v.indexOf('anio:') === 0) {
+          var y = v.slice(5);
+          return { valor: v, desde: y + '-01', hasta: y + '-12' };
+        }
+        var m = getUltimos12Meses();
+        return { valor: PERIODO_DEFAULT, desde: m[0], hasta: m[m.length - 1] };
+      }
+      function keyEnRangoPeriodo(key, rango) {
+        return (!rango.desde || key >= rango.desde) && (!rango.hasta || key <= rango.hasta);
+      }
+      function labelPeriodoActual() {
+        var r = getRangoPeriodo();
+        if (r.valor === 'todo') return 'Todo el histórico';
+        if (r.valor.indexOf('anio:') === 0) return 'Año ' + r.valor.slice(5);
+        return 'Último año (' + formatoPeriodoFromKey(r.desde) + ' a ' + formatoPeriodoFromKey(r.hasta) + ')';
+      }
+      /** Meses continuos del período para el gráfico y el reporte (sin pasar del mes en curso salvo que haya datos posteriores). */
+      function getMesesPeriodo() {
+        var rango = getRangoPeriodo();
+        if (rango.valor === PERIODO_DEFAULT) return getUltimos12Meses();
+        var set = {};
+        getDatosFiltrados().forEach(function(r) {
+          if (debeExcluirse(r)) return;
+          var f = fechaStr(r.fecha_pago);
+          if (f) set[f.slice(0, 7)] = true;
+        });
+        var ks = Object.keys(set).sort();
+        var cur = keyMesEnCurso();
+        var desde = rango.desde || ks[0];
+        if (!desde) return [];
+        var tope = ks.length && ks[ks.length - 1] > cur ? ks[ks.length - 1] : cur;
+        var hasta = rango.hasta && rango.hasta < tope ? rango.hasta : tope;
+        var out = [];
+        var k = desde;
+        while (k <= hasta && out.length < 600) {
+          out.push(k);
+          k = siguienteMesKey(k);
+        }
+        return out;
+      }
+
       function getDatosFiltrados() {
+        var rango = getRangoPeriodo();
+        var base = getDatosFiltradosSinPeriodo();
+        if (!rango.desde && !rango.hasta) return base;
+        return base.filter(function(r) {
+          var f = fechaStr(r.fecha_pago);
+          return !!f && keyEnRangoPeriodo(f.slice(0, 7), rango);
+        });
+      }
+
+      /** Opciones del filtro Período: último año (default), años con datos (desc.) y todo el histórico. Conserva la elección actual. */
+      function poblarFiltroPeriodo() {
+        var sel = document.getElementById('filtro-periodo');
+        if (!sel) return;
+        var actual = sel.value || PERIODO_DEFAULT;
+        var anios = {};
+        cacheBaseEverfit.forEach(function(r) {
+          var f = fechaStr(r.fecha_pago);
+          if (f) anios[f.slice(0, 4)] = true;
+        });
+        var lista = Object.keys(anios).sort().reverse();
+        var m = getUltimos12Meses();
+        var html = '<option value="ultimo_anio">Último año (' + formatoPeriodoFromKey(m[0]) + ' a ' + formatoPeriodoFromKey(m[m.length - 1]) + ')</option>' +
+          lista.map(function(y) { return '<option value="anio:' + y + '">Año ' + y + '</option>'; }).join('') +
+          '<option value="todo">Todo el histórico</option>';
+        sel.innerHTML = html;
+        sel.value = Array.prototype.some.call(sel.options, function(o) { return o.value === actual; }) ? actual : PERIODO_DEFAULT;
+        syncFiltroPeriodoActivo();
+      }
+      function syncFiltroPeriodoActivo() {
+        var sel = document.getElementById('filtro-periodo');
+        if (sel) sel.classList.toggle('filtro-activo', sel.value !== 'todo');
+      }
+
+      /** Solo filtro de sucursal (la proyección usa la historia completa aunque el período esté acotado). */
+      function getDatosFiltradosSinPeriodo() {
         var base = cacheBaseEverfit;
         if (sucursalFilterSet.length > 0) {
           return base.filter(function(r) {
@@ -3939,6 +4112,9 @@
         var moneda = getMoneda();
         var tipoDolar = getTipoDolar();
         var datos = getDatosFiltrados();
+        var datosAll = getDatosFiltradosSinPeriodo();
+        var rangoPeriodo = getRangoPeriodo();
+        syncFiltroPeriodoActivo();
         var porMes = {};
         var totalIngresos = 0;
         var totalEgresos = 0;
@@ -3968,8 +4144,8 @@
           }
         });
 
-        var porMesFlujo = {};
-        datos.forEach(function(r) {
+        var porMesFlujoAll = {};
+        datosAll.forEach(function(r) {
           if (debeExcluirse(r)) return;
           if (excluirConceptoFlujoYGraficoGP(r)) return;
           var f = fechaStr(r.fecha_pago);
@@ -3986,17 +4162,16 @@
             monto = importe / tasa;
           }
           var tipo = (r.ingresos_egresos || '').trim().toLowerCase();
-          if (!porMesFlujo[key]) porMesFlujo[key] = { anio: anio, mes: mes, ingresos: 0, egresos: 0 };
+          if (!porMesFlujoAll[key]) porMesFlujoAll[key] = { anio: anio, mes: mes, ingresos: 0, egresos: 0 };
           if (tipo.indexOf('ingreso') !== -1) {
-            porMesFlujo[key].ingresos += monto;
+            porMesFlujoAll[key].ingresos += monto;
           } else if (tipo.indexOf('egreso') !== -1) {
-            porMesFlujo[key].egresos += monto;
+            porMesFlujoAll[key].egresos += monto;
           }
         });
 
-        var totalSueldos = 0, totalAlquileres = 0;
-        var sueldosPorMes = {}, alquileresPorMes = {};
-        datos.forEach(function(r) {
+        var sueldosPorMesAll = {}, alquileresPorMesAll = {};
+        datosAll.forEach(function(r) {
           if (debeExcluirse(r)) return;
           if (excluirConceptoFlujoYGraficoGP(r)) return;
           var f = fechaStr(r.fecha_pago);
@@ -4015,15 +4190,24 @@
             monto = importe / tasa;
           }
           var benef = (r.beneficiario || '').trim().toLowerCase();
-          if (benef === 'sueldos') {
-            totalSueldos += monto;
-            sueldosPorMes[key] = (sueldosPorMes[key] || 0) + monto;
-          }
-          if (benef === 'alquiler') {
-            totalAlquileres += monto;
-            alquileresPorMes[key] = (alquileresPorMes[key] || 0) + monto;
-          }
+          if (benef === 'sueldos') sueldosPorMesAll[key] = (sueldosPorMesAll[key] || 0) + monto;
+          if (benef === 'alquiler') alquileresPorMesAll[key] = (alquileresPorMesAll[key] || 0) + monto;
         });
+
+        var porMesFlujo = {}, sueldosPorMes = {}, alquileresPorMes = {};
+        var totalSueldos = 0, totalAlquileres = 0;
+        Object.keys(porMesFlujoAll).forEach(function(k) { if (keyEnRangoPeriodo(k, rangoPeriodo)) porMesFlujo[k] = porMesFlujoAll[k]; });
+        Object.keys(sueldosPorMesAll).forEach(function(k) {
+          if (!keyEnRangoPeriodo(k, rangoPeriodo)) return;
+          sueldosPorMes[k] = sueldosPorMesAll[k];
+          totalSueldos += sueldosPorMesAll[k];
+        });
+        Object.keys(alquileresPorMesAll).forEach(function(k) {
+          if (!keyEnRangoPeriodo(k, rangoPeriodo)) return;
+          alquileresPorMes[k] = alquileresPorMesAll[k];
+          totalAlquileres += alquileresPorMesAll[k];
+        });
+        var mostrarProyeccion = keyEnRangoPeriodo(keyMesEnCurso(), rangoPeriodo);
 
         var ordenados = Object.keys(porMes).sort();
         var balanceTotal = totalIngresos - totalEgresos;
@@ -4048,7 +4232,7 @@
         var filasProyDisclaimer = '';
         var totalIngresosProy = 0, totalEgresosProy = 0;
         var proySueldos = [], proyAlquileres = [], proyIng = [], proyEgr = [];
-        if (userPermissions.indexOf('ver_proyeccion') !== -1 && ordenados.length > 0) {
+        if (userPermissions.indexOf('ver_proyeccion') !== -1 && ordenados.length > 0 && mostrarProyeccion) {
           var configProy = getConfigProyeccion();
           var N = configProy.meses;
           if (N > 0 && configProy.mesesAProyectar > 0) {
@@ -4063,10 +4247,10 @@
                 return getValor(k) || 0;
               };
             }
-            var valoresIng = keysVentanaReal.map(montoMesSoloSiAnteriorAlProyectado(function(k) { return (porMesFlujo[k] || {}).ingresos; }));
-            var valoresEgr = keysVentanaReal.map(montoMesSoloSiAnteriorAlProyectado(function(k) { return (porMesFlujo[k] || {}).egresos; }));
-            var valoresSueldos = keysVentanaReal.map(montoMesSoloSiAnteriorAlProyectado(function(k) { return sueldosPorMes[k]; }));
-            var valoresAlquileres = keysVentanaReal.map(montoMesSoloSiAnteriorAlProyectado(function(k) { return alquileresPorMes[k]; }));
+            var valoresIng = keysVentanaReal.map(montoMesSoloSiAnteriorAlProyectado(function(k) { return (porMesFlujoAll[k] || {}).ingresos; }));
+            var valoresEgr = keysVentanaReal.map(montoMesSoloSiAnteriorAlProyectado(function(k) { return (porMesFlujoAll[k] || {}).egresos; }));
+            var valoresSueldos = keysVentanaReal.map(montoMesSoloSiAnteriorAlProyectado(function(k) { return sueldosPorMesAll[k]; }));
+            var valoresAlquileres = keysVentanaReal.map(montoMesSoloSiAnteriorAlProyectado(function(k) { return alquileresPorMesAll[k]; }));
             proyIng = proyeccionDesdeSerie(valoresIng, N, agg, configProy.mesesAProyectar);
             proyEgr = proyeccionDesdeSerie(valoresEgr, N, agg, configProy.mesesAProyectar);
             proySueldos = proyeccionDesdeSerie(valoresSueldos, N, agg, configProy.mesesAProyectar);
@@ -4180,8 +4364,16 @@
         document.getElementById('tbody-ratios').innerHTML = ratiosBodyHtml;
 
         document.getElementById('panel-flujo').style.display = 'block';
-        actualizarGraficoGP(porMesFlujo, moneda, simbolo);
+        flujoParaReporte = {
+          porMesFlujoAll: porMesFlujoAll, sueldosPorMesAll: sueldosPorMesAll, alquileresPorMesAll: alquileresPorMesAll,
+          totalIngresos: totalIngresos, totalEgresos: totalEgresos,
+          moneda: moneda, simbolo: simbolo
+        };
+        actualizarGraficoGP(porMesFlujo, moneda, simbolo, porMesFlujoAll);
       }
+
+      /** Datos del último renderizar() para el reporte PDF (misma base y período que la pantalla, sin proyección). */
+      var flujoParaReporte = null;
 
       /** Últimos 13 meses: desde (mes actual - 12) hasta mes actual inclusive. Mes actual = calendario Argentina. */
       function getUltimos12Meses() {
@@ -4200,14 +4392,125 @@
 
       var chartGP = null;
       var chartItemMensual = null;
+      /** Último mes vs anterior y pendiente de tendencia del gráfico G/P, para el reporte PDF (en miles). */
+      var gpResumenReporte = null;
 
-      function actualizarGraficoGP(porMes, moneda, simbolo) {
-        var meses12 = getUltimos12Meses();
+      function abreviarMonto(v, moneda) {
+        var a = Math.abs(v);
+        var s;
+        if (a >= 1e9) s = (a / 1e9).toLocaleString('es-AR', { maximumFractionDigits: 1 }) + ' MM';
+        else if (a >= 1e6) s = (a / 1e6).toLocaleString('es-AR', { maximumFractionDigits: 1 }) + ' M';
+        else if (a >= 1e3) s = (a / 1e3).toLocaleString('es-AR', { maximumFractionDigits: 1 }) + ' k';
+        else s = a.toLocaleString('es-AR', { maximumFractionDigits: moneda === 'USD' ? 2 : 0 });
+        return (v < 0 ? '−' : '+') + s;
+      }
+
+      function formatearPct(p) {
+        if (p == null || !isFinite(p)) return '–';
+        return (p > 0 ? '+' : (p < 0 ? '−' : '')) + Math.abs(p).toLocaleString('es-AR', { minimumFractionDigits: 1, maximumFractionDigits: 1 }) + '%';
+      }
+
+      /** Variación vs mes anterior: % sobre |anterior| para que el signo refleje mejora/empeoramiento aunque el anterior sea pérdida. */
+      function variacionMensual(actual, anterior) {
+        if (anterior == null) return { monto: null, pct: null };
+        var monto = actual - anterior;
+        var pct = anterior !== 0 ? (monto / Math.abs(anterior)) * 100 : null;
+        return { monto: monto, pct: pct };
+      }
+
+      /** Recta de mínimos cuadrados sobre índices 0..n-1. */
+      function tendenciaLineal(valores) {
+        var n = valores.length;
+        if (n < 2) return { puntos: valores.slice(), pendiente: 0 };
+        var sx = 0, sy = 0, sxy = 0, sxx = 0;
+        valores.forEach(function(y, x) { sx += x; sy += y; sxy += x * y; sxx += x * x; });
+        var den = n * sxx - sx * sx;
+        var pendiente = den !== 0 ? (n * sxy - sx * sy) / den : 0;
+        var ordenada = (sy - pendiente * sx) / n;
+        return { puntos: valores.map(function(_, x) { return ordenada + pendiente * x; }), pendiente: pendiente };
+      }
+
+      var pluginEtiquetasVarGP = {
+        id: 'etiquetasVarGP',
+        afterDatasetsDraw: function(chart, args, opts) {
+          var vars = opts && opts.variaciones;
+          if (!vars || chart.width < 560) return;
+          var meta = chart.getDatasetMeta(0);
+          if (!meta || meta.hidden || !meta.data.length) return;
+          if (chart.chartArea && chart.chartArea.width / meta.data.length < 46) return;
+          var ctx = chart.ctx;
+          ctx.save();
+          ctx.textAlign = 'center';
+          ctx.lineJoin = 'round';
+          ctx.lineWidth = 3;
+          ctx.strokeStyle = 'rgba(255,255,255,0.95)';
+          function texto(t, x, y, peso) {
+            ctx.font = peso + ' 10px system-ui, -apple-system, sans-serif';
+            ctx.strokeText(t, x, y);
+            ctx.fillText(t, x, y);
+          }
+          meta.data.forEach(function(bar, i) {
+            var v = vars[i];
+            if (!v || v.monto == null) return;
+            var valor = chart.data.datasets[0].data[i];
+            var arriba = valor >= 0;
+            var y = arriba ? bar.y - 6 : bar.y + 6;
+            ctx.fillStyle = v.monto > 0 ? '#0d7d3d' : (v.monto < 0 ? '#b91c1c' : '#64748b');
+            ctx.textBaseline = arriba ? 'bottom' : 'top';
+            texto(abreviarMonto(v.monto, opts.moneda), bar.x, y, '600');
+            texto(formatearPct(v.pct), bar.x, arriba ? y - 12 : y + 12, '500');
+          });
+          ctx.restore();
+        }
+      };
+
+      function actualizarGraficoGP(porMes, moneda, simbolo, porMesAll) {
+        var meses12 = getMesesPeriodo();
+        var subEl = document.getElementById('grafico-gp-periodo');
+        if (subEl) subEl.textContent = 'Período: ' + labelPeriodoActual() + '. Sobre cada barra: variación vs mes anterior (% y monto).';
+        var wrapVacio = document.getElementById('grafico-gp-wrap');
+        if (!meses12.length) {
+          if (chartGP) { chartGP.destroy(); chartGP = null; }
+          if (wrapVacio) wrapVacio.style.display = 'none';
+          gpResumenReporte = null;
+          return;
+        }
         var labels = meses12.map(function(k) { return formatoPeriodoFromKey(k); });
-        var valores = meses12.map(function(k) {
+        var gpDeKey = function(k) {
           var d = porMes[k];
           return d ? d.ingresos - d.egresos : 0;
+        };
+        var valores = meses12.map(gpDeKey);
+        var partesPrimero = meses12[0].split('-').map(Number);
+        var mPrev = partesPrimero[1] - 1, yPrev = partesPrimero[0];
+        if (mPrev < 1) { mPrev = 12; yPrev--; }
+        var keyPrevPrimero = yPrev + '-' + String(mPrev).padStart(2, '0');
+        var fuenteAnterior = porMesAll || porMes;
+        var anteriorPrimero = fuenteAnterior[keyPrevPrimero] ? (fuenteAnterior[keyPrevPrimero].ingresos - fuenteAnterior[keyPrevPrimero].egresos) : null;
+        var variaciones = valores.map(function(v, i) {
+          return variacionMensual(v, i === 0 ? anteriorPrimero : valores[i - 1]);
         });
+        var tendencia = tendenciaLineal(valores);
+        var fmtFull = function(n) { return Number(n).toLocaleString('es-AR', { minimumFractionDigits: 0, maximumFractionDigits: moneda === 'USD' ? 2 : 0 }); };
+        var fmtSigno = function(n) { return (n > 0 ? '+' : (n < 0 ? '−' : '')) + simbolo + fmtFull(Math.abs(n)); };
+
+        var resumenEl = document.getElementById('grafico-gp-resumen');
+        if (resumenEl) {
+          var ult = variaciones[variaciones.length - 1];
+          var htmlRes = '';
+          if (ult && ult.monto != null) {
+            var claseUlt = ult.monto > 0 ? 'positivo' : (ult.monto < 0 ? 'negativo' : '');
+            htmlRes += '<span class="gp-resumen-item"><span class="gp-resumen-label">' + esc(labels[labels.length - 1]) + ' vs ' + esc(labels[labels.length - 2]) + ':</span> <strong class="' + claseUlt + '">' + fmtSigno(ult.monto) + ' (' + formatearPct(ult.pct) + ')</strong></span>';
+          }
+          var claseTend = tendencia.pendiente > 0 ? 'positivo' : (tendencia.pendiente < 0 ? 'negativo' : '');
+          htmlRes += '<span class="gp-resumen-item"><span class="gp-resumen-label">Tendencia:</span> <strong class="' + claseTend + '">' + fmtSigno(tendencia.pendiente) + ' por mes</strong></span>';
+          resumenEl.innerHTML = htmlRes;
+        }
+        var ultVar = variaciones[variaciones.length - 1];
+        gpResumenReporte = {
+          labelUlt: labels[labels.length - 1], labelPrev: labels.length > 1 ? labels[labels.length - 2] : null,
+          ultMonto: ultVar ? ultVar.monto : null, ultPct: ultVar ? ultVar.pct : null, pendiente: tendencia.pendiente
+        };
         var colores = valores.map(function(v) {
           if (v === 0) return 'rgba(100, 116, 139, 0.6)';
           return v > 0 ? 'rgba(13, 125, 61, 0.85)' : 'rgba(185, 28, 28, 0.85)';
@@ -4233,20 +4536,59 @@
               backgroundColor: colores,
               borderColor: bordes,
               borderWidth: 1,
-              minBarLength: 6
+              minBarLength: 6,
+              order: 1
+            }, {
+              type: 'line',
+              label: 'Tendencia',
+              data: tendencia.puntos,
+              borderColor: '#1e40af',
+              backgroundColor: '#1e40af',
+              borderWidth: 2,
+              borderDash: [6, 4],
+              pointRadius: 0,
+              pointHoverRadius: 3,
+              fill: false,
+              tension: 0,
+              order: 0
             }]
           },
+          plugins: [pluginEtiquetasVarGP],
           options: {
             responsive: true,
             maintainAspectRatio: false,
+            interaction: { mode: 'index', intersect: false },
+            layout: { padding: { top: 8 } },
             plugins: {
-              legend: { display: false },
+              etiquetasVarGP: { variaciones: variaciones, moneda: moneda },
+              legend: {
+                display: true,
+                position: 'top',
+                align: 'end',
+                labels: {
+                  boxWidth: 14,
+                  boxHeight: 10,
+                  font: { size: 11 },
+                  generateLabels: function(chart) {
+                    return [
+                      { text: 'G/P', fillStyle: 'rgba(13, 125, 61, 0.85)', strokeStyle: '#0d7d3d', lineWidth: 1, datasetIndex: 0, hidden: !chart.isDatasetVisible(0) },
+                      { text: 'Tendencia', fillStyle: 'rgba(0,0,0,0)', strokeStyle: '#1e40af', lineWidth: 2, lineDash: [6, 4], datasetIndex: 1, hidden: !chart.isDatasetVisible(1) }
+                    ];
+                  }
+                }
+              },
               tooltip: {
                 callbacks: {
                   label: function(ctx) {
                     var v = ctx.raw;
-                    if (v === 0) return 'G/P: ' + simbolo + '0 (ingresos = egresos)';
-                    return (v > 0 ? 'G/P: ' : 'Pérdida: ') + simbolo + Number(v).toLocaleString('es-AR', { minimumFractionDigits: 0, maximumFractionDigits: moneda === 'USD' ? 2 : 0 });
+                    if (ctx.datasetIndex === 1) return 'Tendencia: ' + simbolo + fmtFull(v);
+                    var lineas = [];
+                    if (v === 0) lineas.push('G/P: ' + simbolo + '0 (ingresos = egresos)');
+                    else lineas.push((v > 0 ? 'G/P: ' : 'Pérdida: ') + simbolo + fmtFull(v));
+                    var va = variaciones[ctx.dataIndex];
+                    if (va && va.monto != null) lineas.push('Var. vs mes anterior: ' + fmtSigno(va.monto) + ' (' + formatearPct(va.pct) + ')');
+                    else lineas.push('Var. vs mes anterior: sin dato');
+                    return lineas;
                   }
                 }
               }
@@ -4254,6 +4596,7 @@
             scales: {
               y: {
                 beginAtZero: true,
+                grace: '18%',
                 grid: { color: 'rgba(0,0,0,0.06)' },
                 ticks: { font: { size: 11 } }
               },
@@ -4263,6 +4606,231 @@
               }
             }
           }
+        });
+      }
+
+      /** Filtros de la vista Dashboard para el reporte PDF (activo = recorta o cambia lo que se ve). */
+      function filtrosReporteDashboard() {
+        var chips = [];
+        var rango = getRangoPeriodo();
+        chips.push({ lab: 'Período', val: labelPeriodoActual(), activo: rango.valor !== 'todo', tag: rango.valor === PERIODO_DEFAULT ? 'Filtro por defecto' : null });
+        if (sucursalFilterSet.length > 0) {
+          chips.push({ lab: sucursalFilterSet.length > 1 ? 'Sucursales' : 'Sucursal', val: sucursalFilterSet.join(', '), activo: true });
+        } else if (myAllowedSucursales && myAllowedSucursales.length > 0) {
+          chips.push({ lab: 'Sucursales', val: myAllowedSucursales.join(', '), activo: true, tag: 'Según permisos' });
+        } else {
+          chips.push({ lab: 'Sucursal', val: 'Total (todas)', activo: false });
+        }
+        var moneda = getMoneda();
+        if (moneda === 'USD') {
+          var tipo = getTipoDolar();
+          chips.push({ lab: 'Moneda', val: 'USD', activo: true });
+          chips.push({ lab: 'Conversión a dólar', val: tipo === 'ccl' ? 'CCL' : (tipo === 'oficial' ? 'Oficial' : 'MEP'), activo: true });
+        } else {
+          chips.push({ lab: 'Moneda', val: 'ARS (pesos)', activo: false });
+        }
+        return chips;
+      }
+
+      /** Importe en miles para el reporte PDF (número sin símbolo; la unidad se indica en encabezados). */
+      function fmtMilesReporte(v, moneda) {
+        var n = (Number(v) || 0) / 1000;
+        return n.toLocaleString('es-AR', { minimumFractionDigits: 0, maximumFractionDigits: moneda === 'USD' ? 1 : 0 });
+      }
+      function unidadMilesReporte(moneda) {
+        return moneda === 'USD' ? 'miles de US$' : 'miles de $';
+      }
+
+      /**
+       * Tabla Flujo por mes + ratios del reporte PDF: meses del filtro Período (los mismos del gráfico), importes en miles y sin columnas proyectadas.
+       * Si el período tiene muchos meses se parte en bloques de columnas (repite Item).
+       */
+      function tablasFlujoParaReporte(maxCols) {
+        var d = flujoParaReporte;
+        if (!d) return { html: '', notas: [] };
+        var meses = getMesesPeriodo();
+        if (!meses.length) return { html: '', notas: [] };
+        var mon = d.moneda;
+        var fmt = function(v) { return fmtMilesReporte(v, mon); };
+        var fmtPct = function(x) { return x != null ? Number(x).toLocaleString('es-AR', { minimumFractionDigits: 1, maximumFractionDigits: 1 }) + ' %' : '–'; };
+        var mesAnterior = function(k) {
+          var p = k.split('-').map(Number);
+          var m = p[1] - 1, y = p[0];
+          if (m < 1) { m = 12; y--; }
+          return y + '-' + String(m).padStart(2, '0');
+        };
+        var ing = function(k) { return ((d.porMesFlujoAll[k] || {}).ingresos) || 0; };
+        var egr = function(k) { return ((d.porMesFlujoAll[k] || {}).egresos) || 0; };
+
+        var headCols = meses.map(function(k) { return '<th>' + formatoPeriodoFromKey(k) + '</th>'; }).concat(['<th>Total</th>']);
+        var totIng = meses.reduce(function(s, k) { return s + ing(k); }, 0);
+        var totEgr = meses.reduce(function(s, k) { return s + egr(k); }, 0);
+        var totGp = totIng - totEgr;
+        var claseGp = function(v) { return 'balance ' + (v >= 0 ? 'positivo' : 'negativo'); };
+
+        function filaMontos(getMes, clase, total) {
+          return meses.map(function(k) { return '<td class="' + clase + '">' + fmt(getMes(k)) + '</td>'; })
+            .concat(['<td class="' + clase + '">' + fmt(total) + '</td>']);
+        }
+        var filaGp = meses.map(function(k) { var v = ing(k) - egr(k); return '<td class="' + claseGp(v) + '">' + fmt(v) + '</td>'; })
+          .concat(['<td class="' + claseGp(totGp) + '">' + fmt(totGp) + '</td>']);
+
+        var svgSubio = '<span class="ratio-var-icon ratio-var-subio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 19V5"/><path d="M5 12l7-7 7 7"/></svg></span>';
+        var svgBajo = '<span class="ratio-var-icon ratio-var-bajo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14"/><path d="M19 12l-7 7-7-7"/></svg></span>';
+        var svgIgual = '<span class="ratio-var-icon ratio-var-igual"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/></svg></span>';
+        function iconoVar(actual, anterior) {
+          if (actual == null || anterior == null) return '';
+          var dif = actual - anterior;
+          return dif > 0.05 ? svgSubio : (dif < -0.05 ? svgBajo : svgIgual);
+        }
+        function filaRatio(porMesNum) {
+          var pctMes = function(k) { var i = ing(k); return i > 0 ? ((porMesNum[k] || 0) / i) * 100 : null; };
+          var serie = meses.map(pctMes);
+          var anteriorPrimero = pctMes(mesAnterior(meses[0]));
+          var vals = serie.map(function(p, i) {
+            return '<td class="valor-ratio"><span class="ratio-con-variacion">' + fmtPct(p) + iconoVar(p, i === 0 ? anteriorPrimero : serie[i - 1]) + '</span></td>';
+          });
+          var num = meses.reduce(function(s, k) { return s + (porMesNum[k] || 0); }, 0);
+          vals.push('<td class="valor-ratio">' + fmtPct(totIng > 0 ? (num / totIng) * 100 : null) + '</td>');
+          return vals;
+        }
+
+        var filas = [
+          { tipo: 'datos', item: 'Ingresos', vals: filaMontos(ing, 'ingresos', totIng) },
+          { tipo: 'datos', item: 'Egresos', vals: filaMontos(egr, 'egresos', totEgr) },
+          { tipo: 'datos', item: 'G/P', vals: filaGp },
+          { tipo: 'titulo', item: 'Ratios del Negocio' },
+          { tipo: 'datos', item: 'Sueldos / Ingresos', vals: filaRatio(d.sueldosPorMesAll) },
+          { tipo: 'datos', item: 'Alquileres / Ingresos', vals: filaRatio(d.alquileresPorMesAll) },
+          { tipo: 'total', item: 'Total G/P', vals: filaGp }
+        ];
+        var headItem = 'Item <span class="rep-unidad">(' + unidadMilesReporte(mon) + ')</span>';
+        var notas = ['Importes expresados en ' + unidadMilesReporte(mon) + ' (redondeados). Período ' + labelPeriodoActual() + '; la columna Total suma esos meses. No incluye meses proyectados.'];
+        Array.prototype.forEach.call(document.querySelectorAll('#tfoot-flujo tr.disclaimer-proyeccion td'), function(td) {
+          var t = td.textContent.trim();
+          if (t && t.indexOf('Proyección') !== 0) notas.push(t);
+        });
+        var n = headCols.length;
+        var bloques = Math.max(1, Math.ceil(n / maxCols));
+        var porBloque = Math.ceil(n / bloques);
+        var html = '';
+        for (var b = 0; b < bloques; b++) {
+          var desde = b * porBloque, hasta = Math.min(n, desde + porBloque);
+          html += '<table class="rep-tabla"><thead><tr><th>' + headItem + '</th>' + headCols.slice(desde, hasta).join('') + '</tr></thead><tbody>';
+          filas.forEach(function(f) {
+            if (f.tipo === 'titulo') {
+              html += '<tr class="rep-fila-titulo"><td>' + f.item + '</td><td colspan="' + (hasta - desde) + '"></td></tr>';
+              return;
+            }
+            html += '<tr' + (f.tipo === 'total' ? ' class="rep-fila-total"' : '') + '><td>' + f.item + '</td>' + f.vals.slice(desde, hasta).join('') + '</tr>';
+          });
+          html += '</tbody></table>';
+        }
+        return { html: html, notas: notas };
+      }
+
+      function limpiarReportePdf() {
+        document.body.classList.remove('rep-printing');
+        var mount = document.getElementById('rep-print-root');
+        if (mount && mount.parentNode) mount.parentNode.removeChild(mount);
+        var prev = document.body.getAttribute('data-rep-title-prev');
+        if (prev != null) {
+          document.title = prev;
+          document.body.removeAttribute('data-rep-title-prev');
+        }
+      }
+
+      var reportePdfCleanupBound = false;
+      function asegurarLimpiezaReportePdf() {
+        if (reportePdfCleanupBound) return;
+        reportePdfCleanupBound = true;
+        window.addEventListener('afterprint', limpiarReportePdf);
+        if (window.matchMedia) {
+          try {
+            window.matchMedia('print').addEventListener('change', function(e) { if (!e.matches) limpiarReportePdf(); });
+          } catch (err) { /* navegadores sin addEventListener en MediaQueryList */ }
+        }
+      }
+
+      function generarReportePdfDashboard() {
+        var panelFlujo = document.getElementById('panel-flujo');
+        if (!panelFlujo || panelFlujo.style.display === 'none') {
+          showToast('Todavía no hay datos cargados para armar el reporte.', 'info');
+          return;
+        }
+        asegurarLimpiezaReportePdf();
+        limpiarReportePdf();
+
+        var ahora = new Date();
+        var fechaHora = ahora.toLocaleString('es-AR', { timeZone: ZONA_ARGENTINA, day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false });
+        var hoy = fechaHoyYYYYMMDDArgentina().split('-');
+        var chips = filtrosReporteDashboard();
+        var hayFiltros = chips.some(function(c) { return c.activo; });
+        var ultAct = document.getElementById('ultima-actualizacion-leyenda');
+        var ultActTxt = ultAct && ultAct.style.display !== 'none' ? (document.getElementById('ultima-actualizacion-texto') || {}).textContent || '' : '';
+
+        var mount = document.createElement('div');
+        mount.id = 'rep-print-root';
+        mount.setAttribute('aria-hidden', 'true');
+        var html = '';
+        html += '<div class="rep-head">' +
+          '<div class="rep-brand"><img src="Logo.png" alt="Everfit" onerror="this.style.display=\'none\'" />' +
+            '<div><p class="rep-kicker">Everfit · Dashboard</p><h1>Reporte de flujo</h1></div></div>' +
+          '<div class="rep-meta"><p><strong>Generado:</strong> ' + escHtmlMsg(fechaHora) + ' (Argentina)</p>' +
+            '<p><strong>Usuario:</strong> ' + escHtmlMsg(userProfileLabelFromParts(currentUserNombre, currentUserEmail)) + '</p>' +
+            (ultActTxt ? '<p>' + escHtmlMsg(ultActTxt) + '</p>' : '') + '</div>' +
+          '</div>';
+        html += '<div class="rep-filtros"><p class="rep-filtros-titulo">Filtros aplicados<span class="rep-filtros-estado">' +
+          (hayFiltros ? '— Base filtrada: los importes reflejan solo lo resaltado' : '— Sin filtros: vista completa') + '</span></p><div class="rep-chips">' +
+          chips.map(function(c) {
+            return '<span class="rep-chip' + (c.activo ? ' activo' : '') + '"><span class="rep-chip-lab">' + escHtmlMsg(c.lab) + '</span><span class="rep-chip-val">' + escHtmlMsg(c.val) + '</span>' +
+              (c.activo ? '<span class="rep-chip-tag">' + escHtmlMsg(c.tag || 'Filtro activo') + '</span>' : '') + '</span>';
+          }).join('') + '</div></div>';
+
+        var mon = getMoneda();
+        var unidad = unidadMilesReporte(mon);
+        html += '<p class="rep-unidad-aviso">Importes expresados en <strong>' + unidad + '</strong> · Período ' + escHtmlMsg(labelPeriodoActual()) + ' · sin meses proyectados</p>';
+
+        var fr = flujoParaReporte;
+        if (fr) {
+          var gpTot = fr.totalIngresos - fr.totalEgresos;
+          html += '<div class="rep-cards">' +
+            '<div class="card"><div class="card-titulo">Total ingresos</div><div class="valor ingresos">' + fmtMilesReporte(fr.totalIngresos, mon) + '</div></div>' +
+            '<div class="card"><div class="card-titulo">Total egresos</div><div class="valor egresos">' + fmtMilesReporte(fr.totalEgresos, mon) + '</div></div>' +
+            '<div class="card"><div class="card-titulo">G/P Total</div><div class="valor ' + (gpTot >= 0 ? 'positivo' : 'negativo') + '">' + fmtMilesReporte(gpTot, mon) + '</div></div>' +
+            '</div>';
+        }
+
+        var canvas = document.getElementById('chart-gp-mensual');
+        if (canvas && canvas.width > 8 && chartGP) {
+          try {
+            var gpResHtml = '';
+            var g = gpResumenReporte;
+            if (g) {
+              var signo = function(v) { return (v > 0 ? '+' : '') + fmtMilesReporte(v, mon); };
+              if (g.ultMonto != null && g.labelPrev) {
+                gpResHtml += '<span class="gp-resumen-item"><span class="gp-resumen-label">' + escHtmlMsg(g.labelUlt) + ' vs ' + escHtmlMsg(g.labelPrev) + ':</span> <strong class="' + (g.ultMonto >= 0 ? 'positivo' : 'negativo') + '">' + signo(g.ultMonto) + ' (' + formatearPct(g.ultPct) + ')</strong></span>';
+              }
+              gpResHtml += '<span class="gp-resumen-item"><span class="gp-resumen-label">Tendencia:</span> <strong class="' + (g.pendiente >= 0 ? 'positivo' : 'negativo') + '">' + signo(g.pendiente) + ' por mes</strong></span>';
+            }
+            html += '<div class="rep-seccion"><h2>G/P Mensual</h2>' +
+              (gpResHtml ? '<div class="gp-resumen">' + gpResHtml + '</div>' : '') +
+              '<img class="rep-chart" alt="Gráfico G/P mensual" src="' + canvas.toDataURL('image/png') + '" /></div>';
+          } catch (eChart) { /* canvas no disponible */ }
+        }
+
+        var tablas = tablasFlujoParaReporte(18);
+        if (tablas.html) html += '<div class="rep-seccion-tabla"><h2 style="margin:0 0 0.3rem; font-size:0.95rem;">Flujo por mes y ratios</h2>' + tablas.html + '</div>';
+        if (tablas.notas.length) html += '<ul class="rep-notas">' + tablas.notas.map(function(t) { return '<li>' + escHtmlMsg(t) + '</li>'; }).join('') + '</ul>';
+
+        mount.innerHTML = html;
+        document.querySelector('.main-content').appendChild(mount);
+        document.body.setAttribute('data-rep-title-prev', document.title);
+        var sufijoSuc = sucursalFilterSet.length ? sucursalFilterSet.join('-') : 'Total';
+        document.title = 'Everfit — Dashboard — ' + sufijoSuc + ' — ' + getMoneda() + ' — ' + hoy[2] + '-' + hoy[1] + '-' + hoy[0];
+        document.body.classList.add('rep-printing');
+        requestAnimationFrame(function() {
+          requestAnimationFrame(function() { window.print(); });
         });
       }
 
@@ -4679,7 +5247,7 @@
         document.getElementById('wrap-tabla-concepto').innerHTML = conceptHtml;
         document.getElementById('wrap-tabla-beneficiario').innerHTML = benefHtml;
         document.getElementById('modal-detalle-exclusiones').textContent =
-          'Este detalle excluye solo filas con centro_de_costos = Saldo Inicial. No se filtra por concepto (Inversiones, etc. aparecen si corresponden). Incluye reales, pendientes y proyectados.';
+          'Período: ' + labelPeriodoActual() + '. Este detalle excluye solo filas con centro_de_costos = Saldo Inicial. No se filtra por concepto (Inversiones, etc. aparecen si corresponden). Incluye reales, pendientes y proyectados.';
         document.getElementById('modal-detalle-backdrop').classList.remove('oculto');
       }
 
@@ -4735,7 +5303,7 @@
         var partes = [];
         partes.push(nombre ? labelDim + ': ' + nombre : 'Todos los ' + (dim === 'beneficiario' ? 'beneficiarios' : 'conceptos'));
         partes.push(labelTipo);
-        partes.push(key ? 'Período ' + formatoPeriodoFromKey(key) : 'Todos los períodos');
+        partes.push(key ? 'Período ' + formatoPeriodoFromKey(key) : labelPeriodoActual());
         if (sucursalFilterSet.length > 0) partes.push('Sucursal: ' + sucursalFilterSet.join(', '));
         partes.push(moneda === 'USD' ? 'USD (' + getTipoDolar().toUpperCase() + ')' : 'ARS');
         var total = lista.reduce(function(acc, m) { return acc + m.monto; }, 0);
@@ -4799,6 +5367,7 @@
       function recargarSoloBase() {
         return traerTodasLasFilas().then(function(rows) {
           cacheBaseEverfit = rows || [];
+          poblarFiltroPeriodo();
           renderizar();
         });
       }
@@ -4895,6 +5464,12 @@
             });
             if (document.getElementById('tipoDolar')) {
               document.getElementById('tipoDolar').addEventListener('change', renderizar);
+            }
+            poblarFiltroPeriodo();
+            var selPeriodo = document.getElementById('filtro-periodo');
+            if (selPeriodo && !selPeriodo._bound) {
+              selPeriodo._bound = true;
+              selPeriodo.addEventListener('change', renderizar);
             }
             labelTipoDolar.style.display = getMoneda() === 'USD' ? '' : 'none';
             renderizar();
@@ -5695,8 +6270,7 @@
           refreshUserBarLabel();
           void cargarMiPerfil();
           var btnUpload = document.getElementById('btn-actualizar-base');
-          var wrapUpload = btnUpload && btnUpload.closest('.filtros-der');
-          if (wrapUpload) wrapUpload.style.display = userPermissions.indexOf('upload_base') !== -1 ? '' : 'none';
+          if (btnUpload) btnUpload.style.display = userPermissions.indexOf('upload_base') !== -1 ? '' : 'none';
           var btnImpAsist = document.getElementById('btn-importar-asistencia');
           if (btnImpAsist) btnImpAsist.style.display = userPermissions.indexOf('upload_base') !== -1 ? 'inline-flex' : 'none';
           var btnProy = document.getElementById('btn-config-proyeccion');
@@ -5800,8 +6374,7 @@
           else myAllowedSucursales = null;
           currentUserRole = (!results[2].error && results[2].data != null) ? String(results[2].data) : null;
           var btnUpload = document.getElementById('btn-actualizar-base');
-          var wrapUpload = btnUpload && btnUpload.closest('.filtros-der');
-          if (wrapUpload) wrapUpload.style.display = userPermissions.indexOf('upload_base') !== -1 ? '' : 'none';
+          if (btnUpload) btnUpload.style.display = userPermissions.indexOf('upload_base') !== -1 ? '' : 'none';
           var btnImpAsist2 = document.getElementById('btn-importar-asistencia');
           if (btnImpAsist2) btnImpAsist2.style.display = userPermissions.indexOf('upload_base') !== -1 ? 'inline-flex' : 'none';
           var btnProy = document.getElementById('btn-config-proyeccion');
@@ -7400,6 +7973,11 @@
           });
         });
       }
+
+      (function setupReportePdf() {
+        var btn = document.getElementById('btn-reporte-pdf');
+        if (btn) btn.addEventListener('click', generarReportePdfDashboard);
+      })();
 
       (function setupModalConfigProyeccion() {
         var backdrop = document.getElementById('modal-config-proyeccion-backdrop');
