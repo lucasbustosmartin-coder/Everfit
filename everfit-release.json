@@ -1,7 +1,8 @@
 {
-  "versionLabel": "v1.37",
+  "versionLabel": "v1.38",
   "lines": [
-    "En el celular vertical, la bandeja To-Do ya no se corta en la columna Acción: podés deslizar para ver todas las columnas.",
-    "Debajo de la tabla aparece una leyenda que indica que podés deslizar hacia la derecha."
+    "En el Detalle por Concepto y por Beneficiario, tocá cualquier importe para ver los movimientos que lo forman.",
+    "El listado muestra fecha, beneficiario, detalle, medio, sucursal y el total al pie, igual al número que tocaste.",
+    "Podés descargar esos movimientos a Excel con un clic."
   ]
 }

@@ -265,6 +265,24 @@
     .modal-tabla tbody tr:not(.fila-seccion) td.egresos { color: #991b1b; font-weight: normal; }
     .modal-tabla tbody tr:not(.fila-seccion) td.balance.positivo { color: #15803d; font-weight: normal; }
     .modal-tabla tbody tr:not(.fila-seccion) td.balance.negativo { color: #991b1b; font-weight: normal; }
+    .modal-tabla td.celda-drill { cursor: pointer; transition: background 0.12s; }
+    .modal-tabla td.celda-drill:hover, .modal-tabla td.celda-drill:focus-visible { background: #e6f4ea; text-decoration: underline; text-underline-offset: 2px; outline: none; }
+    .modal-tabla tr.fila-seccion td.celda-drill:hover, .modal-tabla tr.fila-seccion td.celda-drill:focus-visible { background: #d7ecdd; }
+    #modal-movimientos-backdrop { z-index: 110; }
+    .modal.modal-movimientos { max-width: 1200px; width: 96%; }
+    .movimientos-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 0.5rem; }
+    .movimientos-sub { margin: 0; font-size: 0.9rem; color: #475569; flex: 1 1 280px; }
+    .movimientos-tabla-wrap { overflow: auto; max-height: 62vh; -webkit-overflow-scrolling: touch; overscroll-behavior-x: contain; border: 1px solid #e5e7eb; border-radius: 8px; }
+    .tabla-movimientos { border-collapse: collapse; min-width: 100%; font-size: 0.875rem; }
+    .tabla-movimientos th, .tabla-movimientos td { padding: 0.45rem 0.65rem; border-bottom: 1px solid #eee; text-align: left; white-space: nowrap; }
+    .tabla-movimientos thead th { position: sticky; top: 0; z-index: 2; background: #1a1a1a; color: #fff; font-weight: 600; box-shadow: 0 1px 0 0 #333; background-clip: padding-box; }
+    .tabla-movimientos .num { text-align: right; }
+    .tabla-movimientos td.txt-largo { white-space: normal; min-width: 180px; max-width: 320px; }
+    .tabla-movimientos td.ingresos { color: #15803d; }
+    .tabla-movimientos td.egresos { color: #991b1b; }
+    .tabla-movimientos tbody tr:hover td { background: #f8fafc; }
+    .tabla-movimientos tfoot td { position: sticky; bottom: 0; background: #f5f5f5; font-weight: 700; border-top: 2px solid #333; }
+    .tabla-movimientos td.sin-datos { text-align: center; color: #64748b; padding: 1.25rem; white-space: normal; }
     .fila-clickable { cursor: pointer; }
     .fila-clickable:hover { background: #f0f4f8; }
     .exclusiones-note { font-size: 0.8rem; color: #666; margin-top: 0.75rem; padding: 0.5rem 0; border-top: 1px solid #eee; }
@@ -330,6 +348,11 @@
       .modal-tabla-wrap { max-height: 50vh; -webkit-overflow-scrolling: touch; }
       .modal-tabla th, .modal-tabla td { padding: 0.4rem 0.5rem; font-size: 0.8rem; }
       .modal-tabla th.col-item, .modal-tabla td.col-item { min-width: 100px; }
+      .modal.modal-movimientos { width: 100%; }
+      .movimientos-tabla-wrap { max-height: 60vh; }
+      .tabla-movimientos th, .tabla-movimientos td { padding: 0.4rem 0.5rem; font-size: 0.8rem; }
+      .tabla-movimientos td.txt-largo { min-width: 140px; }
+      .movimientos-toolbar .btn-todo-excel { margin-left: auto; }
       .modal-close { min-width: 44px; min-height: 44px; }
       .modal-grafico-item .chart-container { height: 260px !important; }
       .modal-grafico-item .modal-body { padding: 0.75rem 1rem; }
@@ -367,6 +390,9 @@
       .modal { width: 100%; max-height: 95vh; }
       .modal-tabla th, .modal-tabla td { font-size: 0.75rem; padding: 0.35rem 0.4rem; }
       .modal-tabla th.col-item, .modal-tabla td.col-item { min-width: 85px; }
+      .tabla-movimientos th, .tabla-movimientos td { font-size: 0.75rem; padding: 0.35rem 0.4rem; }
+      .movimientos-sub { font-size: 0.8rem; }
+      .movimientos-toolbar .btn-todo-excel { width: 100%; justify-content: center; }
       .modal-upload .upload-zone { padding: 1rem; }
       .modal-upload .form-actions { flex-direction: column; }
       .modal-upload .form-actions button { width: 100%; min-height: 44px; }
@@ -756,7 +782,7 @@
         <span class="menu-label">Seguridad</span>
       </a>
     </nav>
-    <div class="sidebar-version" id="sidebar-version" aria-label="Versión">v1.37</div>
+    <div class="sidebar-version" id="sidebar-version" aria-label="Versión">v1.38</div>
   </aside>
 
   <main class="main-content">
@@ -1551,6 +1577,25 @@
       </div>
       <div class="modal-body">
         <div class="chart-container" style="height:320px;"><canvas id="chart-item-mensual"></canvas></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="modal-movimientos-backdrop" class="modal-backdrop oculto">
+    <div class="modal modal-movimientos" role="dialog" aria-modal="true" aria-labelledby="modal-movimientos-titulo">
+      <div class="modal-header">
+        <h2 id="modal-movimientos-titulo">Movimientos</h2>
+        <button type="button" class="modal-close" id="modal-movimientos-close" aria-label="Cerrar"><span class="icon-close"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg></span></button>
+      </div>
+      <div class="modal-body">
+        <div class="movimientos-toolbar">
+          <p class="movimientos-sub" id="modal-movimientos-sub"></p>
+          <button type="button" class="btn-todo-excel" id="btn-movimientos-excel" title="Exportar a Excel" aria-label="Exportar movimientos a Excel">
+            <span class="btn-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></span>
+            Excel
+          </button>
+        </div>
+        <div class="movimientos-tabla-wrap" id="wrap-tabla-movimientos"></div>
       </div>
     </div>
   </div>
@@ -3848,7 +3893,7 @@
         function fetchPage(offset) {
           return client
             .from('base_everfit')
-            .select('fecha_pago, importe, ingresos_egresos, centro_de_costos, concepto, beneficiario, real_pendiente, sucursal')
+            .select('fecha_pago, importe, ingresos_egresos, centro_de_costos, concepto, beneficiario, real_pendiente, sucursal, detalle, medio, observaciones')
             .range(offset, offset + pageSz - 1)
             .then(function(_ref) {
               var data = _ref.data;
@@ -4574,7 +4619,11 @@
           var nombreAttr = nombre.replace(/"/g, '&quot;');
           return '<td class="col-item"><span class="item-y-grafico"><span class="item-con-icono">' + contenidoLabel + '</span><button type="button" class="btn-grafico-item" title="Ver gráfico por mes" aria-label="Ver gráfico" data-nombre="' + nombreAttr + '" data-tipo="' + tipo + '" data-periodos="' + periodosJson.replace(/"/g, '&quot;') + '" data-valores="' + valoresJson.replace(/"/g, '&quot;') + '">' + iconoGraficoItem + '</button></span></td>';
         }
-        function tablaInvertida(porEntidadPorMes, labelEntidad) {
+        function tdDrill(clase, valor, dim, nombre, key, tipo) {
+          var nombreAttr = String(nombre || '').replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+          return '<td class="' + clase + ' celda-drill" tabindex="0" role="button" title="Ver movimientos" data-drill-dim="' + dim + '" data-drill-nombre="' + nombreAttr + '" data-drill-key="' + (key || '') + '" data-drill-tipo="' + tipo + '">' + simbolo + formatearNumero(valor, moneda) + '</td>';
+        }
+        function tablaInvertida(porEntidadPorMes, dim) {
           var periodos = thPeriodos();
           var thead = '<thead><tr><th class="col-item">Item</th>' + periodos.map(function(p) { return '<th>' + esc(p) + '</th>'; }).join('') + '<th>Total</th></tr></thead>';
           var totalesPorPeriodo = {};
@@ -4604,34 +4653,146 @@
           });
           ordenados.forEach(function(k) { totalIng += totalesPorPeriodo[k].ing; totalEgr += totalesPorPeriodo[k].egr; });
 
-          filas.push('<tr class="fila-seccion">' + celdaTotalConGrafico(iconoIngresos + 'Ingresos', totalesPorPeriodo, 'ingreso') + ordenados.map(function(k) { return '<td class="ingresos">' + simbolo + formatearNumero(totalesPorPeriodo[k].ing, moneda) + '</td>'; }).join('') + '<td class="ingresos">' + simbolo + formatearNumero(totalIng, moneda) + '</td></tr>');
+          filas.push('<tr class="fila-seccion">' + celdaTotalConGrafico(iconoIngresos + 'Ingresos', totalesPorPeriodo, 'ingreso') + ordenados.map(function(k) { return tdDrill('ingresos', totalesPorPeriodo[k].ing, dim, '', k, 'ingreso'); }).join('') + tdDrill('ingresos', totalIng, dim, '', '', 'ingreso') + '</tr>');
           entidadesConIngresos.forEach(function(item) {
-            var celdasIng = ordenados.map(function(k) { var v = (item.porKey[k] && item.porKey[k].ingresos) || 0; return '<td class="ingresos">' + simbolo + formatearNumero(v, moneda) + '</td>'; });
-            filas.push('<tr>' + celdaItemConGrafico(item.nombre, item.porKey, 'ingreso') + celdasIng.join('') + '<td class="ingresos">' + simbolo + formatearNumero(item.ingTotal, moneda) + '</td></tr>');
+            var celdasIng = ordenados.map(function(k) { var v = (item.porKey[k] && item.porKey[k].ingresos) || 0; return tdDrill('ingresos', v, dim, item.nombre, k, 'ingreso'); });
+            filas.push('<tr>' + celdaItemConGrafico(item.nombre, item.porKey, 'ingreso') + celdasIng.join('') + tdDrill('ingresos', item.ingTotal, dim, item.nombre, '', 'ingreso') + '</tr>');
           });
 
-          filas.push('<tr class="fila-seccion">' + celdaTotalConGrafico(iconoEgresos + 'Egresos', totalesPorPeriodo, 'egreso') + ordenados.map(function(k) { return '<td class="egresos">' + simbolo + formatearNumero(totalesPorPeriodo[k].egr, moneda) + '</td>'; }).join('') + '<td class="egresos">' + simbolo + formatearNumero(totalEgr, moneda) + '</td></tr>');
+          filas.push('<tr class="fila-seccion">' + celdaTotalConGrafico(iconoEgresos + 'Egresos', totalesPorPeriodo, 'egreso') + ordenados.map(function(k) { return tdDrill('egresos', totalesPorPeriodo[k].egr, dim, '', k, 'egreso'); }).join('') + tdDrill('egresos', totalEgr, dim, '', '', 'egreso') + '</tr>');
           entidadesConEgresos.forEach(function(item) {
-            var celdasEgr = ordenados.map(function(k) { var v = (item.porKey[k] && item.porKey[k].egresos) || 0; return '<td class="egresos">' + simbolo + formatearNumero(v, moneda) + '</td>'; });
-            filas.push('<tr>' + celdaItemConGrafico(item.nombre, item.porKey, 'egreso') + celdasEgr.join('') + '<td class="egresos">' + simbolo + formatearNumero(item.egrTotal, moneda) + '</td></tr>');
+            var celdasEgr = ordenados.map(function(k) { var v = (item.porKey[k] && item.porKey[k].egresos) || 0; return tdDrill('egresos', v, dim, item.nombre, k, 'egreso'); });
+            filas.push('<tr>' + celdaItemConGrafico(item.nombre, item.porKey, 'egreso') + celdasEgr.join('') + tdDrill('egresos', item.egrTotal, dim, item.nombre, '', 'egreso') + '</tr>');
           });
 
           var balanceTotal = totalIng - totalEgr;
           filas.push('<tr class="fila-total fila-seccion">' + celdaTotalConGrafico(iconoGP + 'G/P', totalesPorPeriodo, 'gp') + ordenados.map(function(k) {
             var gp = totalesPorPeriodo[k].ing - totalesPorPeriodo[k].egr;
-            return '<td class="balance ' + (gp >= 0 ? 'positivo' : 'negativo') + '">' + simbolo + formatearNumero(gp, moneda) + '</td>';
-          }).join('') + '<td class="balance ' + (balanceTotal >= 0 ? 'positivo' : 'negativo') + '">' + simbolo + formatearNumero(balanceTotal, moneda) + '</td></tr>');
+            return tdDrill('balance ' + (gp >= 0 ? 'positivo' : 'negativo'), gp, dim, '', k, 'gp');
+          }).join('') + tdDrill('balance ' + (balanceTotal >= 0 ? 'positivo' : 'negativo'), balanceTotal, dim, '', '', 'gp') + '</tr>');
 
           return '<table class="modal-tabla">' + thead + '<tbody>' + filas.join('') + '</tbody></table>';
         }
 
-        var conceptHtml = tablaInvertida(porConceptoPorMes, 'Concepto');
-        var benefHtml = tablaInvertida(porBeneficiarioPorMes, 'Beneficiario');
+        var conceptHtml = tablaInvertida(porConceptoPorMes, 'concepto');
+        var benefHtml = tablaInvertida(porBeneficiarioPorMes, 'beneficiario');
         document.getElementById('wrap-tabla-concepto').innerHTML = conceptHtml;
         document.getElementById('wrap-tabla-beneficiario').innerHTML = benefHtml;
         document.getElementById('modal-detalle-exclusiones').textContent =
           'Este detalle excluye solo filas con centro_de_costos = Saldo Inicial. No se filtra por concepto (Inversiones, etc. aparecen si corresponden). Incluye reales, pendientes y proyectados.';
         document.getElementById('modal-detalle-backdrop').classList.remove('oculto');
+      }
+
+      /** Movimientos que componen una celda del modal Detalle (mismo criterio que buildPorMesYDesglose). G/P: egresos con signo negativo. */
+      function movimientosDeCeldaDetalle(dim, nombre, key, tipo) {
+        var moneda = getMoneda();
+        var tipoDolar = getTipoDolar();
+        var lista = [];
+        getDatosFiltrados().forEach(function(r) {
+          if (debeExcluirse(r)) return;
+          var f = fechaStr(r.fecha_pago);
+          if (!f) return;
+          var parts = f.split('-').map(Number);
+          if (!parts[0] || !parts[1]) return;
+          var k = parts[0] + '-' + String(parts[1]).padStart(2, '0');
+          if (key && k !== key) return;
+          var t = (r.ingresos_egresos || '').trim().toLowerCase();
+          var esIng = t.indexOf('ingreso') !== -1;
+          var esEgr = !esIng && t.indexOf('egreso') !== -1;
+          if (!esIng && !esEgr) return;
+          if (tipo === 'ingreso' && !esIng) return;
+          if (tipo === 'egreso' && !esEgr) return;
+          if (nombre) {
+            var valorDim = dim === 'beneficiario'
+              ? ((r.beneficiario || '').trim() || '(Sin beneficiario)')
+              : ((r.concepto || '').trim() || '(Sin concepto)');
+            if (valorDim !== nombre) return;
+          }
+          var monto = Number(r.importe) || 0;
+          if (moneda === 'USD') {
+            var tasa = getTasa(r.fecha_pago, tipoDolar);
+            if (tasa == null || tasa <= 0) return;
+            monto = monto / tasa;
+          }
+          if (tipo === 'gp' && esEgr) monto = -monto;
+          lista.push({ fecha: f, tipo: esIng ? 'Ingreso' : 'Egreso', monto: monto, r: r });
+        });
+        lista.sort(function(a, b) {
+          if (a.fecha !== b.fecha) return a.fecha < b.fecha ? -1 : 1;
+          return Math.abs(b.monto) - Math.abs(a.monto);
+        });
+        return lista;
+      }
+
+      var movimientosDetalleActual = null;
+
+      function abrirModalMovimientos(dim, nombre, key, tipo) {
+        var moneda = getMoneda();
+        var simbolo = moneda === 'USD' ? 'US$ ' : '$ ';
+        var lista = movimientosDeCeldaDetalle(dim, nombre, key, tipo);
+        var labelTipo = tipo === 'gp' ? 'G/P' : (tipo === 'ingreso' ? 'Ingresos' : 'Egresos');
+        var labelDim = dim === 'beneficiario' ? 'Beneficiario' : 'Concepto';
+        var partes = [];
+        partes.push(nombre ? labelDim + ': ' + nombre : 'Todos los ' + (dim === 'beneficiario' ? 'beneficiarios' : 'conceptos'));
+        partes.push(labelTipo);
+        partes.push(key ? 'Período ' + formatoPeriodoFromKey(key) : 'Todos los períodos');
+        if (sucursalFilterSet.length > 0) partes.push('Sucursal: ' + sucursalFilterSet.join(', '));
+        partes.push(moneda === 'USD' ? 'USD (' + getTipoDolar().toUpperCase() + ')' : 'ARS');
+        var total = lista.reduce(function(acc, m) { return acc + m.monto; }, 0);
+
+        document.getElementById('modal-movimientos-titulo').textContent = 'Movimientos · ' + labelTipo;
+        document.getElementById('modal-movimientos-sub').textContent = partes.join(' · ') + ' · ' + lista.length + (lista.length === 1 ? ' movimiento' : ' movimientos');
+
+        var thead = '<thead><tr><th>Fecha pago</th><th>Tipo</th><th>Concepto</th><th>Beneficiario</th><th>Centro de costos</th><th>Detalle</th><th>Medio</th><th>Sucursal</th><th>Real / Pend.</th><th>Observaciones</th><th class="num">Importe</th></tr></thead>';
+        var filas = lista.map(function(m) {
+          var r = m.r;
+          var p = m.fecha.split('-');
+          var claseMonto = m.monto >= 0 ? (tipo === 'egreso' ? 'egresos' : 'ingresos') : 'egresos';
+          return '<tr>' +
+            '<td>' + p[2] + '/' + p[1] + '/' + p[0] + '</td>' +
+            '<td>' + m.tipo + '</td>' +
+            '<td>' + esc(r.concepto || '') + '</td>' +
+            '<td>' + esc(r.beneficiario || '') + '</td>' +
+            '<td>' + esc(r.centro_de_costos || '') + '</td>' +
+            '<td class="txt-largo">' + esc(r.detalle || '') + '</td>' +
+            '<td>' + esc(r.medio || '') + '</td>' +
+            '<td>' + esc(r.sucursal || '') + '</td>' +
+            '<td>' + esc(r.real_pendiente || '') + '</td>' +
+            '<td class="txt-largo">' + esc(r.observaciones || '') + '</td>' +
+            '<td class="num ' + claseMonto + '">' + simbolo + formatearNumero(m.monto, moneda) + '</td>' +
+            '</tr>';
+        }).join('');
+        if (!lista.length) filas = '<tr><td colspan="11" class="sin-datos">No hay movimientos para esta celda.</td></tr>';
+        var claseTotal = tipo === 'gp' ? (total >= 0 ? 'ingresos' : 'egresos') : (tipo === 'ingreso' ? 'ingresos' : 'egresos');
+        var tfoot = '<tfoot><tr><td colspan="10">Total</td><td class="num ' + claseTotal + '">' + simbolo + formatearNumero(total, moneda) + '</td></tr></tfoot>';
+        document.getElementById('wrap-tabla-movimientos').innerHTML = '<table class="tabla-movimientos">' + thead + '<tbody>' + filas + '</tbody>' + tfoot + '</table>';
+
+        movimientosDetalleActual = { lista: lista, dim: dim, nombre: nombre, key: key, tipo: tipo, moneda: moneda };
+        document.getElementById('modal-movimientos-backdrop').classList.remove('oculto');
+      }
+
+      function exportarMovimientosExcel() {
+        if (!window.XLSX) {
+          showToast('No está disponible la librería Excel.', 'error');
+          return;
+        }
+        var d = movimientosDetalleActual;
+        if (!d || !d.lista.length) {
+          showToast('No hay movimientos para exportar.', 'info');
+          return;
+        }
+        var colImporte = d.moneda === 'USD' ? 'Importe USD' : 'Importe ARS';
+        var header = ['Fecha pago', 'Tipo', 'Concepto', 'Beneficiario', 'Centro de costos', 'Detalle', 'Medio', 'Sucursal', 'Real / Pend.', 'Observaciones', colImporte];
+        var aoa = [header].concat(d.lista.map(function(m) {
+          var r = m.r;
+          var p = m.fecha.split('-');
+          return [p[2] + '/' + p[1] + '/' + p[0], m.tipo, r.concepto || '', r.beneficiario || '', r.centro_de_costos || '', r.detalle || '', r.medio || '', r.sucursal || '', r.real_pendiente || '', r.observaciones || '', Number(m.monto)];
+        }));
+        var ws = window.XLSX.utils.aoa_to_sheet(aoa);
+        var wb = window.XLSX.utils.book_new();
+        window.XLSX.utils.book_append_sheet(wb, ws, 'Movimientos');
+        var sufijo = (d.key || 'total') + '_' + d.tipo;
+        window.XLSX.writeFile(wb, 'movimientos_' + sufijo + '_' + fechaHoyYYYYMMDDArgentina() + '.xlsx');
       }
 
       /** Recarga solo base_everfit y vuelve a renderizar (p. ej. después de actualizar la base). */
@@ -4760,7 +4921,24 @@
         if (!backdrop || !body) return;
         document.getElementById('modal-detalle-close').addEventListener('click', function() { backdrop.classList.add('oculto'); });
         setupBackdropCloseOnlyOnRealClick(backdrop, function() { backdrop.classList.add('oculto'); });
+        function abrirDesdeCelda(td) {
+          abrirModalMovimientos(
+            td.getAttribute('data-drill-dim') || 'concepto',
+            td.getAttribute('data-drill-nombre') || '',
+            td.getAttribute('data-drill-key') || '',
+            td.getAttribute('data-drill-tipo') || 'ingreso'
+          );
+        }
+        body.addEventListener('keydown', function(e) {
+          if (e.key !== 'Enter' && e.key !== ' ') return;
+          var td = e.target.closest && e.target.closest('td.celda-drill');
+          if (!td) return;
+          e.preventDefault();
+          abrirDesdeCelda(td);
+        });
         body.addEventListener('click', function(e) {
+          var td = e.target.closest('td.celda-drill');
+          if (td) { abrirDesdeCelda(td); return; }
           var tab = e.target.closest('.modal-tab');
           if (!tab) return;
           var panelId = tab.getAttribute('data-panel');
@@ -4770,6 +4948,15 @@
           var panel = document.getElementById('modal-panel-' + panelId);
           if (panel) panel.classList.add('activo');
         });
+      })();
+
+      (function setupModalMovimientos() {
+        var backdrop = document.getElementById('modal-movimientos-backdrop');
+        if (!backdrop) return;
+        function cerrar() { backdrop.classList.add('oculto'); }
+        document.getElementById('modal-movimientos-close').addEventListener('click', cerrar);
+        setupBackdropCloseOnlyOnRealClick(backdrop, cerrar);
+        document.getElementById('btn-movimientos-excel').addEventListener('click', exportarMovimientosExcel);
       })();
 
       (function setupModalGraficoItem() {
