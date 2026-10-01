@@ -1,8 +1,8 @@
 {
-  "versionLabel": "v1.39",
+  "versionLabel": "v1.40",
   "lines": [
-    "Nuevo filtro Período: por defecto muestra el último año, y tarjetas, gráfico y tabla coinciden en los mismos meses.",
-    "El gráfico G/P Mensual suma línea de tendencia y la variación contra el mes anterior en monto y %.",
-    "Botón PDF: descargá un reporte de la pantalla con los filtros activos resaltados y los importes en miles."
+    "El mes en curso ahora se ve en celeste: lo podés seguir, pero no suma en las tarjetas, el Total ni la tendencia del gráfico.",
+    "En la tabla Flujo por mes la columna Total va junto a los meses y las proyecciones quedan a la derecha.",
+    "Nuevas alertas: un triángulo en el mes te avisa qué ingresos o egresos variaron mucho contra el mes anterior. El % se ajusta desde el botón Proyección."
   ]
 }

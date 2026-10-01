@@ -225,6 +225,9 @@
       #rep-print-root .rep-tabla thead th { background: #1a1a1a; color: #fff; font-weight: 600; }
       #rep-print-root .rep-tabla th.col-proyeccion { background: #0f5c4a; }
       #rep-print-root .rep-tabla td.col-proyeccion { background: #e8f4f0; }
+      #rep-print-root .rep-tabla thead th.rep-mes-curso { background: #0369a1; }
+      #rep-print-root .rep-tabla td.rep-mes-curso { background: #e0f2fe; }
+      #rep-print-root .rep-tabla .rep-col-total { border-left: 2px solid #94a3b8; font-weight: 600; }
       #rep-print-root .rep-tabla .ratio-var-igual { color: #888; }
       #rep-print-root .rep-tabla tr.rep-fila-total td { font-weight: 700; border-top: 2px solid #333; background: #f5f5f5; }
       #rep-print-root .rep-tabla tr.rep-fila-titulo td { font-weight: 700; background: #f8fafc; }
@@ -369,6 +372,25 @@
     #tabla-flujo tbody tr td.col-item { background: #fff; }
     #tabla-flujo tfoot td.col-item { background: #f5f5f5; position: sticky; left: 0; z-index: 1; }
     #tabla-flujo tfoot td { font-weight: 600; border-top: 2px solid #333; background: #f5f5f5; }
+    #tabla-flujo thead th.col-mes-curso { background: #0369a1; color: #fff; }
+    #tabla-flujo td.col-mes-curso { background: #e0f2fe; }
+    #tabla-flujo th.col-total-real, #tabla-flujo td.col-total-real { border-left: 2px solid #94a3b8; }
+    #tabla-flujo td.col-total-real { font-weight: 600; background: #f8fafc; }
+    #tabla-flujo tfoot td.col-total-real { background: #f5f5f5; }
+    #tabla-flujo .th-mes-inner { display: inline-flex; align-items: center; justify-content: flex-end; gap: 0.25rem; }
+    #tabla-flujo .alert-icon { color: #fbbf24; cursor: pointer; padding: 0 0.15rem; display: inline-flex; align-items: center; justify-content: center; border-radius: 4px; }
+    #tabla-flujo .alert-icon:hover, #tabla-flujo .alert-icon:focus-visible { opacity: 0.85; outline: 2px solid rgba(251, 191, 36, 0.6); outline-offset: 1px; }
+    #tabla-flujo .alert-icon svg { width: 1.05rem; height: 1.05rem; }
+    #modal-alertas { max-width: 560px; }
+    #modal-alertas .modal-header h2 { margin: 0; }
+    .modal-alertas-subtitulo { margin: 0.25rem 0 0 0; font-size: 0.85rem; color: #666; font-weight: normal; }
+    #modal-alertas .modal-body ul { margin: 0; padding-left: 1.25rem; }
+    #modal-alertas .modal-body li { margin-bottom: 0.5rem; line-height: 1.4; }
+    .modal-alertas-disclaimer { margin: 0; padding: 0.6rem 1.25rem 1rem; font-size: 0.8rem; color: #666; border-top: 1px solid #eee; }
+    .alerta-desvio-positivo { color: #0d7d3d; font-weight: 600; }
+    .alerta-desvio-negativo { color: #b91c1c; font-weight: 600; }
+    .config-seccion-titulo { margin: 1.25rem 0 0.5rem 0; padding-top: 0.75rem; border-top: 1px solid #eee; font-size: 0.95rem; }
+    .config-ayuda { margin: 0.35rem 0 0 0; font-size: 0.8rem; color: #666; }
     #tabla-flujo td.col-item .item-con-icono { display: inline-flex; align-items: center; gap: 0.4rem; }
     #tabla-flujo td.col-item .item-icon { width: 18px; height: 18px; flex-shrink: 0; }
     #tabla-flujo td.col-item .item-icon svg { width: 100%; height: 100%; stroke: currentColor; }
@@ -410,6 +432,11 @@
       #tabla-flujo-wrap { max-height: 60vh; margin-top: 0.35rem; -webkit-overflow-scrolling: touch; }
       #tabla-flujo th, #tabla-flujo td { padding: 0.4rem 0.5rem; font-size: 0.875rem; }
       #tabla-flujo th.col-item, #tabla-flujo td.col-item { min-width: 80px; }
+      #tabla-flujo .alert-icon { position: relative; }
+      #tabla-flujo .alert-icon::after { content: ''; position: absolute; inset: -13px; }
+      #modal-alertas { max-width: 100%; }
+      .modal-alertas-disclaimer { padding: 0.6rem 1rem 1rem; }
+      #config-alerta-desvio { font-size: 16px; min-height: 44px; }
       .tabs button { min-height: 44px; padding: 0.5rem 0.85rem; }
       .modal-backdrop { padding: 0.5rem; align-items: flex-start; padding-top: max(0.5rem, env(safe-area-inset-top)); }
       .modal { max-height: min(90vh, 90dvh); }
@@ -858,7 +885,7 @@
         <span class="menu-label">Seguridad</span>
       </a>
     </nav>
-    <div class="sidebar-version" id="sidebar-version" aria-label="Versión">v1.39</div>
+    <div class="sidebar-version" id="sidebar-version" aria-label="Versión">v1.40</div>
   </aside>
 
   <main class="main-content">
@@ -972,7 +999,7 @@
           <button type="button" class="help-exclusiones" id="help-tarjetas" title="Reglas de exclusión" aria-label="Ver reglas de exclusión">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
           </button>
-            <div class="help-exclusiones-popover" id="help-tarjetas-popover"><strong>Tarjetas (resumen):</strong> solo se excluyen filas con <strong>centro_de_costos</strong> = Saldo Inicial (sin distinguir mayúsculas). El campo <strong>concepto</strong> no se filtra aquí (Inversiones y demás entran si corresponden). Incluye reales, pendientes y proyectados. La suma no usa las columnas «Proy.» de la tabla. Suman solo los meses del filtro <strong>Período</strong> (por defecto último año).</div>
+            <div class="help-exclusiones-popover" id="help-tarjetas-popover"><strong>Tarjetas (resumen):</strong> solo se excluyen filas con <strong>centro_de_costos</strong> = Saldo Inicial (sin distinguir mayúsculas). El campo <strong>concepto</strong> no se filtra aquí (Inversiones y demás entran si corresponden). Incluye reales, pendientes y proyectados. La suma no usa las columnas «Proy.» de la tabla. Suman solo los meses del filtro <strong>Período</strong> (por defecto último año) y solo los <strong>meses cerrados</strong>: el mes en curso no entra.</div>
         </span>
       </div>
 
@@ -984,7 +1011,7 @@
             <button type="button" class="help-exclusiones" id="help-grafico" title="Reglas de exclusión" aria-label="Ver reglas de exclusión">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
             </button>
-            <div class="help-exclusiones-popover" id="help-grafico-popover"><strong>Gráfico G/P mensual</strong> (mismo agregado que la tabla Flujo por mes): (1) excluye <strong>centro_de_costos</strong> = Saldo Inicial; (2) <strong>solo aquí</strong> excluye además filas cuyo <strong>concepto</strong> es <strong>Inversiones</strong> o <strong>Saldo Inicial</strong> (texto sin distinguir mayúsculas). Incluye reales, pendientes y proyectados. No aplica a tarjetas ni al modal Detalle.<br><br><strong>Período:</strong> sigue el filtro Período de arriba (por defecto último año: mes actual y los 12 anteriores), igual que tarjetas, tabla y Detalle. <strong>Tendencia:</strong> recta de mínimos cuadrados sobre los meses mostrados (línea azul punteada); «por mes» es la pendiente. <strong>Variación:</strong> G/P del mes menos G/P del mes anterior; el % se calcula sobre el valor absoluto del mes anterior (sin % si el anterior es 0). El primer mes se compara con el mes previo aunque no se grafique. En pantallas chicas la variación se ve en el tooltip.</div>
+            <div class="help-exclusiones-popover" id="help-grafico-popover"><strong>Gráfico G/P mensual</strong> (mismo agregado que la tabla Flujo por mes): (1) excluye <strong>centro_de_costos</strong> = Saldo Inicial; (2) <strong>solo aquí</strong> excluye además filas cuyo <strong>concepto</strong> es <strong>Inversiones</strong> o <strong>Saldo Inicial</strong> (texto sin distinguir mayúsculas). Incluye reales, pendientes y proyectados. No aplica a tarjetas ni al modal Detalle.<br><br><strong>Período:</strong> sigue el filtro Período de arriba (por defecto último año: mes actual y los 12 anteriores), igual que tarjetas, tabla y Detalle. <strong>Mes en curso:</strong> barra celeste con su G/P en millones; no entra en la variación ni en la tendencia. <strong>Tendencia:</strong> recta de mínimos cuadrados sobre los meses cerrados mostrados (línea azul punteada); «por mes» es la pendiente. <strong>Variación:</strong> G/P del mes menos G/P del mes cerrado anterior; el % se calcula sobre el valor absoluto del mes anterior (sin % si el anterior es 0). El primer mes se compara con el mes previo aunque no se grafique. En pantallas chicas la variación se ve en el tooltip.</div>
           </span>
         </div>
         <p id="grafico-gp-periodo" style="margin:0 0 0.5rem 0; font-size:0.9rem; color:#666;">Período: último año. Sobre cada barra: variación vs mes anterior (% y monto).</p>
@@ -1004,7 +1031,7 @@
             <button type="button" class="help-exclusiones" id="help-flujo" title="Reglas de exclusión" aria-label="Ver reglas de exclusión">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
             </button>
-            <div class="help-exclusiones-popover" id="help-flujo-popover"><strong>Tabla Flujo por mes</strong> (y ratios que la usan): (1) excluye <strong>centro_de_costos</strong> = Saldo Inicial; (2) <strong>solo en esta tabla y en el gráfico G/P</strong> excluye filas con <strong>concepto</strong> = Inversiones o Saldo Inicial. Incluye reales, pendientes y proyectados. Las tarjetas y el Detalle por concepto/beneficiario no filtran por concepto así. Muestra los meses del filtro <strong>Período</strong>; las columnas «Proy.» aparecen solo si el período incluye el mes en curso y se calculan con la historia completa (no dependen del período elegido).</div>
+            <div class="help-exclusiones-popover" id="help-flujo-popover"><strong>Tabla Flujo por mes</strong> (y ratios que la usan): (1) excluye <strong>centro_de_costos</strong> = Saldo Inicial; (2) <strong>solo en esta tabla y en el gráfico G/P</strong> excluye filas con <strong>concepto</strong> = Inversiones o Saldo Inicial. Incluye reales, pendientes y proyectados. Las tarjetas y el Detalle por concepto/beneficiario no filtran por concepto así. Muestra los meses del filtro <strong>Período</strong>; las columnas «Proy.» aparecen solo si el período incluye el mes en curso y se calculan con la historia completa (no dependen del período elegido).<br><br><strong>Orden de columnas:</strong> meses → <strong>Total</strong> (solo meses cerrados) → Proy. El <strong>mes en curso</strong> va en celeste: se ve, pero no suma en el Total ni en los ratios totales. <strong>Alertas:</strong> el triángulo en el encabezado de un mes indica conceptos de ingreso o beneficiarios de egreso que variaron más del % configurado (botón Proyección) respecto del mes anterior; hacé clic para ver el detalle.</div>
           </span>
         </div>
         <p style="color:#666; font-size:0.9rem; margin:0 0 0.5rem 0;">Hacé clic en una fila para ver el detalle por concepto o beneficiario.</p>
@@ -1747,10 +1774,24 @@
     </div>
   </div>
 
+  <div id="modal-alertas-backdrop" class="modal-backdrop oculto">
+    <div class="modal" id="modal-alertas" role="dialog" aria-modal="true" aria-labelledby="modal-alertas-titulo">
+      <div class="modal-header">
+        <div>
+          <h2 id="modal-alertas-titulo">Alertas del mes</h2>
+          <p id="modal-alertas-subtitulo" class="modal-alertas-subtitulo"></p>
+        </div>
+        <button type="button" class="modal-close" id="modal-alertas-close" aria-label="Cerrar"><span class="icon-close"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg></span></button>
+      </div>
+      <div class="modal-body" id="modal-alertas-body"></div>
+      <p class="modal-alertas-disclaimer">Si querés cambiar el % del desvío, hacelo desde el botón <strong>Proyección</strong> (configuración), arriba a la derecha.</p>
+    </div>
+  </div>
+
   <div id="modal-config-proyeccion-backdrop" class="modal-backdrop oculto">
     <div class="modal config-proyeccion" id="modal-config-proyeccion" style="max-width:480px;">
       <div class="modal-header">
-        <h2>Configuración de proyección</h2>
+        <h2>Configuración de proyección y alertas</h2>
         <button type="button" class="modal-close" id="modal-config-proyeccion-close" aria-label="Cerrar"><span class="icon-close"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg></span></button>
       </div>
       <div class="modal-body">
@@ -1783,6 +1824,15 @@
           <select id="config-proyeccion-meses">
             <option value="3">3</option><option value="6" selected>6</option><option value="12">12</option><option value="24">24</option>
           </select>
+        </div>
+        <h3 class="config-seccion-titulo">Alertas del Flujo por mes</h3>
+        <div class="form-group">
+          <label for="config-alerta-desvio">Desvío % vs mes anterior</label>
+          <select id="config-alerta-desvio" title="Alerta cuando un concepto de ingreso o un beneficiario de egreso varía más de este % respecto del mes anterior (en más o en menos).">
+            <option value="5">5 %</option><option value="10">10 %</option><option value="15">15 %</option><option value="20">20 %</option>
+            <option value="25" selected>25 %</option><option value="30">30 %</option><option value="50">50 %</option>
+          </select>
+          <p class="config-ayuda">Se marca con un triángulo en el encabezado del mes. No aplica al mes en curso.</p>
         </div>
         <div class="form-actions">
           <button type="button" id="config-proyeccion-guardar" class="btn-actualizar-base">Guardar</button>
@@ -3952,7 +4002,17 @@
       }
 
       var configProyeccionCache = null;
-      var CONFIG_PROY_DEFAULTS = { metodo: 'promedio_ponderado', meses: 6, mesesAProyectar: 3, recortePct: 20 };
+      var CONFIG_PROY_DEFAULTS = { metodo: 'promedio_ponderado', meses: 6, mesesAProyectar: 3, recortePct: 20, alertaDesvioPct: 25 };
+      var ALERTA_DESVIO_OPCIONES = [5, 10, 15, 20, 25, 30, 50];
+      /** Alertas de desvío por mes (clave YYYY-MM → lista de mensajes HTML) del último renderizar(). */
+      var alertasFlujoPorMes = {};
+      function normalizarAlertaDesvioPct(v) {
+        var n = parseInt(v, 10);
+        return ALERTA_DESVIO_OPCIONES.indexOf(n) !== -1 ? n : CONFIG_PROY_DEFAULTS.alertaDesvioPct;
+      }
+      function getAlertaDesvioPct() {
+        return normalizarAlertaDesvioPct(getConfigProyeccion().alertaDesvioPct);
+      }
 
       function promedioPonderado(arr) {
         var nums = (arr || []).filter(function(x) { return typeof x === 'number' && !isNaN(x); });
@@ -4037,15 +4097,15 @@
       }
       function getConfigProyeccion() {
         if (configProyeccionCache) return configProyeccionCache;
-        configProyeccionCache = { metodo: CONFIG_PROY_DEFAULTS.metodo, meses: CONFIG_PROY_DEFAULTS.meses, mesesAProyectar: CONFIG_PROY_DEFAULTS.mesesAProyectar, recortePct: CONFIG_PROY_DEFAULTS.recortePct };
+        configProyeccionCache = { metodo: CONFIG_PROY_DEFAULTS.metodo, meses: CONFIG_PROY_DEFAULTS.meses, mesesAProyectar: CONFIG_PROY_DEFAULTS.mesesAProyectar, recortePct: CONFIG_PROY_DEFAULTS.recortePct, alertaDesvioPct: CONFIG_PROY_DEFAULTS.alertaDesvioPct };
         return configProyeccionCache;
       }
 
       function loadConfigProyeccion() {
         if (!currentUserId) return Promise.resolve();
-        return client.from('config_dashboard').select('proyeccion_metodo, proyeccion_meses, proyeccion_cantidad, proyeccion_recorte').eq('user_id', currentUserId).maybeSingle().then(function(r) {
+        return client.from('config_dashboard').select('proyeccion_metodo, proyeccion_meses, proyeccion_cantidad, proyeccion_recorte, alerta_desvio_pct').eq('user_id', currentUserId).maybeSingle().then(function(r) {
           if (r.error || !r.data) {
-            configProyeccionCache = { metodo: CONFIG_PROY_DEFAULTS.metodo, meses: CONFIG_PROY_DEFAULTS.meses, mesesAProyectar: CONFIG_PROY_DEFAULTS.mesesAProyectar, recortePct: CONFIG_PROY_DEFAULTS.recortePct };
+            configProyeccionCache = { metodo: CONFIG_PROY_DEFAULTS.metodo, meses: CONFIG_PROY_DEFAULTS.meses, mesesAProyectar: CONFIG_PROY_DEFAULTS.mesesAProyectar, recortePct: CONFIG_PROY_DEFAULTS.recortePct, alertaDesvioPct: CONFIG_PROY_DEFAULTS.alertaDesvioPct };
             return;
           }
           var d = r.data;
@@ -4054,7 +4114,7 @@
           var cantidad = Math.max(1, Math.min(12, Number(d.proyeccion_cantidad) || CONFIG_PROY_DEFAULTS.mesesAProyectar));
           var rNum = parseInt(d.proyeccion_recorte, 10);
           var recorte = Math.max(0, Math.min(25, isNaN(rNum) ? CONFIG_PROY_DEFAULTS.recortePct : rNum));
-          configProyeccionCache = { metodo: metodo, meses: meses, mesesAProyectar: cantidad, recortePct: recorte };
+          configProyeccionCache = { metodo: metodo, meses: meses, mesesAProyectar: cantidad, recortePct: recorte, alertaDesvioPct: normalizarAlertaDesvioPct(d.alerta_desvio_pct) };
         });
       }
 
@@ -4145,6 +4205,7 @@
         });
 
         var porMesFlujoAll = {};
+        var porMesCategoriaAll = {};
         datosAll.forEach(function(r) {
           if (debeExcluirse(r)) return;
           if (excluirConceptoFlujoYGraficoGP(r)) return;
@@ -4163,10 +4224,17 @@
           }
           var tipo = (r.ingresos_egresos || '').trim().toLowerCase();
           if (!porMesFlujoAll[key]) porMesFlujoAll[key] = { anio: anio, mes: mes, ingresos: 0, egresos: 0 };
+          var claveCat = null;
           if (tipo.indexOf('ingreso') !== -1) {
             porMesFlujoAll[key].ingresos += monto;
+            claveCat = 'ingreso|' + ((r.concepto || '').trim() || 'Sin concepto');
           } else if (tipo.indexOf('egreso') !== -1) {
             porMesFlujoAll[key].egresos += monto;
+            claveCat = 'egreso|' + ((r.beneficiario || '').trim() || 'Sin beneficiario');
+          }
+          if (claveCat) {
+            if (!porMesCategoriaAll[key]) porMesCategoriaAll[key] = {};
+            porMesCategoriaAll[key][claveCat] = (porMesCategoriaAll[key][claveCat] || 0) + monto;
           }
         });
 
@@ -4210,27 +4278,65 @@
         var mostrarProyeccion = keyEnRangoPeriodo(keyMesEnCurso(), rangoPeriodo);
 
         var ordenados = Object.keys(porMes).sort();
+        var keyCurso = keyMesEnCurso();
+        var esMesCurso = function(k) { return k === keyCurso; };
+        var ordenadosCerrados = ordenados.filter(function(k) { return !esMesCurso(k); });
+        if (porMes[keyCurso]) {
+          totalIngresos -= porMes[keyCurso].ingresos;
+          totalEgresos -= porMes[keyCurso].egresos;
+        }
+        if (sueldosPorMes[keyCurso]) totalSueldos -= sueldosPorMes[keyCurso];
+        if (alquileresPorMes[keyCurso]) totalAlquileres -= alquileresPorMes[keyCurso];
         var balanceTotal = totalIngresos - totalEgresos;
         var simbolo = moneda === 'USD' ? 'US$ ' : '$ ';
+
+        var escHtml = function(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); };
+        var umbralDesvioPct = getAlertaDesvioPct();
+        var alertasPorMes = {};
+        ordenados.forEach(function(key) {
+          if (esMesCurso(key)) return;
+          var actuales = porMesCategoriaAll[key] || {};
+          var anteriores = porMesCategoriaAll[mesAnteriorKey(key)] || {};
+          var claves = Object.keys(actuales);
+          Object.keys(anteriores).forEach(function(c) { if (claves.indexOf(c) === -1) claves.push(c); });
+          var desvios = [];
+          claves.forEach(function(clave) {
+            var actual = actuales[clave] || 0;
+            var anterior = anteriores[clave] || 0;
+            if (!(anterior > 0 && actual >= 0)) return;
+            var desvioPct = Math.abs((actual - anterior) / anterior * 100);
+            if (desvioPct < umbralDesvioPct) return;
+            var sep = clave.indexOf('|');
+            desvios.push({ tipo: clave.slice(0, sep), cat: clave.slice(sep + 1), subio: actual > anterior, pct: desvioPct });
+          });
+          desvios.sort(function(a, b) { return b.pct - a.pct; });
+          alertasPorMes[key] = desvios.map(function(dv) {
+            var favorable = dv.tipo === 'ingreso' ? dv.subio : !dv.subio;
+            var clase = favorable ? 'alerta-desvio-positivo' : 'alerta-desvio-negativo';
+            var quien = dv.tipo === 'ingreso' ? 'El ingreso (concepto)' : 'El egreso (beneficiario)';
+            return quien + ' <strong>' + escHtml(dv.cat) + '</strong> tiene un desvío de <span class="' + clase + '">' + (dv.subio ? '+' : '-') + dv.pct.toLocaleString('es-AR', { minimumFractionDigits: 1, maximumFractionDigits: 1 }) + '%</span> respecto del mes anterior.';
+          });
+        });
+        alertasFlujoPorMes = alertasPorMes;
 
         var iconoIng = '<span class="card-icon ingresos"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="M19 12l-7 7-7-7"/></svg></span>';
         var iconoEgr = '<span class="card-icon egresos"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5"/><path d="M5 12l7-7 7 7"/></svg></span>';
         var iconoGp = '<span class="card-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></svg></span>';
 
-        var periodosLabels = ordenados.map(function(key) { return formatoPeriodoFromKey(key); });
-        var celdasIng = ordenados.map(function(k) { var d = porMesFlujo[k] || { ingresos: 0, egresos: 0 }; return '<td class="ingresos">' + simbolo + formatearNumero(d.ingresos, moneda) + '</td>'; });
-        var celdasEgr = ordenados.map(function(k) { var d = porMesFlujo[k] || { ingresos: 0, egresos: 0 }; return '<td class="egresos">' + simbolo + formatearNumero(d.egresos, moneda) + '</td>'; });
+        var claseMesCurso = function(k) { return esMesCurso(k) ? ' col-mes-curso' : ''; };
+        var celdasIng = ordenados.map(function(k) { var d = porMesFlujo[k] || { ingresos: 0, egresos: 0 }; return '<td class="ingresos' + claseMesCurso(k) + '">' + simbolo + formatearNumero(d.ingresos, moneda) + '</td>'; });
+        var celdasEgr = ordenados.map(function(k) { var d = porMesFlujo[k] || { ingresos: 0, egresos: 0 }; return '<td class="egresos' + claseMesCurso(k) + '">' + simbolo + formatearNumero(d.egresos, moneda) + '</td>'; });
         var celdasGp = ordenados.map(function(k) {
           var d = porMesFlujo[k] || { ingresos: 0, egresos: 0 };
           var gp = d.ingresos - d.egresos;
-          return '<td class="balance ' + (gp >= 0 ? 'positivo' : 'negativo') + '">' + simbolo + formatearNumero(gp, moneda) + '</td>';
+          return '<td class="balance ' + (gp >= 0 ? 'positivo' : 'negativo') + claseMesCurso(k) + '">' + simbolo + formatearNumero(gp, moneda) + '</td>';
         });
-        var celdasTotalRow = ordenados.map(function(k) { var d = porMesFlujo[k] || { ingresos: 0, egresos: 0 }; var gp = d.ingresos - d.egresos; return '<td class="balance ' + (gp >= 0 ? 'positivo' : 'negativo') + '">' + simbolo + formatearNumero(gp, moneda) + '</td>'; });
-        var totalIngresosFlujo = ordenados.reduce(function(s, k) { return s + ((porMesFlujo[k] || {}).ingresos || 0); }, 0);
-        var totalEgresosFlujo = ordenados.reduce(function(s, k) { return s + ((porMesFlujo[k] || {}).egresos || 0); }, 0);
+        var totalIngresosFlujo = ordenadosCerrados.reduce(function(s, k) { return s + ((porMesFlujo[k] || {}).ingresos || 0); }, 0);
+        var totalEgresosFlujo = ordenadosCerrados.reduce(function(s, k) { return s + ((porMesFlujo[k] || {}).egresos || 0); }, 0);
+        var balanceFlujoCerrados = totalIngresosFlujo - totalEgresosFlujo;
         var proyLabels = [];
+        var proyCeldasIng = [], proyCeldasEgr = [], proyCeldasGp = [];
         var filasProyDisclaimer = '';
-        var totalIngresosProy = 0, totalEgresosProy = 0;
         var proySueldos = [], proyAlquileres = [], proyIng = [], proyEgr = [];
         if (userPermissions.indexOf('ver_proyeccion') !== -1 && ordenados.length > 0 && mostrarProyeccion) {
           var configProy = getConfigProyeccion();
@@ -4257,47 +4363,63 @@
             proyAlquileres = proyeccionDesdeSerie(valoresAlquileres, N, agg, configProy.mesesAProyectar);
             var keyProy = keyMesEnCurso();
             for (var j = 0; j < configProy.mesesAProyectar; j++) {
-              totalIngresosProy += proyIng[j];
-              totalEgresosProy += proyEgr[j];
               proyLabels.push('Proy. ' + formatoPeriodoFromKey(keyProy));
-              celdasIng.push('<td class="ingresos col-proyeccion">' + simbolo + formatearNumero(proyIng[j], moneda) + '</td>');
-              celdasEgr.push('<td class="egresos col-proyeccion">' + simbolo + formatearNumero(proyEgr[j], moneda) + '</td>');
+              proyCeldasIng.push('<td class="ingresos col-proyeccion">' + simbolo + formatearNumero(proyIng[j], moneda) + '</td>');
+              proyCeldasEgr.push('<td class="egresos col-proyeccion">' + simbolo + formatearNumero(proyEgr[j], moneda) + '</td>');
               var gpProy = proyIng[j] - proyEgr[j];
-              celdasGp.push('<td class="balance col-proyeccion ' + (gpProy >= 0 ? 'positivo' : 'negativo') + '">' + simbolo + formatearNumero(gpProy, moneda) + '</td>');
-              celdasTotalRow.push('<td class="balance col-proyeccion ' + (gpProy >= 0 ? 'positivo' : 'negativo') + '">' + simbolo + formatearNumero(gpProy, moneda) + '</td>');
+              proyCeldasGp.push('<td class="balance col-proyeccion ' + (gpProy >= 0 ? 'positivo' : 'negativo') + '">' + simbolo + formatearNumero(gpProy, moneda) + '</td>');
               keyProy = siguienteMesKey(keyProy);
             }
             var metodoLabel = configProy.metodo === 'promedio_ponderado' ? 'Promedio ponderado' : (configProy.metodo === 'promedio' ? 'Promedio' : (configProy.metodo === 'promedio_recortado' ? 'Promedio recortado' : 'Mediana'));
-            filasProyDisclaimer = '<tr class="disclaimer-proyeccion"><td colspan="' + (1 + ordenados.length + configProy.mesesAProyectar + 1) + '">Proyección: ' + metodoLabel + ' sobre los <strong>' + configProy.meses + ' meses calendario</strong> estrictamente anteriores al mes en curso (0 si no hay datos en un mes). No se usa como base el mes en curso ni meses posteriores. Proy. 1 = solo esos importes; Proy. 2 = últimos ' + (configProy.meses - 1) + ' de esa base + Proy. 1; cada siguiente incorpora la proyección anterior y suelta el real más viejo, hasta ' + configProy.mesesAProyectar + ' columnas.</td></tr>';
+            filasProyDisclaimer = '<tr class="disclaimer-proyeccion"><td colspan="' + (1 + ordenados.length + 1 + configProy.mesesAProyectar) + '">Proyección: ' + metodoLabel + ' sobre los <strong>' + configProy.meses + ' meses calendario cerrados</strong> estrictamente anteriores al mes en curso (0 si no hay datos en un mes). El mes en curso no entra en la base ni meses posteriores. Proy. 1 = solo esos importes; Proy. 2 = últimos ' + (configProy.meses - 1) + ' de esa base + Proy. 1; cada siguiente incorpora la proyección anterior y suelta el real más viejo, hasta ' + configProy.mesesAProyectar + ' columnas. Las columnas Proy. no suman en el Total.</td></tr>';
           }
         }
-        periodosLabels = periodosLabels.concat(proyLabels);
-        var totalIngresosConProyFlujo = totalIngresosFlujo + totalIngresosProy;
-        var totalEgresosConProyFlujo = totalEgresosFlujo + totalEgresosProy;
-        var balanceTotalConProyFlujo = totalIngresosConProyFlujo - totalEgresosConProyFlujo;
+        var numProy = proyLabels.length;
+        var numColsDatos = ordenados.length + 1 + numProy;
+        var tituloCardsCerrados = 'Suma de los meses cerrados del período. El mes en curso no entra.';
         document.getElementById('resumen').innerHTML = [
-          '<div class="card"><div class="card-titulo">' + iconoIng + 'Total ingresos</div><div class="valor ingresos">' + simbolo + formatearNumero(totalIngresos, moneda) + '</div></div>',
-          '<div class="card"><div class="card-titulo">' + iconoEgr + 'Total egresos</div><div class="valor egresos">' + simbolo + formatearNumero(totalEgresos, moneda) + '</div></div>',
-          '<div class="card"><div class="card-titulo">' + iconoGp + 'G/P Total</div><div class="valor balance ' + (balanceTotal >= 0 ? 'positivo' : 'negativo') + '">' + simbolo + formatearNumero(balanceTotal, moneda) + '</div></div>'
+          '<div class="card" title="' + tituloCardsCerrados + '"><div class="card-titulo">' + iconoIng + 'Total ingresos</div><div class="valor ingresos">' + simbolo + formatearNumero(totalIngresos, moneda) + '</div></div>',
+          '<div class="card" title="' + tituloCardsCerrados + '"><div class="card-titulo">' + iconoEgr + 'Total egresos</div><div class="valor egresos">' + simbolo + formatearNumero(totalEgresos, moneda) + '</div></div>',
+          '<div class="card" title="' + tituloCardsCerrados + '"><div class="card-titulo">' + iconoGp + 'G/P Total</div><div class="valor balance ' + (balanceTotal >= 0 ? 'positivo' : 'negativo') + '">' + simbolo + formatearNumero(balanceTotal, moneda) + '</div></div>'
         ].join('');
         document.getElementById('resumen-wrap').style.display = 'block';
         actualizarLeyendaUltimaActualizacion();
-        var theadHtml = '<tr><th class="col-item">Item</th>' + periodosLabels.map(function(p, i) { return '<th' + (i >= ordenados.length ? ' class="col-proyeccion"' : '') + '>' + esc(p) + '</th>'; }).join('') + '<th>Total</th></tr>';
+        var svgAlerta = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>';
+        var thMeses = ordenados.map(function(k) {
+          var label = formatoPeriodoFromKey(k);
+          var alertas = alertasPorMes[k] || [];
+          var icono = alertas.length
+            ? '<span class="alert-icon" role="button" tabindex="0" data-alerta-key="' + k + '" title="Ver alertas (' + alertas.length + ')" aria-label="Ver alertas de ' + escHtml(label) + '">' + svgAlerta + '</span>'
+            : '';
+          var attrs = esMesCurso(k) ? ' class="col-mes-curso" title="Mes en curso: se ve, pero no entra en el Total, en las tarjetas ni en la variación y tendencia del gráfico."' : '';
+          return '<th' + attrs + '><span class="th-mes-inner">' + escHtml(label) + icono + '</span></th>';
+        });
+        var thTotal = '<th class="col-total-real" title="Suma de los meses cerrados. No incluye el mes en curso ni los proyectados.">Total</th>';
+        var thProy = proyLabels.map(function(p) { return '<th class="col-proyeccion">' + escHtml(p) + '</th>'; });
+        var theadHtml = '<tr><th class="col-item">Item</th>' + thMeses.join('') + thTotal + thProy.join('') + '</tr>';
         document.getElementById('thead-flujo').innerHTML = theadHtml;
 
         var iconoIngreso = '<span class="item-con-icono"><span class="item-icon icono-ingresos" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="M19 12l-7 7-7-7"/></svg></span>Ingresos</span>';
         var iconoEgreso = '<span class="item-con-icono"><span class="item-icon icono-egresos" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5"/><path d="M5 12l7-7 7 7"/></svg></span>Egresos</span>';
         var iconoGP = '<span class="item-con-icono"><span class="item-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></svg></span>G/P</span>';
-        var tbodyHtml = '<tr class="fila-clickable" role="button" tabindex="0"><td class="col-item">' + iconoIngreso + '</td>' + celdasIng.join('') + '<td class="ingresos">' + simbolo + formatearNumero(totalIngresosConProyFlujo, moneda) + '</td></tr>';
-        tbodyHtml += '<tr class="fila-clickable" role="button" tabindex="0"><td class="col-item">' + iconoEgreso + '</td>' + celdasEgr.join('') + '<td class="egresos">' + simbolo + formatearNumero(totalEgresosConProyFlujo, moneda) + '</td></tr>';
-        tbodyHtml += '<tr class="fila-clickable" role="button" tabindex="0"><td class="col-item">' + iconoGP + '</td>' + celdasGp.join('') + '<td class="balance ' + (balanceTotalConProyFlujo >= 0 ? 'positivo' : 'negativo') + '">' + simbolo + formatearNumero(balanceTotalConProyFlujo, moneda) + '</td></tr>';
+        function filaConTotalYProy(reales, celdaTotal, proy) {
+          return reales.join('') + celdaTotal + proy.join('');
+        }
+        var celdaTotalIng = '<td class="ingresos col-total-real">' + simbolo + formatearNumero(totalIngresosFlujo, moneda) + '</td>';
+        var celdaTotalEgr = '<td class="egresos col-total-real">' + simbolo + formatearNumero(totalEgresosFlujo, moneda) + '</td>';
+        var celdaTotalGp = '<td class="balance col-total-real ' + (balanceFlujoCerrados >= 0 ? 'positivo' : 'negativo') + '">' + simbolo + formatearNumero(balanceFlujoCerrados, moneda) + '</td>';
+        var tbodyHtml = '<tr class="fila-clickable" role="button" tabindex="0"><td class="col-item">' + iconoIngreso + '</td>' + filaConTotalYProy(celdasIng, celdaTotalIng, proyCeldasIng) + '</tr>';
+        tbodyHtml += '<tr class="fila-clickable" role="button" tabindex="0"><td class="col-item">' + iconoEgreso + '</td>' + filaConTotalYProy(celdasEgr, celdaTotalEgr, proyCeldasEgr) + '</tr>';
+        tbodyHtml += '<tr class="fila-clickable" role="button" tabindex="0"><td class="col-item">' + iconoGP + '</td>' + filaConTotalYProy(celdasGp, celdaTotalGp, proyCeldasGp) + '</tr>';
         document.getElementById('tbody-flujo').innerHTML = tbodyHtml;
 
-        var exclusionesFlujoNote = '<tr class="disclaimer-proyeccion"><td colspan="' + (1 + periodosLabels.length + 1) + '">Esta tabla y el gráfico G/P Mensual excluyen además —solo aquí— las filas con <strong>concepto</strong> Inversiones o Saldo Inicial (además de centro Saldo Inicial en todo el panel). Las tarjetas y el modal Detalle no aplican ese filtro por concepto.</td></tr>';
-        var tfootHtml = '<tr><td class="col-item">Total</td>' + celdasTotalRow.join('') + '<td class="balance ' + (balanceTotalConProyFlujo >= 0 ? 'positivo' : 'negativo') + '">' + simbolo + formatearNumero(balanceTotalConProyFlujo, moneda) + '</td></tr>' + filasProyDisclaimer + exclusionesFlujoNote;
+        var notaMesCurso = ordenados.indexOf(keyCurso) !== -1
+          ? '<tr class="disclaimer-proyeccion nota-mes-curso"><td colspan="' + (1 + numColsDatos) + '">El mes en curso (' + escHtml(formatoPeriodoFromKey(keyCurso)) + ') va en celeste: se ve, pero no entra en el Total, en las tarjetas ni en la variación y tendencia del gráfico.</td></tr>'
+          : '';
+        var exclusionesFlujoNote = '<tr class="disclaimer-proyeccion"><td colspan="' + (1 + numColsDatos) + '">Esta tabla y el gráfico G/P Mensual excluyen además —solo aquí— las filas con <strong>concepto</strong> Inversiones o Saldo Inicial (además de centro Saldo Inicial en todo el panel). Las tarjetas y el modal Detalle no aplican ese filtro por concepto.</td></tr>';
+        var tfootHtml = '<tr><td class="col-item">Total</td>' + filaConTotalYProy(celdasGp, celdaTotalGp, proyCeldasGp) + '</tr>' + notaMesCurso + filasProyDisclaimer + exclusionesFlujoNote;
         document.getElementById('tfoot-flujo').innerHTML = tfootHtml;
 
-        var ingresosParaRatios = totalIngresosConProyFlujo;
         var fmtPct = function(x) { return x != null ? Number(x).toLocaleString('es-AR', { minimumFractionDigits: 1, maximumFractionDigits: 1 }) + ' %' : '–'; };
         var EPS = 0.05;
         var iconoVarArriba = '<span class="ratio-var-icon ratio-var-subio" title="Subió respecto al mes anterior" aria-label="subió"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 19V5"/><path d="M5 12l7-7 7 7"/></svg></span>';
@@ -4327,17 +4449,28 @@
           var alq = alquileresPorMes[k] || 0;
           return ing > 0 ? alq / ing * 100 : null;
         });
+        function pctAnteriorCerrado(serie, i) {
+          if (esMesCurso(ordenados[i])) return null;
+          for (var j = i - 1; j >= 0; j--) {
+            if (!esMesCurso(ordenados[j])) return serie[j];
+          }
+          return null;
+        }
+        function pctUltimoCerrado(serie) {
+          for (var j = serie.length - 1; j >= 0; j--) {
+            if (!esMesCurso(ordenados[j])) return serie[j];
+          }
+          return null;
+        }
         var celdasRatioSueldos = valoresPctSueldos.map(function(pct, i) {
-          var anterior = i > 0 ? valoresPctSueldos[i - 1] : null;
-          return celdaRatioConVar(pct, anterior, '');
+          return celdaRatioConVar(pct, pctAnteriorCerrado(valoresPctSueldos, i), esMesCurso(ordenados[i]) ? 'col-mes-curso' : '');
         });
         var celdasRatioAlquileres = valoresPctAlquileres.map(function(pct, i) {
-          var anterior = i > 0 ? valoresPctAlquileres[i - 1] : null;
-          return celdaRatioConVar(pct, anterior, '');
+          return celdaRatioConVar(pct, pctAnteriorCerrado(valoresPctAlquileres, i), esMesCurso(ordenados[i]) ? 'col-mes-curso' : '');
         });
-        var numProy = periodosLabels.length - ordenados.length;
-        var ultimoPctSueldos = valoresPctSueldos[valoresPctSueldos.length - 1];
-        var ultimoPctAlquileres = valoresPctAlquileres[valoresPctAlquileres.length - 1];
+        var ultimoPctSueldos = pctUltimoCerrado(valoresPctSueldos);
+        var ultimoPctAlquileres = pctUltimoCerrado(valoresPctAlquileres);
+        var proyCeldasRatioSueldos = [], proyCeldasRatioAlquileres = [];
         for (var pi = 0; pi < numProy; pi++) {
           var ingProy = (proyIng[pi] != null) ? proyIng[pi] : 0;
           var suelProy = (proySueldos[pi] != null) ? proySueldos[pi] : 0;
@@ -4346,21 +4479,15 @@
           var pctAlqProy = ingProy > 0 ? alqProy / ingProy * 100 : null;
           var antSuel = pi === 0 ? ultimoPctSueldos : (proyIng[pi - 1] > 0 ? (proySueldos[pi - 1] || 0) / proyIng[pi - 1] * 100 : null);
           var antAlq = pi === 0 ? ultimoPctAlquileres : (proyIng[pi - 1] > 0 ? (proyAlquileres[pi - 1] || 0) / proyIng[pi - 1] * 100 : null);
-          celdasRatioSueldos.push(celdaRatioConVar(pctSuelProy, antSuel, 'col-proyeccion'));
-          celdasRatioAlquileres.push(celdaRatioConVar(pctAlqProy, antAlq, 'col-proyeccion'));
+          proyCeldasRatioSueldos.push(celdaRatioConVar(pctSuelProy, antSuel, 'col-proyeccion'));
+          proyCeldasRatioAlquileres.push(celdaRatioConVar(pctAlqProy, antAlq, 'col-proyeccion'));
         }
-        var pctSueldosTotal = ingresosParaRatios > 0 ? (totalSueldos / ingresosParaRatios * 100) : null;
-        var pctAlquileresTotal = ingresosParaRatios > 0 ? (totalAlquileres / ingresosParaRatios * 100) : null;
-        var totalSueldosProy = proySueldos.reduce(function(a, b) { return a + (b || 0); }, 0);
-        var totalAlquileresProy = proyAlquileres.reduce(function(a, b) { return a + (b || 0); }, 0);
-        var denomTotal = totalIngresosConProyFlujo;
-        if (denomTotal > 0) {
-          pctSueldosTotal = (totalSueldos + totalSueldosProy) / denomTotal * 100;
-          pctAlquileresTotal = (totalAlquileres + totalAlquileresProy) / denomTotal * 100;
-        }
-        var colspanResto = periodosLabels.length + 1;
+        var pctSueldosTotal = totalIngresosFlujo > 0 ? (totalSueldos / totalIngresosFlujo * 100) : null;
+        var pctAlquileresTotal = totalIngresosFlujo > 0 ? (totalAlquileres / totalIngresosFlujo * 100) : null;
         var iconoRatiosTitulo = '<span class="ratios-titulo-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg></span>';
-        var ratiosBodyHtml = '<tr class="ratios-seccion-titulo"><td class="col-item">' + iconoRatiosTitulo + ' Ratios del Negocio</td><td colspan="' + colspanResto + '"></td></tr><tr><td class="col-item">' + iconoSueldos + ' Sueldos / Ingresos</td>' + celdasRatioSueldos.join('') + '<td class="valor-ratio">' + fmtPct(pctSueldosTotal) + '</td></tr><tr><td class="col-item">' + iconoAlquileres + ' Alquileres / Ingresos</td>' + celdasRatioAlquileres.join('') + '<td class="valor-ratio">' + fmtPct(pctAlquileresTotal) + '</td></tr>';
+        var ratiosBodyHtml = '<tr class="ratios-seccion-titulo"><td class="col-item">' + iconoRatiosTitulo + ' Ratios del Negocio</td><td colspan="' + numColsDatos + '"></td></tr>'
+          + '<tr><td class="col-item">' + iconoSueldos + ' Sueldos / Ingresos</td>' + filaConTotalYProy(celdasRatioSueldos, '<td class="valor-ratio col-total-real">' + fmtPct(pctSueldosTotal) + '</td>', proyCeldasRatioSueldos) + '</tr>'
+          + '<tr><td class="col-item">' + iconoAlquileres + ' Alquileres / Ingresos</td>' + filaConTotalYProy(celdasRatioAlquileres, '<td class="valor-ratio col-total-real">' + fmtPct(pctAlquileresTotal) + '</td>', proyCeldasRatioAlquileres) + '</tr>';
         document.getElementById('tbody-ratios').innerHTML = ratiosBodyHtml;
 
         document.getElementById('panel-flujo').style.display = 'block';
@@ -4418,26 +4545,43 @@
         return { monto: monto, pct: pct };
       }
 
-      /** Recta de mínimos cuadrados sobre índices 0..n-1. */
-      function tendenciaLineal(valores) {
-        var n = valores.length;
-        if (n < 2) return { puntos: valores.slice(), pendiente: 0 };
+      function gpEnMillones(v) {
+        var n = Number(v);
+        if (!isFinite(n)) return '';
+        if (n === 0) return '0';
+        var s = (Math.abs(n) / 1e6).toLocaleString('es-AR', { maximumFractionDigits: 1 });
+        return (n < 0 ? '−' : '+') + s + ' M';
+      }
+
+      /** Regresión solo sobre meses cerrados. El mes en curso queda en null para no inclinar la recta. */
+      function tendenciaSinMesCurso(valores, meses, keyCurso) {
+        var pares = [];
+        meses.forEach(function(k, i) {
+          if (k !== keyCurso) pares.push({ x: i, y: valores[i] });
+        });
+        var n = pares.length;
+        if (n < 2) {
+          return {
+            puntos: meses.map(function(k, i) { return k === keyCurso ? null : valores[i]; }),
+            pendiente: 0
+          };
+        }
         var sx = 0, sy = 0, sxy = 0, sxx = 0;
-        valores.forEach(function(y, x) { sx += x; sy += y; sxy += x * y; sxx += x * x; });
+        pares.forEach(function(p) { sx += p.x; sy += p.y; sxy += p.x * p.y; sxx += p.x * p.x; });
         var den = n * sxx - sx * sx;
         var pendiente = den !== 0 ? (n * sxy - sx * sy) / den : 0;
         var ordenada = (sy - pendiente * sx) / n;
-        return { puntos: valores.map(function(_, x) { return ordenada + pendiente * x; }), pendiente: pendiente };
+        return {
+          puntos: meses.map(function(k, i) { return k === keyCurso ? null : (ordenada + pendiente * i); }),
+          pendiente: pendiente
+        };
       }
 
       var pluginEtiquetasVarGP = {
         id: 'etiquetasVarGP',
         afterDatasetsDraw: function(chart, args, opts) {
-          var vars = opts && opts.variaciones;
-          if (!vars || chart.width < 560) return;
           var meta = chart.getDatasetMeta(0);
           if (!meta || meta.hidden || !meta.data.length) return;
-          if (chart.chartArea && chart.chartArea.width / meta.data.length < 46) return;
           var ctx = chart.ctx;
           ctx.save();
           ctx.textAlign = 'center';
@@ -4445,11 +4589,28 @@
           ctx.lineWidth = 3;
           ctx.strokeStyle = 'rgba(255,255,255,0.95)';
           function texto(t, x, y, peso) {
-            ctx.font = peso + ' 10px system-ui, -apple-system, sans-serif';
+            ctx.font = peso + ' 11px system-ui, -apple-system, sans-serif';
             ctx.strokeText(t, x, y);
             ctx.fillText(t, x, y);
           }
+          var iCurso = opts && opts.mesCursoIndex;
+          if (iCurso != null && iCurso >= 0 && meta.data[iCurso]) {
+            var gpCurso = Number(chart.data.datasets[0].data[iCurso]);
+            if (isFinite(gpCurso)) {
+              var barCurso = meta.data[iCurso];
+              var arribaCurso = gpCurso >= 0;
+              ctx.fillStyle = gpCurso > 0 ? '#0d7d3d' : (gpCurso < 0 ? '#b91c1c' : '#64748b');
+              ctx.textBaseline = arribaCurso ? 'bottom' : 'top';
+              texto(gpEnMillones(gpCurso), barCurso.x, arribaCurso ? barCurso.y - 6 : barCurso.y + 6, '700');
+            }
+          }
+          var vars = opts && opts.variaciones;
+          if (!vars || chart.width < 560 || (chart.chartArea && chart.chartArea.width / meta.data.length < 46)) {
+            ctx.restore();
+            return;
+          }
           meta.data.forEach(function(bar, i) {
+            if (i === iCurso) return;
             var v = vars[i];
             if (!v || v.monto == null) return;
             var valor = chart.data.datasets[0].data[i];
@@ -4467,7 +4628,7 @@
       function actualizarGraficoGP(porMes, moneda, simbolo, porMesAll) {
         var meses12 = getMesesPeriodo();
         var subEl = document.getElementById('grafico-gp-periodo');
-        if (subEl) subEl.textContent = 'Período: ' + labelPeriodoActual() + '. Sobre cada barra: variación vs mes anterior (% y monto).';
+        if (subEl) subEl.textContent = 'Período: ' + labelPeriodoActual() + '. Sobre cada barra cerrada: variación vs mes anterior. La barra celeste muestra el G/P del mes en curso, en millones, y no entra en la variación ni en la tendencia.';
         var wrapVacio = document.getElementById('grafico-gp-wrap');
         if (!meses12.length) {
           if (chartGP) { chartGP.destroy(); chartGP = null; }
@@ -4481,41 +4642,59 @@
           return d ? d.ingresos - d.egresos : 0;
         };
         var valores = meses12.map(gpDeKey);
-        var partesPrimero = meses12[0].split('-').map(Number);
-        var mPrev = partesPrimero[1] - 1, yPrev = partesPrimero[0];
-        if (mPrev < 1) { mPrev = 12; yPrev--; }
-        var keyPrevPrimero = yPrev + '-' + String(mPrev).padStart(2, '0');
+        var keyCurso = keyMesEnCurso();
+        var keyPrevPrimero = mesAnteriorKey(meses12[0]);
         var fuenteAnterior = porMesAll || porMes;
-        var anteriorPrimero = fuenteAnterior[keyPrevPrimero] ? (fuenteAnterior[keyPrevPrimero].ingresos - fuenteAnterior[keyPrevPrimero].egresos) : null;
+        var dPrev = keyPrevPrimero !== keyCurso ? fuenteAnterior[keyPrevPrimero] : null;
+        var anteriorPrimero = dPrev ? (dPrev.ingresos - dPrev.egresos) : null;
+        function gpCerradoAntes(i) {
+          for (var j = i - 1; j >= 0; j--) {
+            if (meses12[j] !== keyCurso) return valores[j];
+          }
+          return anteriorPrimero;
+        }
         var variaciones = valores.map(function(v, i) {
-          return variacionMensual(v, i === 0 ? anteriorPrimero : valores[i - 1]);
+          if (meses12[i] === keyCurso) return { monto: null, pct: null };
+          var anterior = i === 0 ? anteriorPrimero : gpCerradoAntes(i);
+          return variacionMensual(v, anterior);
         });
-        var tendencia = tendenciaLineal(valores);
+        var tendencia = tendenciaSinMesCurso(valores, meses12, keyCurso);
         var fmtFull = function(n) { return Number(n).toLocaleString('es-AR', { minimumFractionDigits: 0, maximumFractionDigits: moneda === 'USD' ? 2 : 0 }); };
         var fmtSigno = function(n) { return (n > 0 ? '+' : (n < 0 ? '−' : '')) + simbolo + fmtFull(Math.abs(n)); };
 
+        var idxCerradoUlt = -1;
+        var idxCerradoPrev = -1;
+        for (var ic = meses12.length - 1; ic >= 0; ic--) {
+          if (meses12[ic] === keyCurso) continue;
+          if (idxCerradoUlt < 0) idxCerradoUlt = ic;
+          else { idxCerradoPrev = ic; break; }
+        }
         var resumenEl = document.getElementById('grafico-gp-resumen');
         if (resumenEl) {
-          var ult = variaciones[variaciones.length - 1];
+          var ult = idxCerradoUlt >= 0 ? variaciones[idxCerradoUlt] : null;
           var htmlRes = '';
           if (ult && ult.monto != null) {
             var claseUlt = ult.monto > 0 ? 'positivo' : (ult.monto < 0 ? 'negativo' : '');
-            htmlRes += '<span class="gp-resumen-item"><span class="gp-resumen-label">' + esc(labels[labels.length - 1]) + ' vs ' + esc(labels[labels.length - 2]) + ':</span> <strong class="' + claseUlt + '">' + fmtSigno(ult.monto) + ' (' + formatearPct(ult.pct) + ')</strong></span>';
+            var textoPrev = idxCerradoPrev >= 0 ? labels[idxCerradoPrev] : 'mes anterior';
+            htmlRes += '<span class="gp-resumen-item"><span class="gp-resumen-label">' + esc(labels[idxCerradoUlt]) + ' vs ' + esc(textoPrev) + ':</span> <strong class="' + claseUlt + '">' + fmtSigno(ult.monto) + ' (' + formatearPct(ult.pct) + ')</strong></span>';
           }
           var claseTend = tendencia.pendiente > 0 ? 'positivo' : (tendencia.pendiente < 0 ? 'negativo' : '');
           htmlRes += '<span class="gp-resumen-item"><span class="gp-resumen-label">Tendencia:</span> <strong class="' + claseTend + '">' + fmtSigno(tendencia.pendiente) + ' por mes</strong></span>';
           resumenEl.innerHTML = htmlRes;
         }
-        var ultVar = variaciones[variaciones.length - 1];
+        var ultVar = idxCerradoUlt >= 0 ? variaciones[idxCerradoUlt] : null;
         gpResumenReporte = {
-          labelUlt: labels[labels.length - 1], labelPrev: labels.length > 1 ? labels[labels.length - 2] : null,
+          labelUlt: idxCerradoUlt >= 0 ? labels[idxCerradoUlt] : null,
+          labelPrev: idxCerradoPrev >= 0 ? labels[idxCerradoPrev] : null,
           ultMonto: ultVar ? ultVar.monto : null, ultPct: ultVar ? ultVar.pct : null, pendiente: tendencia.pendiente
         };
-        var colores = valores.map(function(v) {
+        var colores = valores.map(function(v, i) {
+          if (meses12[i] === keyCurso) return 'rgba(2, 132, 199, 0.8)';
           if (v === 0) return 'rgba(100, 116, 139, 0.6)';
           return v > 0 ? 'rgba(13, 125, 61, 0.85)' : 'rgba(185, 28, 28, 0.85)';
         });
-        var bordes = valores.map(function(v) {
+        var bordes = valores.map(function(v, i) {
+          if (meses12[i] === keyCurso) return '#0284c7';
           if (v === 0) return 'rgba(100, 116, 139, 0.8)';
           return v > 0 ? '#0d7d3d' : '#b91c1c';
         });
@@ -4558,9 +4737,9 @@
             responsive: true,
             maintainAspectRatio: false,
             interaction: { mode: 'index', intersect: false },
-            layout: { padding: { top: 8 } },
+            layout: { padding: { top: 18, right: 28 } },
             plugins: {
-              etiquetasVarGP: { variaciones: variaciones, moneda: moneda },
+              etiquetasVarGP: { variaciones: variaciones, moneda: moneda, mesCursoIndex: meses12.indexOf(keyCurso) },
               legend: {
                 display: true,
                 position: 'top',
@@ -4570,10 +4749,14 @@
                   boxHeight: 10,
                   font: { size: 11 },
                   generateLabels: function(chart) {
-                    return [
+                    var items = [
                       { text: 'G/P', fillStyle: 'rgba(13, 125, 61, 0.85)', strokeStyle: '#0d7d3d', lineWidth: 1, datasetIndex: 0, hidden: !chart.isDatasetVisible(0) },
                       { text: 'Tendencia', fillStyle: 'rgba(0,0,0,0)', strokeStyle: '#1e40af', lineWidth: 2, lineDash: [6, 4], datasetIndex: 1, hidden: !chart.isDatasetVisible(1) }
                     ];
+                    if (meses12.indexOf(keyCurso) >= 0) {
+                      items.splice(1, 0, { text: 'Mes en curso', fillStyle: 'rgba(2, 132, 199, 0.8)', strokeStyle: '#0284c7', lineWidth: 1, datasetIndex: 0, hidden: !chart.isDatasetVisible(0) });
+                    }
+                    return items;
                   }
                 }
               },
@@ -4581,12 +4764,17 @@
                 callbacks: {
                   label: function(ctx) {
                     var v = ctx.raw;
-                    if (ctx.datasetIndex === 1) return 'Tendencia: ' + simbolo + fmtFull(v);
+                    if (ctx.datasetIndex === 1) {
+                      if (v == null) return 'Tendencia: no incluye el mes en curso';
+                      return 'Tendencia: ' + simbolo + fmtFull(v);
+                    }
                     var lineas = [];
+                    if (meses12[ctx.dataIndex] === keyCurso) lineas.push('Mes en curso');
                     if (v === 0) lineas.push('G/P: ' + simbolo + '0 (ingresos = egresos)');
                     else lineas.push((v > 0 ? 'G/P: ' : 'Pérdida: ') + simbolo + fmtFull(v));
                     var va = variaciones[ctx.dataIndex];
-                    if (va && va.monto != null) lineas.push('Var. vs mes anterior: ' + fmtSigno(va.monto) + ' (' + formatearPct(va.pct) + ')');
+                    if (meses12[ctx.dataIndex] === keyCurso) lineas.push('No entra en la variación ni en la tendencia');
+                    else if (va && va.monto != null) lineas.push('Var. vs mes anterior: ' + fmtSigno(va.monto) + ' (' + formatearPct(va.pct) + ')');
                     else lineas.push('Var. vs mes anterior: sin dato');
                     return lineas;
                   }
@@ -4662,18 +4850,23 @@
         var ing = function(k) { return ((d.porMesFlujoAll[k] || {}).ingresos) || 0; };
         var egr = function(k) { return ((d.porMesFlujoAll[k] || {}).egresos) || 0; };
 
-        var headCols = meses.map(function(k) { return '<th>' + formatoPeriodoFromKey(k) + '</th>'; }).concat(['<th>Total</th>']);
-        var totIng = meses.reduce(function(s, k) { return s + ing(k); }, 0);
-        var totEgr = meses.reduce(function(s, k) { return s + egr(k); }, 0);
+        var keyCurso = keyMesEnCurso();
+        var mesesCerrados = meses.filter(function(k) { return k !== keyCurso; });
+        function clsCurso(k, base) { return base + (k === keyCurso ? ' rep-mes-curso' : ''); }
+        var headCols = meses.map(function(k) {
+          return '<th class="' + (k === keyCurso ? 'rep-mes-curso' : '') + '">' + formatoPeriodoFromKey(k) + (k === keyCurso ? ' · en curso' : '') + '</th>';
+        }).concat(['<th class="rep-col-total">Total</th>']);
+        var totIng = mesesCerrados.reduce(function(s, k) { return s + ing(k); }, 0);
+        var totEgr = mesesCerrados.reduce(function(s, k) { return s + egr(k); }, 0);
         var totGp = totIng - totEgr;
         var claseGp = function(v) { return 'balance ' + (v >= 0 ? 'positivo' : 'negativo'); };
 
         function filaMontos(getMes, clase, total) {
-          return meses.map(function(k) { return '<td class="' + clase + '">' + fmt(getMes(k)) + '</td>'; })
-            .concat(['<td class="' + clase + '">' + fmt(total) + '</td>']);
+          return meses.map(function(k) { return '<td class="' + clsCurso(k, clase) + '">' + fmt(getMes(k)) + '</td>'; })
+            .concat(['<td class="' + clase + ' rep-col-total">' + fmt(total) + '</td>']);
         }
-        var filaGp = meses.map(function(k) { var v = ing(k) - egr(k); return '<td class="' + claseGp(v) + '">' + fmt(v) + '</td>'; })
-          .concat(['<td class="' + claseGp(totGp) + '">' + fmt(totGp) + '</td>']);
+        var filaGp = meses.map(function(k) { var v = ing(k) - egr(k); return '<td class="' + clsCurso(k, claseGp(v)) + '">' + fmt(v) + '</td>'; })
+          .concat(['<td class="' + claseGp(totGp) + ' rep-col-total">' + fmt(totGp) + '</td>']);
 
         var svgSubio = '<span class="ratio-var-icon ratio-var-subio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 19V5"/><path d="M5 12l7-7 7 7"/></svg></span>';
         var svgBajo = '<span class="ratio-var-icon ratio-var-bajo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14"/><path d="M19 12l-7 7-7-7"/></svg></span>';
@@ -4686,12 +4879,20 @@
         function filaRatio(porMesNum) {
           var pctMes = function(k) { var i = ing(k); return i > 0 ? ((porMesNum[k] || 0) / i) * 100 : null; };
           var serie = meses.map(pctMes);
-          var anteriorPrimero = pctMes(mesAnterior(meses[0]));
+          var prevKey = mesAnterior(meses[0]);
+          var anteriorPrimero = prevKey === keyCurso ? null : pctMes(prevKey);
+          function anteriorCerrado(i) {
+            if (meses[i] === keyCurso) return null;
+            for (var j = i - 1; j >= 0; j--) {
+              if (meses[j] !== keyCurso) return serie[j];
+            }
+            return anteriorPrimero;
+          }
           var vals = serie.map(function(p, i) {
-            return '<td class="valor-ratio"><span class="ratio-con-variacion">' + fmtPct(p) + iconoVar(p, i === 0 ? anteriorPrimero : serie[i - 1]) + '</span></td>';
+            return '<td class="' + clsCurso(meses[i], 'valor-ratio') + '"><span class="ratio-con-variacion">' + fmtPct(p) + iconoVar(p, anteriorCerrado(i)) + '</span></td>';
           });
-          var num = meses.reduce(function(s, k) { return s + (porMesNum[k] || 0); }, 0);
-          vals.push('<td class="valor-ratio">' + fmtPct(totIng > 0 ? (num / totIng) * 100 : null) + '</td>');
+          var num = mesesCerrados.reduce(function(s, k) { return s + (porMesNum[k] || 0); }, 0);
+          vals.push('<td class="valor-ratio rep-col-total">' + fmtPct(totIng > 0 ? (num / totIng) * 100 : null) + '</td>');
           return vals;
         }
 
@@ -4705,8 +4906,8 @@
           { tipo: 'total', item: 'Total G/P', vals: filaGp }
         ];
         var headItem = 'Item <span class="rep-unidad">(' + unidadMilesReporte(mon) + ')</span>';
-        var notas = ['Importes expresados en ' + unidadMilesReporte(mon) + ' (redondeados). Período ' + labelPeriodoActual() + '; la columna Total suma esos meses. No incluye meses proyectados.'];
-        Array.prototype.forEach.call(document.querySelectorAll('#tfoot-flujo tr.disclaimer-proyeccion td'), function(td) {
+        var notas = ['Importes expresados en ' + unidadMilesReporte(mon) + ' (redondeados). Período ' + labelPeriodoActual() + '. La columna Total suma los meses cerrados: el mes en curso (celeste) no entra, ni los proyectados.'];
+        Array.prototype.forEach.call(document.querySelectorAll('#tfoot-flujo tr.disclaimer-proyeccion:not(.nota-mes-curso) td'), function(td) {
           var t = td.textContent.trim();
           if (t && t.indexOf('Proyección') !== 0) notas.push(t);
         });
@@ -4789,7 +4990,7 @@
 
         var mon = getMoneda();
         var unidad = unidadMilesReporte(mon);
-        html += '<p class="rep-unidad-aviso">Importes expresados en <strong>' + unidad + '</strong> · Período ' + escHtmlMsg(labelPeriodoActual()) + ' · sin meses proyectados</p>';
+        html += '<p class="rep-unidad-aviso">Importes expresados en <strong>' + unidad + '</strong> · Período ' + escHtmlMsg(labelPeriodoActual()) + ' · sin meses proyectados · los totales suman solo meses cerrados (el mes en curso no entra)</p>';
 
         var fr = flujoParaReporte;
         if (fr) {
@@ -5487,8 +5688,42 @@
                 if (tr && tr.classList && tr.classList.contains('fila-clickable')) { e.preventDefault(); abrirModalDetalle(); }
               });
             }
+            var theadFlujo = document.getElementById('thead-flujo');
+            if (theadFlujo && !theadFlujo._boundAlertas) {
+              theadFlujo._boundAlertas = true;
+              theadFlujo.addEventListener('click', function(e) {
+                var icon = e.target && e.target.closest && e.target.closest('.alert-icon');
+                if (icon) abrirModalAlertas(icon.getAttribute('data-alerta-key'));
+              });
+              theadFlujo.addEventListener('keydown', function(e) {
+                if (e.key !== 'Enter' && e.key !== ' ') return;
+                var icon = e.target && e.target.closest && e.target.closest('.alert-icon');
+                if (icon) { e.preventDefault(); abrirModalAlertas(icon.getAttribute('data-alerta-key')); }
+              });
+            }
           });
       }
+
+      function abrirModalAlertas(key) {
+        var backdrop = document.getElementById('modal-alertas-backdrop');
+        if (!backdrop || !key) return;
+        var alertas = alertasFlujoPorMes[key] || [];
+        document.getElementById('modal-alertas-titulo').textContent = 'Alertas — ' + formatoPeriodoFromKey(key);
+        document.getElementById('modal-alertas-subtitulo').textContent = 'Detalle de las variaciones +/- según el % del parámetro (' + getAlertaDesvioPct() + '%).';
+        document.getElementById('modal-alertas-body').innerHTML = alertas.length
+          ? '<ul>' + alertas.map(function(a) { return '<li>' + a + '</li>'; }).join('') + '</ul>'
+          : '<p>No hay alertas.</p>';
+        backdrop.classList.remove('oculto');
+      }
+
+      (function setupModalAlertas() {
+        var backdrop = document.getElementById('modal-alertas-backdrop');
+        var btnClose = document.getElementById('modal-alertas-close');
+        if (!backdrop || !btnClose) return;
+        var cerrar = function() { backdrop.classList.add('oculto'); };
+        btnClose.addEventListener('click', cerrar);
+        setupBackdropCloseOnlyOnRealClick(backdrop, cerrar);
+      })();
 
       (function setupModalDetalle() {
         var backdrop = document.getElementById('modal-detalle-backdrop');
@@ -7994,6 +8229,7 @@
           if (document.getElementById('config-proyeccion-meses')) document.getElementById('config-proyeccion-meses').value = String(c.meses);
           if (document.getElementById('config-proyeccion-cantidad')) document.getElementById('config-proyeccion-cantidad').value = String(c.mesesAProyectar);
           if (document.getElementById('config-proyeccion-recorte')) document.getElementById('config-proyeccion-recorte').value = String(c.recortePct);
+          if (document.getElementById('config-alerta-desvio')) document.getElementById('config-alerta-desvio').value = String(normalizarAlertaDesvioPct(c.alertaDesvioPct));
           if (selRecorteWrap) selRecorteWrap.style.display = c.metodo === 'promedio_recortado' ? 'block' : 'none';
           backdrop.classList.remove('oculto');
         });
@@ -8008,20 +8244,23 @@
           var meses = parseInt(document.getElementById('config-proyeccion-meses').value, 10) || 6;
           var cantidad = parseInt(document.getElementById('config-proyeccion-cantidad').value, 10) || 3;
           var recorte = parseInt(document.getElementById('config-proyeccion-recorte').value, 10) || 20;
+          var selAlerta = document.getElementById('config-alerta-desvio');
+          var alertaDesvio = normalizarAlertaDesvioPct(selAlerta ? selAlerta.value : null);
           if (!currentUserId) { backdrop.classList.add('oculto'); return; }
           client.from('config_dashboard').upsert({
             user_id: currentUserId,
             proyeccion_metodo: metodo,
             proyeccion_meses: meses,
             proyeccion_cantidad: cantidad,
-            proyeccion_recorte: recorte
+            proyeccion_recorte: recorte,
+            alerta_desvio_pct: alertaDesvio
           }, { onConflict: 'user_id' }).then(function(r) {
             if (r.error) {
               showToast('Error al guardar: ' + (r.error.message || ''), 'error');
               return;
             }
             showToast('Guardado.', 'success');
-            configProyeccionCache = { metodo: metodo, meses: meses, mesesAProyectar: cantidad, recortePct: recorte };
+            configProyeccionCache = { metodo: metodo, meses: meses, mesesAProyectar: cantidad, recortePct: recorte, alertaDesvioPct: alertaDesvio };
             backdrop.classList.add('oculto');
             renderizar();
           });

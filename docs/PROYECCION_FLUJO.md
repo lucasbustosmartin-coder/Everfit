@@ -11,7 +11,7 @@ Documentación de referencia para la **proyección** de ingresos, egresos y deri
 - La cantidad de columnas proyectadas la define **«Meses a proyectar»** (1–12).
 - El método estadístico y el tamaño de la ventana los define la config: **Método**, **Meses de historia** (N = 3, 6, 12 o 24), **Recorte %** (solo promedio recortado).
 
-Las **tarjetas** de resumen (Total ingresos / egresos / G-P) **no** usan las columnas Proy.; siguen siendo totales sobre datos **reales/pendientes/proyectados** de `base_everfit` según las exclusiones generales (ver **`docs/EXCLUSIONES_DASHBOARD.md`**).
+Las **tarjetas** de resumen (Total ingresos / egresos / G-P) **no** usan las columnas Proy.; siguen siendo totales sobre datos **reales/pendientes/proyectados** de `base_everfit` de los **meses cerrados** del período (el mes en curso no entra), según las exclusiones generales (ver **`docs/EXCLUSIONES_DASHBOARD.md`**).
 
 ---
 
@@ -63,7 +63,8 @@ Así se cumple el período configurado sin reutilizar el mes en curso ni meses f
 ## 5. Permisos y persistencia
 
 - Solo usuarios con permiso **`ver_proyeccion`** ven columnas Proy., ratios proyectados y el botón de configuración (ver **`docs/SEGURIDAD.md`**).
-- Valores guardados: `proyeccion_metodo`, `proyeccion_meses`, `proyeccion_cantidad`, `proyeccion_recorte` en **`config_dashboard`** (script SQL `sql/supabase_proyeccion_permiso_y_config.sql`).
+- Valores guardados: `proyeccion_metodo`, `proyeccion_meses`, `proyeccion_cantidad`, `proyeccion_recorte` en **`config_dashboard`** (script SQL `sql/supabase_proyeccion_permiso_y_config.sql`). El mismo modal guarda `alerta_desvio_pct` (umbral de alertas de desvío del Flujo por mes; `sql/supabase_config_dashboard_alerta_desvio.sql`).
+- **Orden de columnas:** meses → **Total** (solo meses cerrados; no incluye el mes en curso ni las Proy.) → columnas Proy.
 
 ---
 
