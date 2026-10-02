@@ -41,6 +41,9 @@
     .resumen .card .card-icon.ingresos { color: #0d7d3d; }
     .resumen .card .card-icon.egresos { color: #b91c1c; }
     .resumen .valor { font-size: 1.5rem; font-weight: 700; }
+    .resumen .card-historico { margin-top: 0.35rem; padding-top: 0.4rem; border-top: 1px dashed #e2e8f0; }
+    .resumen .card-historico-titulo { font-size: 0.75rem; color: #64748b; }
+    .resumen .card-historico-valor { font-size: 1rem; font-weight: 600; }
     .ultima-actualizacion-leyenda { display: flex; align-items: center; gap: 0.4rem; margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid #eee; font-size: 0.8rem; color: #666; }
     .ultima-actualizacion-leyenda .ultima-actualizacion-icon { width: 14px; height: 14px; flex-shrink: 0; color: #888; }
     .ultima-actualizacion-leyenda .ultima-actualizacion-icon svg { width: 100%; height: 100%; stroke: currentColor; }
@@ -211,6 +214,8 @@
       #rep-print-root .rep-cards .card-icon { width: 14px; height: 14px; display: inline-flex; }
       #rep-print-root .rep-cards .card-icon svg { width: 100%; height: 100%; stroke: currentColor; }
       #rep-print-root .rep-cards .valor { font-size: 1.15rem; font-weight: 700; }
+      #rep-print-root .rep-card-historico { display: flex; flex-direction: column; margin-top: 0.25rem; padding-top: 0.25rem; border-top: 1px dashed #e2e8f0; font-size: 0.85rem; font-weight: 600; }
+      #rep-print-root .rep-card-historico-titulo { font-size: 0.65rem; font-weight: 500; color: #64748b; }
       #rep-print-root .ingresos, #rep-print-root .positivo { color: #15803d; }
       #rep-print-root .egresos, #rep-print-root .negativo { color: #b91c1c; }
       #rep-print-root .rep-seccion { break-inside: avoid; margin-bottom: 0.6rem; }
@@ -885,7 +890,7 @@
         <span class="menu-label">Seguridad</span>
       </a>
     </nav>
-    <div class="sidebar-version" id="sidebar-version" aria-label="Versión">v1.40</div>
+    <div class="sidebar-version" id="sidebar-version" aria-label="Versión">v1.41</div>
   </aside>
 
   <main class="main-content">
@@ -4377,10 +4382,19 @@
         var numProy = proyLabels.length;
         var numColsDatos = ordenados.length + 1 + numProy;
         var tituloCardsCerrados = 'Suma de los meses cerrados del período. El mes en curso no entra.';
+        var historico = rangoPeriodo.valor !== 'todo' ? totalesHistoricosCerrados(datosAll, moneda, tipoDolar, keyCurso) : null;
+        historicoCardsReporte = historico;
+        function bloqueHistorico(valor, clase) {
+          if (!historico) return '';
+          return '<div class="card-historico" title="Todos los meses cerrados hasta el ' + historico.fechaLabel + ', sin filtro de período (respeta sucursal y moneda).">'
+            + '<div class="card-historico-titulo">Histórico al ' + historico.fechaLabel + '</div>'
+            + '<div class="card-historico-valor ' + clase + '">' + simbolo + formatearNumero(valor, moneda) + '</div></div>';
+        }
+        var gpHistorico = historico ? historico.ingresos - historico.egresos : 0;
         document.getElementById('resumen').innerHTML = [
-          '<div class="card" title="' + tituloCardsCerrados + '"><div class="card-titulo">' + iconoIng + 'Total ingresos</div><div class="valor ingresos">' + simbolo + formatearNumero(totalIngresos, moneda) + '</div></div>',
-          '<div class="card" title="' + tituloCardsCerrados + '"><div class="card-titulo">' + iconoEgr + 'Total egresos</div><div class="valor egresos">' + simbolo + formatearNumero(totalEgresos, moneda) + '</div></div>',
-          '<div class="card" title="' + tituloCardsCerrados + '"><div class="card-titulo">' + iconoGp + 'G/P Total</div><div class="valor balance ' + (balanceTotal >= 0 ? 'positivo' : 'negativo') + '">' + simbolo + formatearNumero(balanceTotal, moneda) + '</div></div>'
+          '<div class="card" title="' + tituloCardsCerrados + '"><div class="card-titulo">' + iconoIng + 'Total ingresos</div><div class="valor ingresos">' + simbolo + formatearNumero(totalIngresos, moneda) + '</div>' + bloqueHistorico(historico ? historico.ingresos : 0, 'ingresos') + '</div>',
+          '<div class="card" title="' + tituloCardsCerrados + '"><div class="card-titulo">' + iconoEgr + 'Total egresos</div><div class="valor egresos">' + simbolo + formatearNumero(totalEgresos, moneda) + '</div>' + bloqueHistorico(historico ? historico.egresos : 0, 'egresos') + '</div>',
+          '<div class="card" title="' + tituloCardsCerrados + '"><div class="card-titulo">' + iconoGp + 'G/P Total</div><div class="valor balance ' + (balanceTotal >= 0 ? 'positivo' : 'negativo') + '">' + simbolo + formatearNumero(balanceTotal, moneda) + '</div>' + bloqueHistorico(gpHistorico, 'balance ' + (gpHistorico >= 0 ? 'positivo' : 'negativo')) + '</div>'
         ].join('');
         document.getElementById('resumen-wrap').style.display = 'block';
         actualizarLeyendaUltimaActualizacion();
@@ -4501,6 +4515,38 @@
 
       /** Datos del último renderizar() para el reporte PDF (misma base y período que la pantalla, sin proyección). */
       var flujoParaReporte = null;
+      /** Totales históricos de las tarjetas (null si el período es Todo el histórico). */
+      var historicoCardsReporte = null;
+
+      /**
+       * Totales de tarjetas sin filtro de período: todos los meses estrictamente anteriores al mes en curso (Argentina).
+       * Mismas exclusiones que las tarjetas (solo centro Saldo Inicial). fechaLabel = último día del último mes cerrado.
+       */
+      function totalesHistoricosCerrados(filas, moneda, tipoDolar, keyCurso) {
+        var ingresos = 0, egresos = 0;
+        filas.forEach(function(r) {
+          if (debeExcluirse(r)) return;
+          var f = fechaStr(r.fecha_pago);
+          if (!f) return;
+          var parts = f.split('-').map(Number);
+          if (!parts[0] || !parts[1]) return;
+          var key = parts[0] + '-' + String(parts[1]).padStart(2, '0');
+          if (!claveMesEstrictamenteAnterior(key, keyCurso)) return;
+          var monto = Number(r.importe) || 0;
+          if (moneda === 'USD') {
+            var tasa = getTasa(r.fecha_pago, tipoDolar);
+            if (tasa == null || tasa <= 0) return;
+            monto = monto / tasa;
+          }
+          var tipo = (r.ingresos_egresos || '').trim().toLowerCase();
+          if (tipo.indexOf('ingreso') !== -1) ingresos += monto;
+          else if (tipo.indexOf('egreso') !== -1) egresos += monto;
+        });
+        var pAnt = mesAnteriorKey(keyCurso).split('-').map(Number);
+        var ultimoDia = new Date(Date.UTC(pAnt[0], pAnt[1], 0)).getUTCDate();
+        var fechaLabel = String(ultimoDia).padStart(2, '0') + '/' + String(pAnt[1]).padStart(2, '0') + '/' + pAnt[0];
+        return { ingresos: ingresos, egresos: egresos, fechaLabel: fechaLabel };
+      }
 
       /** Últimos 13 meses: desde (mes actual - 12) hasta mes actual inclusive. Mes actual = calendario Argentina. */
       function getUltimos12Meses() {
@@ -4995,10 +5041,16 @@
         var fr = flujoParaReporte;
         if (fr) {
           var gpTot = fr.totalIngresos - fr.totalEgresos;
+          var hist = historicoCardsReporte;
+          var histHtml = function(v, clase) {
+            if (!hist) return '';
+            return '<div class="rep-card-historico"><span class="rep-card-historico-titulo">Histórico al ' + hist.fechaLabel + '</span><span class="' + clase + '">' + fmtMilesReporte(v, mon) + '</span></div>';
+          };
+          var gpHist = hist ? hist.ingresos - hist.egresos : 0;
           html += '<div class="rep-cards">' +
-            '<div class="card"><div class="card-titulo">Total ingresos</div><div class="valor ingresos">' + fmtMilesReporte(fr.totalIngresos, mon) + '</div></div>' +
-            '<div class="card"><div class="card-titulo">Total egresos</div><div class="valor egresos">' + fmtMilesReporte(fr.totalEgresos, mon) + '</div></div>' +
-            '<div class="card"><div class="card-titulo">G/P Total</div><div class="valor ' + (gpTot >= 0 ? 'positivo' : 'negativo') + '">' + fmtMilesReporte(gpTot, mon) + '</div></div>' +
+            '<div class="card"><div class="card-titulo">Total ingresos</div><div class="valor ingresos">' + fmtMilesReporte(fr.totalIngresos, mon) + '</div>' + histHtml(hist ? hist.ingresos : 0, 'ingresos') + '</div>' +
+            '<div class="card"><div class="card-titulo">Total egresos</div><div class="valor egresos">' + fmtMilesReporte(fr.totalEgresos, mon) + '</div>' + histHtml(hist ? hist.egresos : 0, 'egresos') + '</div>' +
+            '<div class="card"><div class="card-titulo">G/P Total</div><div class="valor ' + (gpTot >= 0 ? 'positivo' : 'negativo') + '">' + fmtMilesReporte(gpTot, mon) + '</div>' + histHtml(gpHist, gpHist >= 0 ? 'positivo' : 'negativo') + '</div>' +
             '</div>';
         }
 

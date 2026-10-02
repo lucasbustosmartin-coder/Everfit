@@ -1,8 +1,7 @@
 {
-  "versionLabel": "v1.40",
+  "versionLabel": "v1.41",
   "lines": [
-    "El mes en curso ahora se ve en celeste: lo podés seguir, pero no suma en las tarjetas, el Total ni la tendencia del gráfico.",
-    "En la tabla Flujo por mes la columna Total va junto a los meses y las proyecciones quedan a la derecha.",
-    "Nuevas alertas: un triángulo en el mes te avisa qué ingresos o egresos variaron mucho contra el mes anterior. El % se ajusta desde el botón Proyección."
+    "Las tarjetas de ingresos, egresos y G/P ahora muestran debajo el acumulado histórico al cierre del último mes.",
+    "Así comparás de un vistazo el período elegido con todo lo acumulado. También sale en el reporte PDF."
   ]
 }
